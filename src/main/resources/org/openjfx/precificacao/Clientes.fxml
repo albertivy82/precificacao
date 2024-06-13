@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import org.openjfx.precificacao.shared.CPFMaskedTextField?>
+<?import org.openjfx.precificacao.shared.TelefoneMaskedTextField?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
+            prefHeight="900.0" prefWidth="900.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.openjfx.precificacao.controller.ClienteController"
+            stylesheets="@/org/openjfx/styles/styles.css">
+   <top>
+      <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;">
+         <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@/images/sindomar_logo.png"/>
+            </image>
+         </ImageView>
+      </HBox>
+   </top>
+   <left>
+      <VBox prefHeight="791.0" prefWidth="142.0">
+         <Button mnemonicParsing="false" onAction="#btnMain" prefHeight="64.0" prefWidth="179.0" text="Inicio"/>
+      </VBox>
+   </left>
+   <center>
+      <VBox alignment="CENTER" spacing="10">
+         <GridPane alignment="CENTER" hgap="10" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="100"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="300"/>
+            </columnConstraints>
+            <children>
+               <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+                  <children>
+                     <Label text="Nome do Cliente:" styleClass="label-style"/>
+                     <TextField fx:id="nomeClienteInput" promptText="Digite o nome do cliente" styleClass="text-field-style"/>
+                  </children>
+               </VBox>
+               <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+                  <children>
+                     <Label text="CPF:" styleClass="label-style"/>
+                     <CPFMaskedTextField fx:id="cpfInput" promptText="Digite o CPF" styleClass="text-field-style"/>
+                  </children>
+               </VBox>
+               <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
+                  <children>
+                     <Label text="Telefone:" styleClass="label-style"/>
+                     <TelefoneMaskedTextField fx:id="telefoneInput" promptText="Digite o telefone" styleClass="text-field-style"/>
+                  </children>
+               </VBox>
+               <VBox GridPane.columnIndex="0" GridPane.rowIndex="3">
+                  <children>
+                     <Label text="E-mail:" styleClass="label-style"/>
+                     <TextField fx:id="emailInput" promptText="Digite o e-mail" styleClass="text-field-style"/>
+                  </children>
+               </VBox>
+               <HBox GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" alignment="CENTER">
+                  <children>
+                     <Button mnemonicParsing="false" onAction="#btnCadastrarCliente" text="Cadastrar" styleClass="button-style"/>
+                  </children>
+               </HBox>
+            </children>
+         </GridPane>
+         <Label text="LISTA DE CLIENTES (nome/cpf)" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
+         <ListView fx:id="LvClientes" prefHeight="314.0" prefWidth="200.0" />
+         <Button mnemonicParsing="false" onAction="#btnEditarCliente" text="Editar" styleClass="button-style"/>
+         <Button mnemonicParsing="false" onAction="#btnDeletarCliente" text="Apagar" styleClass="button-style"/>
+      </VBox>
+   </center>
+</BorderPane>
