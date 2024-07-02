@@ -1,75 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import org.openjfx.precificacao.shared.CPFMaskedTextField?>
 <?import org.openjfx.precificacao.shared.TelefoneMaskedTextField?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
-            prefHeight="900.0" prefWidth="900.0"
-            xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.openjfx.precificacao.controller.ClienteController"
-            stylesheets="@/org/openjfx/styles/styles.css">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.ClienteController">
    <top>
       <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;">
          <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@/images/sindomar_logo.png"/>
+                <Image url="@/images/sindomar_logo.png" />
             </image>
          </ImageView>
       </HBox>
    </top>
    <left>
       <VBox prefHeight="791.0" prefWidth="142.0">
-         <Button mnemonicParsing="false" onAction="#btnMain" prefHeight="64.0" prefWidth="179.0" text="Inicio"/>
+         <Button mnemonicParsing="false" onAction="#btnMain" prefHeight="64.0" prefWidth="179.0" text="Inicio" />
+         <Button mnemonicParsing="false" onAction="#btnProfissionais" prefHeight="64.0" prefWidth="179.0" text="Profissionais" />
       </VBox>
    </left>
    <center>
-      <VBox alignment="CENTER" spacing="10">
+      <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
+      <content>
+      <VBox alignment="CENTER" prefWidth="700.0" spacing="10">
          <GridPane alignment="CENTER" hgap="10" vgap="15">
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="100"/>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="300"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="416.0" minWidth="10.0" prefWidth="416.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="467.0" minWidth="10.0" prefWidth="330.0" />
             </columnConstraints>
             <children>
                <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
                   <children>
-                     <Label text="Nome do Cliente:" styleClass="label-style"/>
-                     <TextField fx:id="nomeClienteInput" promptText="Digite o nome do cliente" styleClass="text-field-style"/>
+                     <Label styleClass="label-style" text="Nome do Cliente:" />
+                     <TextField fx:id="nomeClienteInput" promptText="Digite o nome do cliente" styleClass="text-field-style" />
                   </children>
                </VBox>
-               <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+
+               <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
                   <children>
-                     <Label text="CPF:" styleClass="label-style"/>
-                     <CPFMaskedTextField fx:id="cpfInput" promptText="Digite o CPF" styleClass="text-field-style"/>
+                     <Label styleClass="label-style" text="CPF:" />
+                     <CPFMaskedTextField fx:id="cpfInput" promptText="Digite o CPF" styleClass="text-field-style" />
+                  </children>
+               </VBox>
+               <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <children>
+                     <Label styleClass="label-style" text="Telefone:" />
+                     <TelefoneMaskedTextField fx:id="telefoneInput" promptText="Digite o telefone" styleClass="text-field-style" />
                   </children>
                </VBox>
                <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
                   <children>
-                     <Label text="Telefone:" styleClass="label-style"/>
-                     <TelefoneMaskedTextField fx:id="telefoneInput" promptText="Digite o telefone" styleClass="text-field-style"/>
+                     <Label styleClass="label-style" text="E-mail:" />
+                     <TextField fx:id="emailInput" promptText="Digite o e-mail" styleClass="text-field-style" />
                   </children>
                </VBox>
-               <VBox GridPane.columnIndex="0" GridPane.rowIndex="3">
+
+               <VBox GridPane.columnIndex="0" GridPane.rowIndex="4">
                   <children>
-                     <Label text="E-mail:" styleClass="label-style"/>
-                     <TextField fx:id="emailInput" promptText="Digite o e-mail" styleClass="text-field-style"/>
+                     <Label styleClass="label-style" text="Endereço:" />
+                     <TextField fx:id="enderecoClienteInput" promptText="Rua, número, complemento..." styleClass="text-field-style" />
                   </children>
                </VBox>
-               <HBox GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" alignment="CENTER">
+
+               <VBox GridPane.columnIndex="1" GridPane.rowIndex="4">
                   <children>
-                     <Button mnemonicParsing="false" onAction="#btnCadastrarCliente" text="Cadastrar" styleClass="button-style"/>
+                     <Label styleClass="label-style" text="Bairro:" />
+                     <TextField fx:id="bairroClienteInput" promptText="Bairro" styleClass="text-field-style" />
+                  </children>
+               </VBox>
+
+               <VBox GridPane.columnIndex="0" GridPane.rowIndex="5">
+                  <children>
+                     <Label styleClass="label-style" text="CEP:" />
+                     <TextField fx:id="cepClienteInput" promptText="Bairro" styleClass="text-field-style">
+                              <padding>
+                                 <Insets right="60.0" />
+                              </padding></TextField>
+                  </children>
+                        <GridPane.margin>
+                           <Insets right="40.0" />
+                        </GridPane.margin>
+                        <padding>
+                           <Insets right="90.0" />
+                        </padding>
+               </VBox>
+
+               <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                  <children>
+                     <Button mnemonicParsing="false" onAction="#btnCadastrarCliente" styleClass="button-style" text="Cadastrar" />
                   </children>
                </HBox>
             </children>
+
          </GridPane>
-         <Label text="LISTA DE CLIENTES (nome/cpf)" style="-fx-font-size: 16px; -fx-text-fill: #333;"/>
-         <ListView fx:id="LvClientes" prefHeight="314.0" prefWidth="200.0" />
-         <Button mnemonicParsing="false" onAction="#btnEditarCliente" text="Editar" styleClass="button-style"/>
-         <Button mnemonicParsing="false" onAction="#btnDeletarCliente" text="Apagar" styleClass="button-style"/>
+         <Label style="-fx-font-size: 16px; -fx-text-fill: #333;" text="LISTA DE CLIENTES (nome/cpf)" />
+         <ListView fx:id="LvClientes" prefHeight="200.0" prefWidth="200.0" />
+         <Button mnemonicParsing="false" onAction="#btnEditarCliente" styleClass="button-style" text="Editar" />
+         <Button mnemonicParsing="false" onAction="#btnDeletarCliente" styleClass="button-style" text="Apagar" />
+               <padding>
+                  <Insets left="10.0" right="15.0" />
+               </padding>
       </VBox>
+      </content>
+      </ScrollPane>
    </center>
 </BorderPane>

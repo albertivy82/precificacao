@@ -28,11 +28,14 @@ public class ClienteSQLite{
 		            }
 	        	
 		            PreparedStatement pstmt = conn.prepareStatement(
-		                    "INSERT INTO cliente (nome, telefone, email, cpf) VALUES (?, ?, ?, ?)");
+		                    "INSERT INTO cliente (nome, telefone, email, cpf, endereco, bairro, cep) VALUES (?, ?, ?, ?)");
 		            pstmt.setString(1, cliente.getNome());
 		            pstmt.setString(2, cliente.getTelefone());
 		            pstmt.setString(3, cliente.getEmail());
 		            pstmt.setString(4, cliente.getCpf());
+                    pstmt.setString(5, cliente.getEndereco());
+                    pstmt.setString(6, cliente.getBairro());
+                    pstmt.setString(7, cliente.getCep());
 		            pstmt.executeUpdate();
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
@@ -47,12 +50,15 @@ public class ClienteSQLite{
         Connection conn = SQLiteConnection.connect();
         try {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE cliente SET nome=?, telefone=?, email=?, cpf=? WHERE ID=?");
+                    "UPDATE cliente SET nome=?, telefone=?, email=?, cpf=?, endereco=?, bairro=?, cep=? WHERE ID=?");
             pstmt.setString(1, cliente.getNome());
             pstmt.setString(2, cliente.getTelefone());
             pstmt.setString(3, cliente.getEmail());
             pstmt.setString(4, cliente.getCpf());
-            pstmt.setInt(5, cliente.getId());
+            pstmt.setString(5, cliente.getEndereco());
+            pstmt.setString(6, cliente.getBairro());
+            pstmt.setString(7, cliente.getCep());
+            pstmt.setInt(6, cliente.getId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -83,7 +89,7 @@ public class ClienteSQLite{
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = conn.prepareStatement("SELECT id, nome, telefone, email, cpf FROM cliente");
+            pstmt = conn.prepareStatement("SELECT id, nome, telefone, email, cpf, endereco, bairro, cep FROM cliente");
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
@@ -93,6 +99,9 @@ public class ClienteSQLite{
                 c.setTelefone(rs.getString("telefone"));
                 c.setEmail(rs.getString("email"));
                 c.setCpf(rs.getString("cpf"));
+                c.setCpf(rs.getString("endereco"));
+                c.setCpf(rs.getString("bairro"));
+                c.setCpf(rs.getString("cep"));
                 result.add(c);
             }
         } catch (SQLException e) {

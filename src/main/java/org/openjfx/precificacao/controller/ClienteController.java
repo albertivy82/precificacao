@@ -36,8 +36,17 @@ public class ClienteController {
 	
 	@FXML
 	private TelefoneMaskedTextField telefoneInput;
-	
-	
+
+
+	@FXML
+	private TextField bairroClienteInput;
+
+	@FXML
+	private TextField cepClienteInput;
+
+	@FXML
+	private TextField enderecoClienteInput;
+
 	@FXML
 	private ListView<Cliente> LvClientes;
 
@@ -59,6 +68,11 @@ public class ClienteController {
 	protected void btnMain(ActionEvent e){
 		App.mudarTela("DashBoard");
 	};
+
+	@FXML
+	protected void btnProfissionais(ActionEvent e) {
+		App.mudarTela("Profissionais");
+	};
 	
 	@FXML
 	protected void btnCadastrarCliente(ActionEvent e) {
@@ -69,6 +83,9 @@ public class ClienteController {
 	        novoCliente.setEmail(emailInput.getText());
 	        novoCliente.setCpf(cpfInput.getText());
 	        novoCliente.setTelefone(telefoneInput.getText());
+			novoCliente.setEndereco(enderecoClienteInput.getText());
+			novoCliente.setBairro(bairroClienteInput.getText());
+			novoCliente.setCep(cepClienteInput.getText());
 
 	        try {
 	            this.clientes = new ClienteSQLite();
@@ -82,6 +99,9 @@ public class ClienteController {
 	            emailInput.clear();
 	            cpfInput.clear();
 	            telefoneInput.clear();
+				enderecoClienteInput.clear();
+				bairroClienteInput.clear();
+				cepClienteInput.clear();
 	            updateList();
 	        } catch (SQLException ex) {
 	            showAlert("Erro ao Cadastrar Cliente", "Não foi possível cadastrar o cliente: " + ex.getMessage());
@@ -123,6 +143,25 @@ public class ClienteController {
 	        telefoneInput.requestFocus();
 	        valid = false;
 	    }
+
+		if (enderecoClienteInput.getText().trim().isEmpty()) {
+			showAlert("Endereço Vazio", "O campo Endereço não pode estar vazio.");
+			enderecoClienteInput.requestFocus();
+			valid = false;
+		}
+
+		if (bairroClienteInput.getText().trim().isEmpty()) {
+			showAlert("Bairro Vazio", "O campo Bairro não pode estar vazio.");
+			bairroClienteInput.requestFocus();
+			valid = false;
+		}
+
+		if (cepClienteInput.getText().trim().isEmpty()) {
+			showAlert("CEP Vazio", "O campo CEP não pode estar vazio.");
+			cepClienteInput.requestFocus();
+			valid = false;
+		}
+
 
 	    return valid;
 	}
@@ -179,6 +218,9 @@ public class ClienteController {
 			 			emailInput.setText(clienteEscolhido.getEmail());
 			 			cpfInput.setText(clienteEscolhido.getCpf());
 			 			telefoneInput.setText(clienteEscolhido.getTelefone());
+						enderecoClienteInput.setText(clienteEscolhido.getTelefone());
+						bairroClienteInput.setText(clienteEscolhido.getTelefone());
+						cepClienteInput.setText(clienteEscolhido.getTelefone());
 			 			this.id = clienteEscolhido.getId();
 			 			System.out.println(this.id);
 			 		}

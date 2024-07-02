@@ -12,4 +12,14 @@ public class MainController {
 		App.mudarTela("Clientes");
 	};
 
+	@FXML
+	protected void btnProfissionais(ActionEvent e) {
+		App.mudarTela("Profissionais");
+	};
+
 }
+
+
+
+
+
