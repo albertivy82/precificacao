@@ -58,7 +58,7 @@ public class ClienteSQLite{
             pstmt.setString(5, cliente.getEndereco());
             pstmt.setString(6, cliente.getBairro());
             pstmt.setString(7, cliente.getCep());
-            pstmt.setInt(6, cliente.getId());
+            pstmt.setInt(8, cliente.getId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
