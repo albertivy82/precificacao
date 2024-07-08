@@ -54,7 +54,7 @@
                <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
                   <children>
                      <Label styleClass="label-style" text="Valor por hora de trabalho:" />
-                     <MoedaMaskedTextField fx:id="valorHora" promptText="Informe o valor por hora de trabalho" styleClass="text-field-style">
+                     <MoedaMaskedTextField fx:id="valorHoraInput" promptText="Informe o valor por hora de trabalho" styleClass="text-field-style">
                         <padding>
                            <Insets right="100.0" />
                         </padding></MoedaMaskedTextField>
