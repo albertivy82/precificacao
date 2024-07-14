@@ -1,38 +1,37 @@
 package org.openjfx.precificacao.controller;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import org.openjfx.precificacao.App;
-
+import java.sql.SQLException;
 import java.util.List;
-import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
-import javafx.scene.control.*;
+import java.util.Optional;
+import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.database.ProfissionaisSQLite;
 import org.openjfx.precificacao.models.Profissionais;
-import org.openjfx.precificacao.shared.CPFMaskedTextField;
-import org.openjfx.precificacao.shared.CPFValidator;
-import org.openjfx.precificacao.shared.MoedaMaskedTextField;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 
 public class ProfissionaisController {
 
-    private ProfissionaisSQLite profissionais;
+    private ProfissionaisSQLite profissionaisDB;
 
-    private Profissionais profissional;
-
-    @FXML
-    private ListView<Profissionais> LvProfissionais;
-
-    @FXML
-    private TextField ProfissionalInput;
+    private int id = -1;
 
     @FXML
     private TextField nomeProfissionalInput;
 
     @FXML
-    private MoedaMaskedTextField valorHoraInput;
+    private TextField tipoProfissionalInput;
 
+    @FXML
+    private TextField valorHoraInput;
 
+    @FXML
+    private ListView<Profissionais> LvProfissionais;
 
     @FXML
     void initialize() {
@@ -40,7 +39,7 @@ public class ProfissionaisController {
     }
 
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -48,76 +47,143 @@ public class ProfissionaisController {
     }
 
     @FXML
-    protected void btnMain(ActionEvent e) {
+    protected void btnMain(ActionEvent e){
         App.mudarTela("DashBoard");
     }
-
-
 
     @FXML
     protected void btnClientes(ActionEvent e) {
         App.mudarTela("Clientes");
     }
 
-
-
     @FXML
-    void btnCadastrarProfissional(ActionEvent event) {
-
-        if(camposEstaoValidos()){
-            this.profissional = new Profissionais();
-
-        }
-
+    protected void btnCustos(ActionEvent e) {
+        App.mudarTela("Custos");
     }
 
     @FXML
-    void btnEditarProfissional(ActionEvent event) {
+    protected void btnCadProjetos(ActionEvent e) {
+        App.mudarTela("CadProjetos");
+    }
 
+    @FXML
+    protected void btnCadastrarProfissional(ActionEvent e) {
+        if (camposEstaoValidos()) {
+            Profissionais novoProfissional = new Profissionais();
+            novoProfissional.setNome(nomeProfissionalInput.getText());
+            novoProfissional.setProfissional(tipoProfissionalInput.getText());
+            novoProfissional.setValorHora(Float.parseFloat(valorHoraInput.getText()));
+
+            try {
+                this.profissionaisDB = new ProfissionaisSQLite();
+                if (this.id == -1) {
+                    profissionaisDB.novoProfissional(novoProfissional);
+                } else {
+                    novoProfissional.setId(this.id);
+                    profissionaisDB.editarProfissionais(novoProfissional);
+                }
+                clearFields();
+                updateList();
+            } catch (SQLException ex) {
+                showAlert("Erro ao Cadastrar Profissional", "Não foi possível cadastrar o profissional: " + ex.getMessage());
+            }
+        } else {
+            showAlert("Erro de Validação", "Por favor, corrija os campos destacados antes de enviar.");
+        }
+    }
+
+    private boolean camposEstaoValidos() {
+        boolean valid = true;
+        if (nomeProfissionalInput.getText().trim().isEmpty()) {
+            showAlert("Nome Vazio", "O campo nome não pode estar vazio.");
+            nomeProfissionalInput.requestFocus();
+            valid = false;
+        }
+        if (tipoProfissionalInput.getText().trim().isEmpty()) {
+            showAlert("Profissão Vazia", "O campo profissão não pode estar vazio.");
+            tipoProfissionalInput.requestFocus();
+            valid = false;
+        }
+        if (valorHoraInput.getText().trim().isEmpty()) {
+            showAlert("Valor Hora Vazio", "O campo valor hora não pode estar vazio.");
+            valorHoraInput.requestFocus();
+            valid = false;
+        } else {
+            try {
+                Float.parseFloat(valorHoraInput.getText());
+            } catch (NumberFormatException e) {
+                showAlert("Valor Hora Inválido", "O campo valor hora deve ser um número válido.");
+                valorHoraInput.requestFocus();
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
+    private void clearFields() {
+        nomeProfissionalInput.clear();
+        tipoProfissionalInput.clear();
+        valorHoraInput.clear();
+        this.id = -1;
     }
 
     @FXML
     void btnDeletarProfissional(ActionEvent event) {
+        this.profissionaisDB = new ProfissionaisSQLite();
+        ObservableList<Profissionais> escolhido = LvProfissionais.getSelectionModel().getSelectedItems();
+
+        if (!escolhido.isEmpty()) {
+            Profissionais profissionalEscolhido = escolhido.get(0);
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("ATENÇÃO");
+            alert.setHeaderText("Deseja realmente excluir o profissional selecionado?");
+            alert.setContentText(profissionalEscolhido.toString());
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                profissionaisDB.deletarProfissional(profissionalEscolhido);
+                updateList();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("ATENÇÃO");
+            alert.setHeaderText("Nenhum profissional foi selecionado");
+            alert.showAndWait();
+        }
     }
 
+    @FXML
+    void btnEditarProfissional(ActionEvent event) {
+        ObservableList<Profissionais> editar = LvProfissionais.getSelectionModel().getSelectedItems();
 
-    private boolean camposEstaoValidos() {
+        if (!editar.isEmpty()) {
+            Profissionais profissionalEscolhido = editar.get(0);
 
-        //REGEX-VALOR-HORA???
-        boolean valid = true;
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Atenção");
+            alert.setHeaderText("Deseja realmente editar o profissional selecionado?");
+            alert.setContentText(profissionalEscolhido.toString());
 
-        // Verificação para nome (não pode estar vazio)
-        if (nomeProfissionalInput.getText().trim().isEmpty()) {
-            showAlert("Nome Vazio", "O campo nome não pode estar vazio.");
-            nomeProfissionalInput.requestFocus();
-            valid = false;
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                nomeProfissionalInput.setText(profissionalEscolhido.getNome());
+                tipoProfissionalInput.setText(profissionalEscolhido.getProfissional());
+                valorHoraInput.setText(String.valueOf(profissionalEscolhido.getValorHora()));
+                this.id = profissionalEscolhido.getId();
+            }
+        } else {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Atenção");
+            alert.setHeaderText("Nenhum profissional foi selecionado");
+            alert.showAndWait();
         }
-
-        // Verificação para nome (não pode estar vazio)
-        if (nomeProfissionalInput.getText().trim().isEmpty()) {
-            showAlert("Nome Vazio", "O campo nome não pode estar vazio.");
-            nomeProfissionalInput.requestFocus();
-            valid = false;
-        }
-
-        // Verificação para nome (não pode estar vazio)
-        if (valorHoraInput.getText().trim().isEmpty()) {
-            showAlert("Nome Vazio", "O campo nome não pode estar vazio.");
-            nomeProfissionalInput.requestFocus();
-            valid = false;
-        }
-
-
-
-        return valid;
     }
 
-    public void updateList(){
-
-        this.profissionais = new ProfissionaisSQLite();
+    private void updateList() {
+        this.profissionaisDB = new ProfissionaisSQLite();
         LvProfissionais.getItems().clear();
-        List<Profissionais> listaProfissioanis = this.profissionais.all();
-        listaProfissioanis.stream().forEach(p->LvProfissionais.getItems().add(p));
+        List<Profissionais> listaProfissionais = this.profissionaisDB.all();
+        listaProfissionais.forEach(p -> LvProfissionais.getItems().add(p));
     }
-
 }

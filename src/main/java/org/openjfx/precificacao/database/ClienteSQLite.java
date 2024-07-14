@@ -28,7 +28,7 @@ public class ClienteSQLite{
 		            }
 	        	
 		            PreparedStatement pstmt = conn.prepareStatement(
-		                    "INSERT INTO cliente (nome, telefone, email, cpf, endereco, bairro, cep) VALUES (?, ?, ?, ?)");
+		                    "INSERT INTO cliente (nome, telefone, email, cpf, endereco, bairro, cep) VALUES (?, ?, ?, ?, ?, ?, ?)");
 		            pstmt.setString(1, cliente.getNome());
 		            pstmt.setString(2, cliente.getTelefone());
 		            pstmt.setString(3, cliente.getEmail());
@@ -91,7 +91,7 @@ public class ClienteSQLite{
         try {
             pstmt = conn.prepareStatement("SELECT id, nome, telefone, email, cpf, endereco, bairro, cep FROM cliente");
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 Cliente c = new Cliente();
                 c.setId(rs.getInt("id"));
@@ -99,9 +99,9 @@ public class ClienteSQLite{
                 c.setTelefone(rs.getString("telefone"));
                 c.setEmail(rs.getString("email"));
                 c.setCpf(rs.getString("cpf"));
-                c.setCpf(rs.getString("endereco"));
-                c.setCpf(rs.getString("bairro"));
-                c.setCpf(rs.getString("cep"));
+                c.setEndereco(rs.getString("endereco"));
+                c.setBairro(rs.getString("bairro"));
+                c.setCep(rs.getString("cep"));
                 result.add(c);
             }
         } catch (SQLException e) {
@@ -115,6 +115,32 @@ public class ClienteSQLite{
                 System.out.println(ex.getMessage());
             }
         }	
+        return result;
+    }
+
+    public List<String> nomesClientes() {
+
+        List<String> result = new ArrayList<>();
+        String sql = "SELECT nome FROM cliente";
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try{
+            while (rs.next()) {
+                result.add(rs.getString("nome"));
+            }
+       } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
         return result;
     }
 
