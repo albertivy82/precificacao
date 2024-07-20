@@ -24,7 +24,9 @@
       <VBox prefHeight="838.0" prefWidth="174.0" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#btnClientes" prefHeight="64.0" prefWidth="179.0" text="Clientes" />
+            <Button mnemonicParsing="false" onAction="#btnCustos" prefHeight="64.0" prefWidth="179.0" text="Custos" />
             <Button mnemonicParsing="false" onAction="#btnProfissionais" prefHeight="64.0" prefWidth="179.0" text="Profissionais" />
+            <Button mnemonicParsing="false" onAction="#btnProjetos" prefHeight="64.0" prefWidth="179.0" text="Projeto" />
          </children>
 
       </VBox>

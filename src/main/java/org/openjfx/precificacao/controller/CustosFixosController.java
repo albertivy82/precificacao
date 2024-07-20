@@ -61,8 +61,8 @@ public class CustosFixosController {
     }
 
     @FXML
-    protected void btnCadProjetos(ActionEvent e) {
-        App.mudarTela("CadProjetos");
+    protected void btnProjeto(ActionEvent e) {
+        App.mudarTela("Projeto");
     }
 
     @FXML

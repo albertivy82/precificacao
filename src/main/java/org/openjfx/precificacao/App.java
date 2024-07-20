@@ -45,6 +45,12 @@ public class App extends Application {
 				case "Profissionais":
 					telaFxml = "Profissionais";
 					break;
+				case "Projeto":
+					telaFxml = "Projeto";
+					break;
+				case "Custos":
+					telaFxml = "Custos";
+					break;
 	            default:
 	                System.err.println("Tela não reconhecida: " + outraTela);
 	                return;  // Encerra o método se o nome da tela não for reconhecido

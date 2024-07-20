@@ -7,12 +7,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import org.openjfx.precificacao.App;
-import org.openjfx.precificacao.database.CustosFixosSQLite;
 import org.openjfx.precificacao.database.ProjetoSQLite;
-import org.openjfx.precificacao.service.ClienteService;
-import org.openjfx.precificacao.models.CustosFixos;
 import org.openjfx.precificacao.models.Projeto;
-
+import org.openjfx.precificacao.service.ClienteService;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +21,8 @@ public class ProjetoController {
     private ClienteService cliente;
 
     private int id = -1;
+
+    private int idCliente = -1;
 
     @FXML
     private TextField nomeProjetolInput;
@@ -59,13 +58,24 @@ public class ProjetoController {
     }
 
     @FXML
+    protected void btnCustos(ActionEvent e) {
+        App.mudarTela("Custos");
+    }
+
+    @FXML
+    protected void btnProfissionais(ActionEvent e) {
+        App.mudarTela("Profissionais");
+    }
+
+
+    @FXML
     protected void btnCadastrarProjeto(ActionEvent e) {
-        if (camposEstaoValidos()) {
+
+            if (camposEstaoValidos()) {
             Projeto novoProjeto = new Projeto();
             novoProjeto.setNomeProjeto(nomeProjetolInput.getText());
-            novoProjeto.setIdCliente(Integer.parseInt(idClienteInput.getText()));
+            novoProjeto.setIdCliente(idCliente);
             novoProjeto.setStatus("Cadastrado");
-
 
             try {
                 this.projetosDB = new ProjetoSQLite();
@@ -87,31 +97,26 @@ public class ProjetoController {
 
     private boolean camposEstaoValidos() {
         boolean valid = true;
-        if (nomeProjetoInput.getText().trim().isEmpty()) {
+        this.cliente = new ClienteService();
+        if (nomeProjetolInput.getText().trim().isEmpty()) {
             showAlert("Nome do Projeto Vazio", "O campo nome do projeto não pode estar vazio.");
-            nomeProjetoInput.requestFocus();
+            nomeProjetolInput.requestFocus();
             valid = false;
         }
-        if (idClienteInput.getText().trim().isEmpty()) {
-            showAlert("ID do Cliente Vazio", "O campo ID do cliente não pode estar vazio.");
-            idClienteInput.requestFocus();
+        String nome = listaClientes.getSelectionModel().getSelectedItem();
+        int idCliente = this.cliente.idCliente(nome);
+        if(idCliente == -1) {
+            showAlert("Cliente não encontrado", "Consulte o suporte: o cliente da lista não foi encontrado no banco de dados.");
+            nomeProjetolInput.requestFocus();
             valid = false;
-        } else {
-            try {
-                Integer.parseInt(idClienteInput.getText());
-            } catch (NumberFormatException e) {
-                showAlert("ID do Cliente Inválido", "O campo ID do cliente deve ser um número válido.");
-                idClienteInput.requestFocus();
-                valid = false;
-            }
         }
 
         return valid;
     }
 
     private void clearFields() {
-        nomeProjetoInput.clear();
-        idClienteInput.clear();
+        nomeProjetolInput.clear();
+        listaClientes.getSelectionModel().clearSelection();
         this.id = -1;
     }
 
@@ -160,10 +165,10 @@ public class ProjetoController {
 
 
             if(result.isPresent() && result.get()==ButtonType.OK) {
-                itemCustoInput.setText(custoEscolhido.getItem());
-                valorCustoInput.setText(custoEscolhido.getItem());
-                this.id = custoEscolhido.getId();
-                System.out.println(this.id);
+                nomeProjetolInput.setText(projetoEscolhido.getNomeProjeto());
+                listaClientes.getSelectionModel().clearSelection();
+                this.id = projetoEscolhido.getId();
+
             }
 
         }else{
@@ -187,10 +192,10 @@ public class ProjetoController {
     }
 
     private void updateList() {
-        this.custosFixosDB = new CustosFixosSQLite();
-        LvCustosFixos.getItems().clear();
-        List<CustosFixos> listaCustos = this.custosFixosDB.all();
-        listaCustos.stream().forEach(custo->LvCustosFixos.getItems().add(custo));
+        this.projetosDB = new ProjetoSQLite();
+        LvProjetos.getItems().clear();
+        List<Projeto> listaProjetos = this.projetosDB.all();
+        listaProjetos.stream().forEach(projeto->LvProjetos.getItems().add(projeto));
 
     }
 

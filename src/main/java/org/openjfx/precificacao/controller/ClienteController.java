@@ -70,9 +70,20 @@ public class ClienteController {
 	};
 
 	@FXML
+	protected void btnCustos(ActionEvent e) {
+		App.mudarTela("Custos");
+	}
+
+	@FXML
 	protected void btnProfissionais(ActionEvent e) {
 		App.mudarTela("Profissionais");
 	};
+
+	@FXML
+	protected void btnProjetos(ActionEvent e) {
+		App.mudarTela("Projeto");
+	}
+
 	
 	@FXML
 	protected void btnCadastrarCliente(ActionEvent e) {

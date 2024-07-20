@@ -18,4 +18,14 @@ public class ClienteService {
         return clientes;
     }
 
+    public int idCliente(String nome){
+        this.clientes = new ClienteSQLite();
+
+        int idCliente =  this.clientes.clientePorNome(nome);
+
+        return idCliente;
+    }
+
+
+
 }

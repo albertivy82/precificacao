@@ -62,8 +62,8 @@ public class ProfissionaisController {
     }
 
     @FXML
-    protected void btnCadProjetos(ActionEvent e) {
-        App.mudarTela("CadProjetos");
+    protected void btnProjetos(ActionEvent e) {
+        App.mudarTela("Projeto");
     }
 
     @FXML

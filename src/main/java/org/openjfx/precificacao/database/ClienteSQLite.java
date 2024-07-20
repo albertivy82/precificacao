@@ -127,6 +127,8 @@ public class ClienteSQLite{
         ResultSet rs = null;
 
         try{
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
             while (rs.next()) {
                 result.add(rs.getString("nome"));
             }
@@ -142,6 +144,37 @@ public class ClienteSQLite{
             }
         }
         return result;
+    }
+
+
+    public int clientePorNome(String nomeCliente) {
+
+        int idCliente = -1;
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet result = null;
+
+        try{
+            pstmt = conn.prepareStatement("SELECT id FROM cliente WHERE nome=?");
+            pstmt.setString(1, nomeCliente);
+            result = pstmt.executeQuery();
+
+                if(result.next()){
+                    idCliente = result.getInt("id");
+                }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+       return idCliente;
     }
 
 }
