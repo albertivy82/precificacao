@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.database.CustosFixosSQLite;
 import org.openjfx.precificacao.models.CustosFixos;
+import org.openjfx.precificacao.service.LimparMoeda;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.Optional;
 public class CustosFixosController {
 
     private CustosFixosSQLite custosFixosDB;
+    private LimparMoeda limpaMoeda;
+    private Float valorCusto;
 
     private int id = -1;
 
@@ -70,7 +73,7 @@ public class CustosFixosController {
         if (camposEstaoValidos()) {
             CustosFixos novoCusto = new CustosFixos();
             novoCusto.setItem(itemCustoInput.getText());
-            novoCusto.setValor(Float.parseFloat(valorCustoInput.getText()));
+            novoCusto.setValor(this.valorCusto);
 
             try {
                 this.custosFixosDB = new CustosFixosSQLite();
@@ -98,18 +101,23 @@ public class CustosFixosController {
             valid = false;
         }
         if (valorCustoInput.getText().trim().isEmpty()) {
-            showAlert("Valor Vazio", "O campo valor não pode estar vazio.");
+            showAlert("Valor Hora Vazio", "O campo valor hora não pode estar vazio.");
             valorCustoInput.requestFocus();
             valid = false;
         } else {
             try {
-                Float.parseFloat(valorCustoInput.getText());
+                this.limpaMoeda = new LimparMoeda();
+                String valorHoraTexto = valorCustoInput.getText();
+                System.out.println("Valor hora input: " + valorHoraTexto);
+                this.valorCusto = this.limpaMoeda.LimpaMoeda(valorHoraTexto);
+                System.out.println("Valor hora trabalho: " + this.valorCusto);
             } catch (NumberFormatException e) {
-                showAlert("Valor Inválido", "O campo valor deve ser um número válido.");
+                showAlert("Valor Hora Inválido", "O campo valor hora deve ser um número válido.");
                 valorCustoInput.requestFocus();
                 valid = false;
             }
         }
+
         return valid;
     }
 

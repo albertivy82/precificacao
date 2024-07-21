@@ -21,7 +21,7 @@
          <Button mnemonicParsing="false" onAction="#btnMain" prefHeight="64.0" prefWidth="179.0" text="Inicio" />
          <Button mnemonicParsing="false" onAction="#btnClientes" prefHeight="64.0" prefWidth="179.0" text="Clientes" />
          <Button mnemonicParsing="false" onAction="#btnProfissionais" prefHeight="64.0" prefWidth="179.0" text="Profissionais" />
-         <Button mnemonicParsing="false" onAction="#btnProjetos" prefHeight="64.0" prefWidth="179.0" text="Projetos" />
+         <Button mnemonicParsing="false" onAction="#btnProjeto" prefHeight="64.0" prefWidth="179.0" text="Projetos" />
       </VBox>
    </left>
    <center>
@@ -32,22 +32,16 @@
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="458.0" minWidth="10.0" prefWidth="202.0" />
             </columnConstraints>
             <children>
-               <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+              <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
                   <children>
-                     <Label styleClass="label-style" text="Nome do Profissional:" />
-                     <TextField fx:id="nomeProfissionalInput" promptText="Digite o nome do profissional" styleClass="text-field-style" />
+                     <Label styleClass="label-style" text="Item:" />
+                     <TextField fx:id="itemCustoInput" promptText="Informe a profissião" styleClass="text-field-style" />
                   </children>
                </VBox>
-                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+               <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
                   <children>
-                     <Label styleClass="label-style" text="Profissão:" />
-                     <TextField fx:id="ProfissionalInput" promptText="Informe a profissião" styleClass="text-field-style" />
-                  </children>
-               </VBox>
-               <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
-                  <children>
-                     <Label styleClass="label-style" text="Valor por hora de trabalho:" />
-                     <MoedaMaskedTextField fx:id="valorHoraInput" promptText="Informe o valor por hora de trabalho" styleClass="text-field-style">
+                     <Label styleClass="label-style" text="Valor:" />
+                     <MoedaMaskedTextField fx:id="valorCustoInput" promptText="Informe o valor por hora de trabalho" styleClass="text-field-style">
                         <padding>
                            <Insets right="100.0" />
                         </padding></MoedaMaskedTextField>
@@ -59,16 +53,16 @@
                
                <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4">
                   <children>
-                     <Button mnemonicParsing="false" onAction="#btnCadastrarProfissional" styleClass="button-style" text="Cadastrar" />
+                     <Button mnemonicParsing="false" onAction="#btnCadastrarCusto" styleClass="button-style" text="Cadastrar" />
                   </children>
                </HBox>
             </children>
 
          </GridPane>
-         <Label style="-fx-font-size: 16px; -fx-text-fill: #333;" text="LISTA DE PROFISSIONAIS" />
-         <ListView fx:id="LvProfissionais" prefHeight="314.0" prefWidth="200.0" />
-         <Button mnemonicParsing="false" onAction="#btnEditarProfissional" styleClass="button-style" text="Editar" />
-         <Button mnemonicParsing="false" onAction="#btnDeletarProfissional" styleClass="button-style" text="Apagar" />
+         <Label style="-fx-font-size: 16px; -fx-text-fill: #333;" text="CUSTOS CADASTRADOS" />
+         <ListView fx:id="LvCustosFixos" prefHeight="314.0" prefWidth="200.0" />
+         <Button mnemonicParsing="false" onAction="#btnEditarCusto" styleClass="button-style" text="Editar" />
+         <Button mnemonicParsing="false" onAction="#btnDeletarCusto" styleClass="button-style" text="Apagar" />
          <opaqueInsets>
             <Insets right="15.0" />
          </opaqueInsets>

@@ -14,10 +14,13 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import org.openjfx.precificacao.service.LimparMoeda;
 
 public class ProfissionaisController {
 
     private ProfissionaisSQLite profissionaisDB;
+    private LimparMoeda limpaMoeda;
+    private Float valorHoraTrabalho;
 
     private int id = -1;
 
@@ -25,7 +28,7 @@ public class ProfissionaisController {
     private TextField nomeProfissionalInput;
 
     @FXML
-    private TextField tipoProfissionalInput;
+    private TextField ProfissionalInput;
 
     @FXML
     private TextField valorHoraInput;
@@ -71,8 +74,8 @@ public class ProfissionaisController {
         if (camposEstaoValidos()) {
             Profissionais novoProfissional = new Profissionais();
             novoProfissional.setNome(nomeProfissionalInput.getText());
-            novoProfissional.setProfissional(tipoProfissionalInput.getText());
-            novoProfissional.setValorHora(Float.parseFloat(valorHoraInput.getText()));
+            novoProfissional.setProfissional(ProfissionalInput.getText());
+            novoProfissional.setValorHora(valorHoraTrabalho);
 
             try {
                 this.profissionaisDB = new ProfissionaisSQLite();
@@ -99,9 +102,9 @@ public class ProfissionaisController {
             nomeProfissionalInput.requestFocus();
             valid = false;
         }
-        if (tipoProfissionalInput.getText().trim().isEmpty()) {
+        if (ProfissionalInput.getText().trim().isEmpty()) {
             showAlert("Profissão Vazia", "O campo profissão não pode estar vazio.");
-            tipoProfissionalInput.requestFocus();
+            ProfissionalInput.requestFocus();
             valid = false;
         }
         if (valorHoraInput.getText().trim().isEmpty()) {
@@ -110,7 +113,11 @@ public class ProfissionaisController {
             valid = false;
         } else {
             try {
-                Float.parseFloat(valorHoraInput.getText());
+                this.limpaMoeda = new LimparMoeda();
+                String valorHoraTexto = valorHoraInput.getText();
+                System.out.println("Valor hora input: " + valorHoraTexto);
+                this.valorHoraTrabalho = this.limpaMoeda.LimpaMoeda(valorHoraTexto);
+                System.out.println("Valor hora trabalho: " + this.valorHoraTrabalho);
             } catch (NumberFormatException e) {
                 showAlert("Valor Hora Inválido", "O campo valor hora deve ser um número válido.");
                 valorHoraInput.requestFocus();
@@ -122,7 +129,7 @@ public class ProfissionaisController {
 
     private void clearFields() {
         nomeProfissionalInput.clear();
-        tipoProfissionalInput.clear();
+        ProfissionalInput.clear();
         valorHoraInput.clear();
         this.id = -1;
     }
@@ -168,7 +175,7 @@ public class ProfissionaisController {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 nomeProfissionalInput.setText(profissionalEscolhido.getNome());
-                tipoProfissionalInput.setText(profissionalEscolhido.getProfissional());
+                ProfissionalInput.setText(profissionalEscolhido.getProfissional());
                 valorHoraInput.setText(String.valueOf(profissionalEscolhido.getValorHora()));
                 this.id = profissionalEscolhido.getId();
             }

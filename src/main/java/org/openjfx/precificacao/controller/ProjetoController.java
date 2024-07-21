@@ -74,6 +74,7 @@ public class ProjetoController {
             if (camposEstaoValidos()) {
             Projeto novoProjeto = new Projeto();
             novoProjeto.setNomeProjeto(nomeProjetolInput.getText());
+            System.out.println(idCliente);
             novoProjeto.setIdCliente(idCliente);
             novoProjeto.setStatus("Cadastrado");
 
@@ -104,7 +105,7 @@ public class ProjetoController {
             valid = false;
         }
         String nome = listaClientes.getSelectionModel().getSelectedItem();
-        int idCliente = this.cliente.idCliente(nome);
+        this.idCliente = this.cliente.idCliente(nome);
         if(idCliente == -1) {
             showAlert("Cliente não encontrado", "Consulte o suporte: o cliente da lista não foi encontrado no banco de dados.");
             nomeProjetolInput.requestFocus();
@@ -195,6 +196,7 @@ public class ProjetoController {
         this.projetosDB = new ProjetoSQLite();
         LvProjetos.getItems().clear();
         List<Projeto> listaProjetos = this.projetosDB.all();
+        System.out.println(listaProjetos);
         listaProjetos.stream().forEach(projeto->LvProjetos.getItems().add(projeto));
 
     }

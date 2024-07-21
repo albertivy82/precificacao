@@ -12,4 +12,9 @@ public class Profissionais {
     private String profissional;
     private Float valorHora;
 
+    @Override
+    public String toString() {
+        return (nome + ": "  + profissional).toUpperCase();
+    }
+
 }

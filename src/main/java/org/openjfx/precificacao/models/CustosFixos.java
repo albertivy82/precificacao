@@ -15,7 +15,8 @@ public class CustosFixos {
 
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public String toString() {
+        return (item + ": "  + valor).toUpperCase();
     }
+
 }

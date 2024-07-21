@@ -12,4 +12,10 @@ public class Projeto {
     private Integer idCliente;
     private String status;
     private float precificacao;
+
+
+    @Override
+    public String toString() {
+        return (nomeProjeto + " - " + id + " . Satus: " + status).toUpperCase();
+    }
 }

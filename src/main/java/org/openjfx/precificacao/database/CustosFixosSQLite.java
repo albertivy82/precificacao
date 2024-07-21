@@ -69,7 +69,7 @@ public class CustosFixosSQLite{
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = conn.prepareStatement("SELECT id, item, valor FROM cliente");
+            pstmt = conn.prepareStatement("SELECT id, item, valor FROM custos_fixos");
             rs = pstmt.executeQuery();
             
             while (rs.next()) {

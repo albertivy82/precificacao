@@ -71,7 +71,7 @@ public class ProjetoSQLite{
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = conn.prepareStatement("SELECT nome_projeto, id_cliente, status");
+            pstmt = conn.prepareStatement("SELECT id, nome_projeto, id_cliente, status FROM projeto");
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
@@ -80,8 +80,6 @@ public class ProjetoSQLite{
                 p.setNomeProjeto(rs.getString("nome_projeto"));
                 p.setIdCliente(rs.getInt("id_cliente"));
                 p.setStatus(rs.getString("status"));
-                p.setPrecificacao(rs.getFloat("precificacao"));
-               
                 result.add(p);
             }
         } catch (SQLException e) {
