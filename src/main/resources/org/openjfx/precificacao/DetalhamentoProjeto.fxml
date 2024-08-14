@@ -4,16 +4,17 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.MainController">
+<?import javafx.scene.control.Label?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.DtlProjetoController">
 
    <top>
       <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
-              <image>
-				  <Image url="@/images/sindomar_logo.png" />
-			  </image>
-				
+               <image>
+                  <Image url="@/images/sindomar_logo.png" />
+               </image>
             </ImageView>
          </children>
       </HBox>
@@ -29,4 +30,24 @@
          <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" />
       </VBox>
    </left>
+
+   <center>
+      <VBox spacing="10" style="-fx-padding: 10;">
+         <!-- Cabeçalho do Projeto -->
+         <Label text="Detalhes do Projeto" styleClass="header-label" />
+
+         <!-- Informações Básicas do Projeto -->
+         <VBox spacing="5">
+            <Label text="Nome do Projeto: NomeExemplo" />
+            <Label text="Cliente: ClienteExemplo" />
+            <Label text="Data de Início: 01/01/2024" />
+            <!-- Outras informações básicas do projeto -->
+         </VBox>
+
+         <!-- Espaço para o restante do conteúdo -->
+         <VBox spacing="10">
+            <!-- Outros elementos que você quer exibir na área central -->
+         </VBox>
+      </VBox>
+   </center>
 </BorderPane>

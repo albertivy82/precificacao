@@ -3,11 +3,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.MainController">
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.MainController">
    <top>
       <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
          <children>
@@ -21,14 +19,14 @@
       </HBox>
    </top>
    <left>
-      <VBox prefHeight="838.0" prefWidth="174.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" onAction="#btnClientes" prefHeight="64.0" prefWidth="179.0" text="Clientes" />
-            <Button mnemonicParsing="false" onAction="#btnCustos" prefHeight="64.0" prefWidth="179.0" text="Custos" />
-            <Button mnemonicParsing="false" onAction="#btnProfissionais" prefHeight="64.0" prefWidth="179.0" text="Profissionais" />
-            <Button mnemonicParsing="false" onAction="#btnProjetos" prefHeight="64.0" prefWidth="179.0" text="Projeto" />
-         </children>
-
+      <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Inicio" disable="true"/>
+         <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
+         <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
+         <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
+         <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" />
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" />
       </VBox>
    </left>
 </BorderPane>

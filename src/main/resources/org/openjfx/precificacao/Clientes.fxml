@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import org.openjfx.precificacao.shared.CPFMaskedTextField?>
 <?import org.openjfx.precificacao.shared.TelefoneMaskedTextField?>
 
@@ -28,11 +29,12 @@
       </HBox>
    </top>
    <left>
-      <VBox prefHeight="791.0" prefWidth="142.0">
-         <Button mnemonicParsing="false" onAction="#btnMain" prefHeight="64.0" prefWidth="179.0" text="Inicio" />
-         <Button mnemonicParsing="false" onAction="#btnCustos" prefHeight="64.0" prefWidth="179.0" text="Custos" />
-         <Button mnemonicParsing="false" onAction="#btnProfissionais" prefHeight="64.0" prefWidth="179.0" text="Profissionais" />
-         <Button mnemonicParsing="false" onAction="#btnProjetos" prefHeight="64.0" prefWidth="179.0" text="Projeto" />
+      <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
+         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio" />
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Clientes" disable="true" />
+         <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
+         <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
+         <Button mnemonicParsing="false" onAction="#btnProjetos" styleClass="transparent-button" text="Projeto" />
       </VBox>
    </left>
    <center>

@@ -17,11 +17,12 @@
       </HBox>
    </top>
    <left>
-      <VBox prefHeight="791.0" prefWidth="142.0">
-         <Button mnemonicParsing="false" onAction="#btnMain" prefHeight="64.0" prefWidth="179.0" text="Inicio" />
-         <Button mnemonicParsing="false" onAction="#btnClientes" prefHeight="64.0" prefWidth="179.0" text="Clientes" />
-         <Button mnemonicParsing="false" onAction="#btnProfissionais" prefHeight="64.0" prefWidth="179.0" text="Profissionais" />
-         <Button mnemonicParsing="false" onAction="#btnProjeto" prefHeight="64.0" prefWidth="179.0" text="Projetos" />
+      <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
+         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio" />
+         <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Custos Fixos" disable="true"/>
+         <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
+         <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projeto" />
       </VBox>
    </left>
    <center>

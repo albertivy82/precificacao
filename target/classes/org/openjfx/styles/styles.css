@@ -12,8 +12,22 @@
 }
 
 .button-style {
-    -fx-background-color: #2a9df4;
+    -fx-background-color: ff4500;
     -fx-text-fill: white;
     -fx-padding: 10px 20px;
     -fx-font-weight: bold;
+}
+
+.transparent-button {
+    -fx-background-color: none;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-family: "SansSerif Bold";
+    -fx-pref-height: 64px;
+    -fx-pref-width: 117px;
+}
+
+.transparent-button:disabled {
+    -fx-text-fill: grey;
+    -fx-opacity: 0.7;
 }

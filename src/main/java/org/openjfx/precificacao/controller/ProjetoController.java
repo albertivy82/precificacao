@@ -67,6 +67,11 @@ public class ProjetoController {
         App.mudarTela("Profissionais");
     }
 
+    @FXML
+    protected void btnDtlProjeto(ActionEvent e) {
+        App.mudarTela("DetalhamentoProjeto");
+    }
+
 
     @FXML
     protected void btnCadastrarProjeto(ActionEvent e) {

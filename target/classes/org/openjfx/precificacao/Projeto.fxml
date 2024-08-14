@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.Region?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.ProjetoController">
    <top>
       <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;">
@@ -26,11 +27,12 @@
       </HBox>
    </top>
    <left>
-      <VBox prefHeight="791.0" prefWidth="142.0">
-         <Button mnemonicParsing="false" onAction="#btnMain" prefHeight="64.0" prefWidth="179.0" text="Inicio" />
-         <Button mnemonicParsing="false" onAction="#btnClientes" prefHeight="64.0" prefWidth="179.0" text="Clientes" />
-         <Button mnemonicParsing="false" onAction="#btnCustos" prefHeight="64.0" prefWidth="179.0" text="Custos" />
-         <Button mnemonicParsing="false" onAction="#btnProfissionais" prefHeight="64.0" prefWidth="179.0" text="Profissionais" />
+      <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
+         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio" />
+         <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes"/>
+         <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
+         <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Projeto" disable="true"/>
       </VBox>
    </left>
    <center>
@@ -72,8 +74,16 @@
          </GridPane>
          <Label style="-fx-font-size: 16px; -fx-text-fill: #333;" text="LISTA DE PROJETOS" />
          <ListView fx:id="LvProjetos" prefHeight="314.0" prefWidth="200.0" />
-         <Button mnemonicParsing="false" onAction="#btnEditarProjeto" styleClass="button-style" text="Editar" />
-         <Button mnemonicParsing="false" onAction="#btnDeletarProjeto" styleClass="button-style" text="Apagar" />
+               <HBox spacing="10" alignment="CENTER">
+                  <HBox spacing="10">
+                     <Button mnemonicParsing="false" onAction="#btnEditarProjeto" styleClass="button-style" text="Editar" />
+                     <Button mnemonicParsing="false" onAction="#btnDeletarProjeto" styleClass="button-style" text="Apagar" />
+                  </HBox>
+
+                 <Region HBox.hgrow="ALWAYS" />
+                   <Button mnemonicParsing="false" onAction="#btnDtlProjeto" styleClass="button-style" text="Detalhar Projeto" />
+               </HBox>
+
          <opaqueInsets>
             <Insets right="15.0" />
          </opaqueInsets>
