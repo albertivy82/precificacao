@@ -36,18 +36,20 @@
          <!-- Cabeçalho do Projeto -->
          <Label text="Detalhes do Projeto" styleClass="header-label" />
 
-         <!-- Informações Básicas do Projeto -->
+
          <VBox spacing="5">
             <Label text="Nome do Projeto: NomeExemplo" />
             <Label text="Cliente: ClienteExemplo" />
             <Label text="Data de Início: 01/01/2024" />
-            <!-- Outras informações básicas do projeto -->
+
          </VBox>
 
-         <!-- Espaço para o restante do conteúdo -->
-         <VBox spacing="10">
-            <!-- Outros elementos que você quer exibir na área central -->
+         <VBox fx:id="dynamicStageContainer" spacing="10">
+
          </VBox>
+
+        <Button mnemonicParsing="false" onAction="#btnhandleAddStage" styleClass="button-style" text="Adicionar Nova Etapa"/>
+
       </VBox>
    </center>
 </BorderPane>
