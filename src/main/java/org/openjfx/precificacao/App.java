@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 
@@ -21,6 +22,10 @@ public class App extends Application {
 	    public void start(Stage stage) throws IOException {
 	        scene = new Scene(loadFXML("DashBoard"));
 	        stage.setScene(scene);
+
+			stage.setTitle("Precificação");
+			Image image = new Image("images/ico.png");
+			stage.getIcons().add(image);
 	        stage.show();
 	    }
 

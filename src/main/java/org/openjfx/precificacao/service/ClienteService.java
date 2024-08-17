@@ -1,7 +1,6 @@
 package org.openjfx.precificacao.service;
 
 import org.openjfx.precificacao.database.ClienteSQLite;
-import org.openjfx.precificacao.models.Cliente;
 
 import java.util.List;
 
