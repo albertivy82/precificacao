@@ -1,6 +1,8 @@
 package org.openjfx.precificacao.service;
 
+import org.openjfx.precificacao.database.AtividadeSQLite;
 import org.openjfx.precificacao.database.EtapaSQLite;
+import org.openjfx.precificacao.models.Atividade;
 import org.openjfx.precificacao.models.Etapa;
 
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 public class ProjetoService {
 
     private EtapaSQLite etapas;
+    private AtividadeSQLite atividades;
 
     public List<Etapa> listaEtapas(){
 
@@ -17,5 +20,11 @@ public class ProjetoService {
 
         return etapasBanco;
 
+    }
+
+    public List<Atividade> listaAtividades(int idEtapas){
+        this.atividades = new AtividadeSQLite();
+        List<Atividade> atividadesPorEtapa = this.atividades.atividadePorEtapa(idEtapas);
+        return atividadesPorEtapa;
     }
 }

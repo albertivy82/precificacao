@@ -1,11 +1,14 @@
 package org.openjfx.precificacao.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.openjfx.precificacao.App;
+import org.openjfx.precificacao.models.Atividade;
 import org.openjfx.precificacao.models.Etapa;
 import org.openjfx.precificacao.service.ProjetoService;
 
@@ -75,11 +78,11 @@ public class DtlProjetoController {
 			stageBox.getChildren().add(activitiesContainer);
 
 			// Adiciona a primeira atividade
-			adicionarNovaAtividade(activitiesContainer);
+			adicionarNovaAtividade(activitiesContainer, this.EtapasDoBanco.get(controlador).getId());
 
 			// Botão para adicionar mais atividades
 			Button btnAddActivity = new Button("Adicionar Atividade");
-			btnAddActivity.setOnAction(event -> adicionarNovaAtividade(activitiesContainer));
+			btnAddActivity.setOnAction(event -> adicionarNovaAtividade(activitiesContainer, this.EtapasDoBanco.get(controlador).getId()));
 			stageBox.getChildren().add(btnAddActivity);
 
 
@@ -102,27 +105,36 @@ public class DtlProjetoController {
 		}
 	}
 
-	private void adicionarNovaAtividade(VBox activitiesContainer) {
+	private void adicionarNovaAtividade(VBox activitiesContainer, int idEtapa) {
+
+		List<Atividade> listaAtividadesDaEtapa = this.etapasProjeto.listaAtividades(idEtapa);
 		HBox activityBox = new HBox(10);
 
 		// ComboBox para selecionar a atividade
 		ComboBox<String> comboBoxAtividade = new ComboBox<>();
-		comboBoxAtividade.getItems().addAll("Atividade 1", "Atividade 2", "Atividade 3"); // Exemplos de atividades
+		ObservableList<String> observableList = FXCollections.observableArrayList(
+				listaAtividadesDaEtapa.stream().map(Atividade::getAtividade).collect(Collectors.toList()));
+		comboBoxAtividade.setItems(observableList);
 		comboBoxAtividade.setPromptText("Selecione a atividade");
 
-		// TextField para inserir o preço da atividade
-		TextField txtPreco = new TextField();
-		txtPreco.setPromptText("Preço");
+
+
 
 		// VBox para armazenar os responsáveis
 		VBox responsaveisContainer = new VBox(5);
+
+
 
 		// Botão para adicionar novos responsáveis
 		Button btnAddResponsavel = new Button("Adicionar Responsável");
 		btnAddResponsavel.setOnAction(event -> adicionarNovoResponsavel(responsaveisContainer));
 
+		// TextField para inserir o preço da atividade
+		TextField quantidade = new TextField();
+		quantidade.setPromptText("quantidade");
+
 		// Adiciona os componentes ao HBox da atividade
-		activityBox.getChildren().addAll(comboBoxAtividade, txtPreco, responsaveisContainer, btnAddResponsavel);
+		activityBox.getChildren().addAll(comboBoxAtividade, quantidade, responsaveisContainer, btnAddResponsavel);
 
 		// Adiciona o HBox ao container de atividades
 		activitiesContainer.getChildren().add(activityBox);

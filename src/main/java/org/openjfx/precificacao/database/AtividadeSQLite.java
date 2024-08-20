@@ -26,7 +26,7 @@ public class AtividadeSQLite {
             while(result.next()){
                Atividade et = new Atividade();
                et.setId(result.getInt("id"));
-               et.setAtividade(result.getString("atividades"));
+               et.setAtividade(result.getString("atividade"));
                etapas.add(et);
             }
 
