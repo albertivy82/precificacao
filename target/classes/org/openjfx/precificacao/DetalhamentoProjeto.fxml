@@ -48,7 +48,7 @@
 
          </VBox>
 
-        <Button mnemonicParsing="false" onAction="#btnhandleAddStage" styleClass="button-style" text="Adicionar Nova Etapa"/>
+        <Button mnemonicParsing="false" onAction="#btnhandleAddEtapa" styleClass="button-style" text="Adicionar Nova Etapa"/>
 
       </VBox>
    </center>

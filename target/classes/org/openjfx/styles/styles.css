@@ -31,3 +31,31 @@
     -fx-text-fill: grey;
     -fx-opacity: 0.7;
 }
+
+/* Estilo para o container de etapa */
+.etapa-container {
+    -fx-border-color: black;
+    -fx-border-width: 2px; /* Borda mais grossa */
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-background-color: #f9f9f9; /* Cor de fundo suave para destacar a borda */
+}
+
+/* Estilo para o container de atividade */
+.atividade-container {
+    -fx-border-color: gray;
+    -fx-border-width: 1px; /* Borda mais fina */
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-background-color: #ffffff; /* Cor de fundo suave */
+}
+
+.text-field-transparent {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-text-fill: black; /* Define a cor do texto como preto ou a cor desejada */
+    -fx-padding: 0;
+}
+
