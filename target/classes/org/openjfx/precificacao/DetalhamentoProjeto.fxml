@@ -41,9 +41,9 @@
 
          <!-- Detalhes do Projeto -->
          <VBox spacing="5">
-            <Label text="Nome do Projeto: NomeExemplo" />
-            <Label text="Cliente: ClienteExemplo" />
-            <Label text="Data de Início: 01/01/2024" />
+            <Label fx:id="nomeProjetoLabel" text="..." />
+            <Label fx:id="clienteLabel" text="..." />
+            <Label fx:id="StatusLabel" text="..." />
          </VBox>
 
          <!-- ScrollPane para Listar Etapas Salvas -->

@@ -10,6 +10,8 @@ import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.database.ProjetoSQLite;
 import org.openjfx.precificacao.models.Projeto;
 import org.openjfx.precificacao.service.ClienteService;
+import org.openjfx.precificacao.shared.ProjetoSingleton;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +71,40 @@ public class ProjetoController {
 
     @FXML
     protected void btnDtlProjeto(ActionEvent e) {
-        App.mudarTela("DetalhamentoProjeto");
+
+      ObservableList<Projeto> projetoPEditar = LvProjetos.getSelectionModel().getSelectedItems();
+
+        if(!projetoPEditar.isEmpty()) {
+
+            Projeto projetoEscolhido = projetoPEditar.get(0);
+
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Atenção");
+            alert.setHeaderText("Deseja realmente editar o projeto selecionado?");
+            alert.setContentText(projetoEscolhido.toString());
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+
+            if(result.isPresent() && result.get()==ButtonType.OK) {
+                ProjetoSingleton.getInstance().setProjeto(projetoEscolhido);
+                App.mudarTela("DetalhamentoProjeto");
+
+            }
+
+        }else{
+
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Atenção");
+            alert.setHeaderText("Nenhum projeto foi selecionado");
+            alert.showAndWait();
+
+        }
+
+
+
+
+
     }
 
 

@@ -80,6 +80,27 @@ public class ClienteSQLite{
             SQLiteConnection.closeConnection(conn);
         }
     }
+
+    public String buscarClientePorId(int id) {
+
+        String nomeCliente = "";
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT nome FROM cliente WHERE ID=?");
+            pstmt.setInt(1, id);
+            ResultSet result = pstmt.executeQuery();
+
+            if(result.next()){
+                nomeCliente = result.getString("nome");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+
+        return nomeCliente;
+    }
     
     
     

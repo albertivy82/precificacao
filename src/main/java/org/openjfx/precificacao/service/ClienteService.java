@@ -25,6 +25,14 @@ public class ClienteService {
         return idCliente;
     }
 
+    public String nomeCliente(int id){
+        this.clientes = new ClienteSQLite();
+
+       String nomeCleinte =  this.clientes.buscarClientePorId(id);
+
+        return nomeCleinte;
+    }
+
 
 
 }

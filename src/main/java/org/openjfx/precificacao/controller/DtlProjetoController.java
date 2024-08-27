@@ -13,18 +13,31 @@ import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.models.Atividade;
 import org.openjfx.precificacao.models.Etapa;
 import org.openjfx.precificacao.models.Profissionais;
+import org.openjfx.precificacao.models.Projeto;
+import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.ProjetoService;
+import org.openjfx.precificacao.shared.ProjetoSingleton;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DtlProjetoController {
 
+	Projeto projeto = ProjetoSingleton.getInstance().getProjeto();
 	private ProjetoService projetoService;
+	private ClienteService clienteService;
 	private List<Etapa> EtapasDoBanco;
 	private Etapa etapaSelecionada;
 
 
+	@FXML
+	private Label nomeProjetoLabel;
+
+	@FXML
+	private Label clienteLabel;
+
+	@FXML
+	private Label StatusLabel;
 
 	@FXML
 	private ComboBox<Etapa> etapaComboBox;
@@ -54,6 +67,7 @@ public class DtlProjetoController {
 	void initialize(){
 		this.projetoService = new ProjetoService();
 		populaLista();
+		identificacaoProjeto();
 	}
 
 	@FXML
@@ -230,6 +244,15 @@ public class DtlProjetoController {
 
 		// Adiciona o VBox ao container de responsáveis
 		responsaveisContainer.getChildren().add(responsavelBox);
+	}
+
+	private void identificacaoProjeto(){
+
+		nomeProjetoLabel.setText("Nome do Projeto: " + projeto.getNomeProjeto());
+		this.clienteService = new ClienteService();
+		clienteLabel.setText("Cliente: " + this.clienteService.nomeCliente(projeto.getIdCliente()));
+		StatusLabel.setText("Status: " + projeto.getStatus());
+
 	}
 
 
