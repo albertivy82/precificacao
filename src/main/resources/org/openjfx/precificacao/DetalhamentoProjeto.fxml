@@ -5,7 +5,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
 
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.DtlProjetoController">
 
    <top>
@@ -36,20 +39,33 @@
          <!-- Cabeçalho do Projeto -->
          <Label text="Detalhes do Projeto" styleClass="header-label" />
 
-
+         <!-- Detalhes do Projeto -->
          <VBox spacing="5">
             <Label text="Nome do Projeto: NomeExemplo" />
             <Label text="Cliente: ClienteExemplo" />
             <Label text="Data de Início: 01/01/2024" />
-
          </VBox>
+         <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="400.0">
+         <content>
+         <!-- Container Fixo para Etapa -->
+         <VBox fx:id="etapaContainer" spacing="10" styleClass="etapa-container">
+            <!-- Exibição do Total da Etapa -->
+            <HBox spacing="5">
+               <Label text="Total da Etapa -> "/>
+               <TextField fx:id="subtotalEtapa" text="R$ 0,00" styleClass="text-field-transparent" editable="false"/>
+            </HBox>
+            <ComboBox fx:id="etapaComboBox" promptText="Selecione a Etapa" />
 
-         <VBox fx:id="dynamicStageContainer" spacing="10">
-
+            <!-- Container Dinâmico para Atividades -->
+            <VBox fx:id="dynamicAtvivityContainer" spacing="10">
+               <!-- As atividades serão adicionadas dinamicamente aqui -->
+            </VBox>
          </VBox>
+         </content>
+         </ScrollPane>
 
-        <Button mnemonicParsing="false" onAction="#btnhandleAddEtapa" styleClass="button-style" text="Adicionar Nova Etapa"/>
-
+           <!-- Botão para Adicionar Nova Atividade -->
+         <Button mnemonicParsing="false" styleClass="button-style" text="Salvar Etapa"/>
       </VBox>
    </center>
 </BorderPane>

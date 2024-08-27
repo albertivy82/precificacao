@@ -5,15 +5,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.models.Atividade;
 import org.openjfx.precificacao.models.Etapa;
 import org.openjfx.precificacao.models.Profissionais;
 import org.openjfx.precificacao.service.ProjetoService;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +25,10 @@ public class DtlProjetoController {
 
 	private ProjetoService projetoService;
 	private List<Etapa> EtapasDoBanco;
-	private int controlador = 0;
-	private List<Integer> idsEtapas;
 
+
+	@FXML
+	private ComboBox<Etapa> etapaComboBox;
 
 	@FXML
 	protected void btnClientes(ActionEvent e) {
@@ -46,51 +50,53 @@ public class DtlProjetoController {
 		App.mudarTela("Projeto");
 	}
 
-	@FXML
-	private ComboBox<String> listaAtividades;
 
 	@FXML
 	void initialize(){
 		this.projetoService = new ProjetoService();
-		listaDeEtapas();
-		buscarIdsDasEtapas();
+		populaLista();
 	}
 
 	@FXML
-	private VBox dynamicStageContainer;
+	private VBox dynamicAtvivityContainer;
+
+
+
+	private void populaLista(){
+		this.EtapasDoBanco = this.projetoService.listaEtapas();
+		ObservableList<Etapa> etapas = FXCollections.observableArrayList(this.EtapasDoBanco);
+		etapaComboBox.setItems(etapas);
+		etapaComboBox.setConverter(new StringConverter<Etapa>() {
+			@Override
+			public String toString(Etapa object) {
+				return object.getEtapa();
+			}
+
+			@Override
+			public Etapa fromString(String string) {
+				return null;
+			}
+		});
+
+		etapaComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				dynamicAtvivityContainer.getChildren().clear();
+				carregarAtividadesParaEtapa(newValue);
+			}
+		});
+
+	}
 
 	@FXML
-	protected void btnhandleAddEtapa(ActionEvent e) {
-
-		int totalEtapas = this.idsEtapas.size();
-
-		if(controlador<totalEtapas) {
-
-			// Cria um novo contêiner para a etapa
-			VBox stageBox = new VBox(5);
-			stageBox.getStyleClass().add("etapa-container");
-
-			// Adiciona componentes para selecionar a etapa e definir ações e preços
-			Label stageLabel = new Label(this.EtapasDoBanco.get(controlador).getEtapa());
-			// Aqui você pode adicionar ComboBoxes, TextFields, etc., conforme necessário
-
-			Label totalEtapa = new Label("Total da Etapa -> ");
-			TextField subtotalEtapa = new TextField("R$ 0,00");
-			subtotalEtapa.getStyleClass().add("text-field-transparent");
-			subtotalEtapa.setEditable(false);
-
-			HBox totalAtividade = new HBox(totalEtapa, subtotalEtapa);
-			totalAtividade.setAlignment(Pos.CENTER_RIGHT);
-
-			stageBox.getChildren().addAll(totalAtividade);
+	protected void carregarAtividadesParaEtapa(Etapa etapa) {
 
 
 			// Cria um VBox para armazenar as atividades
 			VBox activitiesContainer = new VBox(5);
-			stageBox.getChildren().add(activitiesContainer);
+
 
 			// Adiciona a primeira atividade
-			adicionarNovaAtividade(activitiesContainer, this.EtapasDoBanco.get(controlador).getId());
+			adicionarNovaAtividade(activitiesContainer, etapa.getId());
 
 			HBox buttonContainer = new HBox(10);
 			buttonContainer.setAlignment(Pos.CENTER);
@@ -98,28 +104,18 @@ public class DtlProjetoController {
 			// Botão para adicionar mais atividades
 			Button btnAddActivity = new Button("Adicionar Atividade");
 			btnAddActivity.getStyleClass().add("button-style");
-			btnAddActivity.setOnAction(event -> adicionarNovaAtividade(activitiesContainer, this.EtapasDoBanco.get(controlador).getId()));
+			btnAddActivity.setOnAction(event -> adicionarNovaAtividade(activitiesContainer, etapa.getId()));
 
 
 			// Adiciona os botões ao HBox
 			buttonContainer.getChildren().addAll(btnAddActivity);
 
-			stageBox.getChildren().add(buttonContainer);
+		    activitiesContainer.getChildren().add(buttonContainer);
 
 
-			// Adiciona o contêiner da nova etapa ao contêiner dinâmico
-			dynamicStageContainer.getChildren().add(stageBox);
+			// Adiciona o contêiner da nova atividade ao contêiner dinâmico
+			dynamicAtvivityContainer.getChildren().add(activitiesContainer);
 
-			controlador++;
-
-
-		}else{
-
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Atenção");
-			alert.setHeaderText("Todas as etapas existentes já foram inseridas no formulário");
-			alert.showAndWait();
-		}
 	}
 
 	private void adicionarNovaAtividade(VBox activitiesContainer, int idEtapa) {
@@ -210,21 +206,6 @@ public class DtlProjetoController {
 		// Adiciona o VBox ao container de responsáveis
 		responsaveisContainer.getChildren().add(responsavelBox);
 	}
-
-
-
-
-	public List<Etapa> listaDeEtapas(){
-		this.EtapasDoBanco = this.projetoService.listaEtapas();
-		return EtapasDoBanco;
-	}
-
-	public List<Integer> buscarIdsDasEtapas() {
-		this.idsEtapas =  this.EtapasDoBanco.stream()
-				.map(Etapa::getId)
-				.collect(Collectors.toList());
-		return this.idsEtapas;
-	};
 
 
 }
