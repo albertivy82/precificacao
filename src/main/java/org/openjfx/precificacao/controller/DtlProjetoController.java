@@ -5,10 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
@@ -25,6 +22,8 @@ public class DtlProjetoController {
 
 	private ProjetoService projetoService;
 	private List<Etapa> EtapasDoBanco;
+	private Etapa etapaSelecionada;
+
 
 
 	@FXML
@@ -80,6 +79,7 @@ public class DtlProjetoController {
 
 		etapaComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
+				this.etapaSelecionada = newValue;
 				dynamicAtvivityContainer.getChildren().clear();
 				carregarAtividadesParaEtapa(newValue);
 			}
@@ -87,58 +87,67 @@ public class DtlProjetoController {
 
 	}
 
+
+	@FXML
+	private void adicionarAtividade() {
+		if (etapaSelecionada != null) {
+			carregarAtividadesParaEtapa(etapaSelecionada);
+		} else {
+			// Tratar o caso em que nenhuma etapa foi selecionada
+			Alert alert = new Alert(Alert.AlertType.WARNING);
+			alert.setTitle("Atenção");
+			alert.setHeaderText("Selecione uma etapa antes de adicionar atividades.");
+			alert.showAndWait();
+		}
+	}
+
+
+
 	@FXML
 	protected void carregarAtividadesParaEtapa(Etapa etapa) {
 
+		// Cria um VBox para armazenar as atividades
+		VBox activitiesContainer = new VBox(5);
 
-			// Cria um VBox para armazenar as atividades
-			VBox activitiesContainer = new VBox(5);
+		// Adiciona a primeira atividade
+		adicionarNovaAtividade(activitiesContainer, etapa.getId());
 
-
-			// Adiciona a primeira atividade
-			adicionarNovaAtividade(activitiesContainer, etapa.getId());
-
-			HBox buttonContainer = new HBox(10);
-			buttonContainer.setAlignment(Pos.CENTER);
-
-			// Botão para adicionar mais atividades
-			Button btnAddActivity = new Button("Adicionar Atividade");
-			btnAddActivity.getStyleClass().add("button-style");
-			btnAddActivity.setOnAction(event -> adicionarNovaAtividade(activitiesContainer, etapa.getId()));
-
-
-			// Adiciona os botões ao HBox
-			buttonContainer.getChildren().addAll(btnAddActivity);
-
-		    activitiesContainer.getChildren().add(buttonContainer);
-
-
-			// Adiciona o contêiner da nova atividade ao contêiner dinâmico
-			dynamicAtvivityContainer.getChildren().add(activitiesContainer);
-
+		// Adiciona o contêiner da nova atividade ao contêiner dinâmico
+		dynamicAtvivityContainer.getChildren().add(activitiesContainer);
 	}
 
 	private void adicionarNovaAtividade(VBox activitiesContainer, int idEtapa) {
+
 
 		List<Atividade> listaAtividadesDaEtapa = this.projetoService.listaAtividades(idEtapa);
 		VBox activityBox = new VBox(10);
 		activityBox.getStyleClass().add("atividade-container");
 
 		// ComboBox para selecionar a atividade
-		ComboBox<String> comboBoxAtividade = new ComboBox<>();
-		ObservableList<String> observableList = FXCollections.observableArrayList(
-				listaAtividadesDaEtapa.stream().map(Atividade::getAtividade).collect(Collectors.toList()));
-		comboBoxAtividade.setItems(observableList);
+		ComboBox<Atividade> comboBoxAtividade = new ComboBox<>();
+		ObservableList<Atividade> atividades = FXCollections.observableArrayList(listaAtividadesDaEtapa);
+		comboBoxAtividade.setItems(atividades);
+		comboBoxAtividade.setConverter(new StringConverter<Atividade>() {
+			@Override
+			public String toString(Atividade object) {
+				return object.getAtividade();
+			}
+
+			@Override
+			public Atividade fromString(String string) {
+				return null;
+			}
+		});
 		comboBoxAtividade.setPromptText("Selecione a atividade");
 
-		// VBox para armazenar os responsáveis
-		VBox responsaveisContainer = new VBox(5);
+				// VBox para armazenar os responsáveis
+				VBox responsaveisContainer = new VBox(5);
 
-		Button btnAddResponsavel = new Button("Adicionar Responsável");
-		btnAddResponsavel.setOnAction(event -> adicionarNovoResponsavel(responsaveisContainer));
+				Button btnAddResponsavel = new Button("Adicionar Responsável");
+				btnAddResponsavel.setOnAction(event -> adicionarNovoResponsavel(responsaveisContainer));
 
-		HBox buttonBox = new HBox(btnAddResponsavel);
-		buttonBox.setAlignment(Pos.CENTER_RIGHT);
+				HBox buttonBox = new HBox(btnAddResponsavel);
+				buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
 
 		Label totalizandoAtividade = new Label("Subtotal-> ");
@@ -171,16 +180,32 @@ public class DtlProjetoController {
 		HBox responsavelInfoBox = new HBox(10);
 
 		// ComboBox para selecionar o tipo de responsabilidade
-		ComboBox<String> comboBoxProfissional = new ComboBox<>();
-		ObservableList<String> observableList = FXCollections.observableArrayList(
-				listaDeProfissionais.stream().map(Profissionais::toString).collect(Collectors.toList()));
-		comboBoxProfissional.setItems(observableList);
+		ComboBox<Profissionais> comboBoxProfissional = new ComboBox<>();
+		ObservableList<Profissionais> profissionais = FXCollections.observableArrayList(listaDeProfissionais);
+		comboBoxProfissional.setItems(profissionais);
+		comboBoxProfissional.setConverter(new StringConverter<Profissionais>() {
+			@Override
+			public String toString(Profissionais object) {
+				return object.toString();
+			}
+
+			@Override
+			public Profissionais fromString(String string) {
+				return null;
+			}
+		});
 		comboBoxProfissional.setPromptText("Profissional");
+
 
 		// Campo para armazenar o valor hora do profissional
 		TextField valorHora = new TextField();
 		valorHora.setPromptText("Valor Hora");
 		valorHora.setEditable(false);
+		comboBoxProfissional.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				valorHora.setText(newValue.getValorHora().toString());
+			}
+		});
 
 		// TextField para inserir a quantidade do serviço
 		TextField quantidade = new TextField();

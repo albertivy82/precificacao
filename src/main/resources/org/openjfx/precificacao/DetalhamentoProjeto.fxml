@@ -45,6 +45,17 @@
             <Label text="Cliente: ClienteExemplo" />
             <Label text="Data de Início: 01/01/2024" />
          </VBox>
+
+         <!-- ScrollPane para Listar Etapas Salvas -->
+         <ScrollPane fx:id="savedEtapasScrollPane" fitToWidth="true" prefHeight="200.0">
+            <content>
+               <VBox fx:id="savedEtapasContainer" spacing="10">
+                  <!-- As etapas salvas serão adicionadas dinamicamente aqui -->
+               </VBox>
+            </content>
+         </ScrollPane>
+
+
          <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="400.0">
          <content>
          <!-- Container Fixo para Etapa -->
@@ -63,6 +74,10 @@
          </VBox>
          </content>
          </ScrollPane>
+
+         <HBox>
+            <Button mnemonicParsing="false" onAction="#adicionarAtividade" styleClass="button-style" text="+Atividade"/>
+         </HBox>
 
            <!-- Botão para Adicionar Nova Atividade -->
          <Button mnemonicParsing="false" styleClass="button-style" text="Salvar Etapa"/>
