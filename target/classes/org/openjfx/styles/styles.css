@@ -73,13 +73,13 @@
 }
 
 
-.scroll-pane {
+#activityScrollPane {
     -fx-background-color: transparent; /* Torna o fundo do ScrollPane transparente */
     -fx-border-color: #ff4500; /* Cor da borda igual à cor do botão */
     -fx-border-width: 2px; /* Espessura da borda */
     -fx-border-radius: 5px; /* Bordas arredondadas */
 }
 
-.scroll-pane .viewport {
+#activityScrollPane .viewport {
     -fx-background-color: #FFF3E0; /* Fundo laranja claro */
 }

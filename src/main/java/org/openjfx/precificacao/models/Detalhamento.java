@@ -15,8 +15,8 @@ public class Detalhamento {
     private int idEtapa;
     private int idAtividade;
     private int idProfissional;
-    private Float valorHora;
-    private Float valorHoras;
+     private Float valorHora;
+    private Float horas;
 
     @Override
     public boolean equals(Object o) {
@@ -34,6 +34,6 @@ public class Detalhamento {
 
     @Override
     public String toString() {
-        return ("Projeto: " + idProjeto + "|Etapa: "+ idEtapa+" |Ativiadade: " + idAtividade + " |Profissional: " + idProfissional +" |Valor unitário R$: "+ valorHora +" |Valor do Serviço R$ "+valorHoras);
+        return ("Projeto: " + idProjeto + "|Etapa: "+ idEtapa+" |Ativiadade: " + idAtividade + " |Profissional: " + idProfissional +" |Valor unitário R$: "+ valorHora +" |Valor do Serviço R$ "+horas);
     }
 }

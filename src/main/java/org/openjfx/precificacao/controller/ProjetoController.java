@@ -80,7 +80,7 @@ public class ProjetoController {
 
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Atenção");
-            alert.setHeaderText("Deseja realmente editar o projeto selecionado?");
+            alert.setHeaderText("Deseja detalhar o projeto selecionado?");
             alert.setContentText(projetoEscolhido.toString());
 
             Optional<ButtonType> result = alert.showAndWait();

@@ -47,7 +47,7 @@
          </VBox>
 
          <!-- ScrollPane para Listar Etapas Salvas -->
-         <ScrollPane fx:id="savedEtapasScrollPane" fitToWidth="true" prefHeight="200.0">
+         <ScrollPane fx:id="savedEtapasScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS">
             <content>
                <VBox fx:id="savedEtapasContainer" spacing="10">
                   <!-- As etapas salvas serão adicionadas dinamicamente aqui -->
@@ -56,7 +56,7 @@
          </ScrollPane>
 
 
-         <ScrollPane fx:id="scrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
+         <ScrollPane fx:id="activityScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
             <content>
                <!-- Container Fixo para Etapa -->
                <VBox fx:id="etapaContainer" spacing="10" styleClass="etapa-container">
@@ -81,7 +81,7 @@
          </HBox>
 
          <!-- Botão para Adicionar Nova Atividade -->
-         <Button mnemonicParsing="false" styleClass="button-style" text="Salvar Etapa"/>
+         <Button mnemonicParsing="false" onAction="#btnCadatrarEtapas" styleClass="button-style" text="Salvar Etapa"/>
       </VBox>
    </center>
 </BorderPane>

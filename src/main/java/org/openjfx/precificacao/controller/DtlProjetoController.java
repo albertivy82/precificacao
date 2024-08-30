@@ -17,6 +17,7 @@ import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.ProjetoService;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -308,7 +309,7 @@ public class DtlProjetoController {
 				float valorHoraCovertido = Float.parseFloat(valorHora.getText());
 				total.setText("R$ " + (qtd * valorHoraCovertido));
 				// Atualiza o valorHoras no detalhamento correspondente
-				detalhamento.setValorHoras(qtd * valorHoraCovertido);
+				detalhamento.setHoras(qtd * valorHoraCovertido);
 
 				// Limpa o container
 				savedEtapasContainer.getChildren().clear();
@@ -367,6 +368,12 @@ public class DtlProjetoController {
 		this.clienteService = new ClienteService();
 		clienteLabel.setText("Cliente: " + this.clienteService.nomeCliente(projeto.getIdCliente()));
 		StatusLabel.setText("Status: " + projeto.getStatus());
+
+	}
+
+	@FXML
+	protected void btnCadatrarEtapas(ActionEvent e) throws SQLException {
+		projetoService.cadastroDeEtapas(this.listaDeItens);
 
 	}
 
