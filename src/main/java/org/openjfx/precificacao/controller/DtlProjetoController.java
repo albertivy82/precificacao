@@ -1,5 +1,6 @@
 package org.openjfx.precificacao.controller;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -176,8 +177,9 @@ public class DtlProjetoController {
 					alert.setHeaderText("Esta atividade já possui profissionais orçados.");
 					alert.showAndWait();
 
-					// Impedir a seleção da atividade já orçada
-					comboBoxAtividade.getSelectionModel().clearSelection();
+					Platform.runLater(() -> comboBoxAtividade.getSelectionModel().clearSelection());
+
+
 				} else {
 					// Permitir a seleção da atividade
 					this.idAtividadeSelecionada = idAtividadeSelecionada;
@@ -248,44 +250,48 @@ public class DtlProjetoController {
 		TextField valorHora = new TextField();
 		valorHora.setPromptText("Valor Hora");
 		valorHora.setEditable(false);
+
+
 		comboBoxProfissional.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
-				valorHora.setText(newValue.getValorHora().toString());
-				detalhamento.setIdProjeto(this.projeto.getId());
-				detalhamento.setIdEtapa(this.etapaSelecionada.getId());
-				if(this.idAtividadeSelecionada!=0) {
-					detalhamento.setIdAtividade(idAtividadeSelecionada);
-				}else{
-					Alert alert = new Alert(Alert.AlertType.WARNING);
-					alert.setTitle("Selecione uma etapa");
-					alert.setHeaderText("Não lance valores sem ua atividadade selecionada.");
-					alert.showAndWait();
-				}
-				detalhamento.setIdProfissional(newValue.getId());
-				detalhamento.setValorHora(newValue.getValorHora());
+				if (this.idAtividadeSelecionada != 0) {
+					// Verifica se o profissional já foi adicionado para essa atividade e etapa
+					boolean profissionalJaAdicionado = listaDeItens.stream()
+							.anyMatch(d -> d.getIdAtividade() == this.idAtividadeSelecionada && d.getIdProfissional() == newValue.getId());
 
-				if (!listaDeItens.add(detalhamento)) {
-					// Se não adicionar (porque já existe), exibe um alerta
-					Alert alert = new Alert(Alert.AlertType.WARNING);
-					alert.setTitle("Duplicação de Dados");
-					alert.setHeaderText("Este profissional já foi adicionado para esta etapa e atividade.");
-					alert.showAndWait();
-					comboBoxProfissional.getSelectionModel().clearSelection();
-				}else{
+					if (profissionalJaAdicionado) {
+						// Se já existir, exibe um alerta
+						Alert alert = new Alert(Alert.AlertType.WARNING);
+						alert.setTitle("Duplicação de Dados");
+						alert.setHeaderText("Este profissional já foi adicionado para esta etapa e atividade.");
+						alert.showAndWait();
+						Platform.runLater(() -> comboBoxProfissional.getSelectionModel().clearSelection());
+					} else {
+						// Adiciona o novo detalhamento à lista usando o objeto principal
+						detalhamento.setIdProjeto(this.projeto.getId());
+						detalhamento.setIdEtapa(this.etapaSelecionada.getId());
+						detalhamento.setIdAtividade(this.idAtividadeSelecionada);
+						detalhamento.setIdProfissional(newValue.getId());
+						detalhamento.setValorHora(newValue.getValorHora());
 
-					savedEtapasContainer.getChildren().clear();
-					VBox listaDetalhamento = new VBox(5);
+						valorHora.setText(newValue.getValorHora().toString());
+						listaDeItens.add(detalhamento);
 
-					for (Detalhamento item : listaDeItens) {
-						Label lista = new Label(item.toString());
-						listaDetalhamento.getChildren().add(lista);
+						// Atualiza a interface com o novo item
+						VBox listaDetalhamento = new VBox(5);
+						savedEtapasContainer.getChildren().add(listaDetalhamento);
 					}
-
-					savedEtapasContainer.getChildren().add(listaDetalhamento);
-
+				} else {
+					Alert alert = new Alert(Alert.AlertType.WARNING);
+					alert.setTitle("Atenção");
+					alert.setHeaderText("Não lance valores sem uma atividade selecionada.");
+					alert.showAndWait();
+					Platform.runLater(() -> comboBoxProfissional.getSelectionModel().clearSelection());
 				}
 			}
 		});
+
+
 
 		// TextField para inserir a quantidade do serviço
 		TextField quantidade = new TextField();
@@ -299,10 +305,28 @@ public class DtlProjetoController {
 		quantidade.textProperty().addListener((observable, oldValue, newValue) -> {
 			try {
 				float qtd = Float.parseFloat(newValue);
-				float valorHora2 = Float.parseFloat(valorHora.getText());
-				total.setText("R$ " + (qtd * valorHora2));
+				float valorHoraCovertido = Float.parseFloat(valorHora.getText());
+				total.setText("R$ " + (qtd * valorHoraCovertido));
 				// Atualiza o valorHoras no detalhamento correspondente
-				detalhamento.setValorHoras(qtd * valorHora2);
+				detalhamento.setValorHoras(qtd * valorHoraCovertido);
+
+				// Limpa o container
+				savedEtapasContainer.getChildren().clear();
+
+				// Cria um VBox para listar os itens
+				VBox listaDetalhamento = new VBox(5);
+
+				// Recria a lista de detalhamentos na interface
+				for (Detalhamento item : listaDeItens) {
+					Label lista = new Label(item.toString());
+					listaDetalhamento.getChildren().add(lista);
+				}
+
+				// Adiciona a lista ao container
+				savedEtapasContainer.getChildren().add(listaDetalhamento);
+				comboBoxProfissional.setDisable(true);
+
+
 			} catch (NumberFormatException e) {
 				total.setText("R$ 0,00"); // Se o valor não for numérico, define o total como 0
 			}
@@ -311,16 +335,28 @@ public class DtlProjetoController {
 
 		// Botão de exclusão
 		Button btnExcluir = new Button("x");
-		btnExcluir.setOnAction(event -> responsaveisContainer.getChildren().remove(responsavelBox));
-		//inserir alerta e controle
+		btnExcluir.setOnAction(event -> {
+			responsaveisContainer.getChildren().remove(responsavelBox);
+			// Remover o objeto `Detalhamento` correspondente da lista
+			listaDeItens.remove(detalhamento);
+
+			// Atualizar a exibição das etapas salvas
+			savedEtapasContainer.getChildren().clear();
+			VBox listaDetalhamento = new VBox(5);
+
+			for (Detalhamento item : listaDeItens) {
+				Label lista = new Label(item.toString());
+				listaDetalhamento.getChildren().add(lista);
+			}
+
+			savedEtapasContainer.getChildren().add(listaDetalhamento);
+		});
+
 
 		// Adiciona o ComboBox e TextField à primeira HBox
 		responsavelInfoBox.getChildren().addAll(comboBoxProfissional, valorHora, quantidade, total, btnExcluir);
-
-
 		// Adiciona as duas HBox à VBox principal
 		responsavelBox.getChildren().addAll(responsavelInfoBox);
-
 		// Adiciona o VBox ao container de responsáveis
 		responsaveisContainer.getChildren().add(responsavelBox);
 	}

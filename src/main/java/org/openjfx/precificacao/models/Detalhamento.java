@@ -34,6 +34,6 @@ public class Detalhamento {
 
     @Override
     public String toString() {
-        return (idProjeto + ""+ idEtapa+"" + idAtividade + "" + idProfissional +"|| R$ "+ valorHora +"||"+valorHoras);
+        return ("Projeto: " + idProjeto + "|Etapa: "+ idEtapa+" |Ativiadade: " + idAtividade + " |Profissional: " + idProfissional +" |Valor unitário R$: "+ valorHora +" |Valor do Serviço R$ "+valorHoras);
     }
 }

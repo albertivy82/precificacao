@@ -59,3 +59,27 @@
     -fx-padding: 0;
 }
 
+.vbox {
+    -fx-spacing: 5px;
+}
+
+/* Estilo para o container de atividades */
+.etapa-container {
+    -fx-border-color: #ff5722; /* Cor da borda do container */
+    -fx-border-width: 2px; /* Largura da borda */
+    -fx-border-radius: 5px; /* Bordas arredondadas do container */
+    -fx-padding: 10px; /* Espaçamento interno */
+    -fx-background-color: #f9f9f9; /* Cor de fundo do container */
+}
+
+
+.scroll-pane {
+    -fx-background-color: transparent; /* Torna o fundo do ScrollPane transparente */
+    -fx-border-color: #ff4500; /* Cor da borda igual à cor do botão */
+    -fx-border-width: 2px; /* Espessura da borda */
+    -fx-border-radius: 5px; /* Bordas arredondadas */
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #FFF3E0; /* Fundo laranja claro */
+}

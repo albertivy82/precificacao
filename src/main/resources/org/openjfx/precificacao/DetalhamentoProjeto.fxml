@@ -35,7 +35,7 @@
    </left>
 
    <center>
-      <VBox spacing="10" style="-fx-padding: 10;">
+      <VBox spacing="10" style="-fx-padding: 5;">
          <!-- Cabeçalho do Projeto -->
          <Label text="Detalhes do Projeto" styleClass="header-label" />
 
@@ -56,30 +56,31 @@
          </ScrollPane>
 
 
-         <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="400.0">
-         <content>
-         <!-- Container Fixo para Etapa -->
-         <VBox fx:id="etapaContainer" spacing="10" styleClass="etapa-container">
-            <!-- Exibição do Total da Etapa -->
-            <HBox spacing="5">
-               <Label text="Total da Etapa -> "/>
-               <TextField fx:id="subtotalEtapa" text="R$ 0,00" styleClass="text-field-transparent" editable="false"/>
-            </HBox>
-            <ComboBox fx:id="etapaComboBox" promptText="Selecione a Etapa" />
+         <ScrollPane fx:id="scrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
+            <content>
+               <!-- Container Fixo para Etapa -->
+               <VBox fx:id="etapaContainer" spacing="10" styleClass="etapa-container">
+                  <!-- Exibição do Total da Etapa -->
+                  <HBox spacing="5">
+                     <Label text="Total da Etapa -> "/>
+                     <TextField fx:id="subtotalEtapa" text="R$ 0,00" styleClass="text-field-transparent" editable="false"/>
+                  </HBox>
+                  <ComboBox fx:id="etapaComboBox" promptText="Selecione a Etapa" />
 
-            <!-- Container Dinâmico para Atividades -->
-            <VBox fx:id="dynamicAtvivityContainer" spacing="10">
-               <!-- As atividades serão adicionadas dinamicamente aqui -->
-            </VBox>
-         </VBox>
-         </content>
+                  <!-- Container Dinâmico para Atividades -->
+                  <VBox fx:id="dynamicAtvivityContainer" spacing="10">
+                     <!-- As atividades serão adicionadas dinamicamente aqui -->
+                  </VBox>
+               </VBox>
+
+            </content>
          </ScrollPane>
 
-         <HBox>
+         <HBox alignment="CENTER_RIGHT">
             <Button mnemonicParsing="false" onAction="#adicionarAtividade" styleClass="button-style" text="+Atividade"/>
          </HBox>
 
-           <!-- Botão para Adicionar Nova Atividade -->
+         <!-- Botão para Adicionar Nova Atividade -->
          <Button mnemonicParsing="false" styleClass="button-style" text="Salvar Etapa"/>
       </VBox>
    </center>
