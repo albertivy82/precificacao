@@ -1,5 +1,7 @@
 package org.openjfx.precificacao.database;
+
 import org.openjfx.precificacao.models.Etapa;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,5 +39,24 @@ public class EtapaSQLite {
             }
         }
         return result;
+    }
+
+    public String etapaPorNome(int idEtapa) {
+        String nome = "";
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT nome FROM etapa WHERE ID=?");
+            pstmt.setInt(1, idEtapa);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                nome = rs.getString("nome");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+
+        return nome;
     }
 }

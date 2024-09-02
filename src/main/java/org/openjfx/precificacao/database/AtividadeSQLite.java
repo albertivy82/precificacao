@@ -43,4 +43,24 @@ public class AtividadeSQLite {
         }
         return etapas;
     }
+
+
+    public String atividadePorNome(int idAtividade) {
+        String nome = "";
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT nome FROM atividade WHERE ID=?");
+            pstmt.setInt(1, idAtividade);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                nome = rs.getString("nome");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+
+        return nome;
+    }
 }

@@ -71,5 +71,40 @@ public class DetalhamentoSQLite {
         }
         return result;
     }
+    public List<Detalhamento> detalhementoPorProjeto(int idProjeto) {
+        List<Detalhamento> result = new ArrayList<>();
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement("SELECT id, id_projeto, id_etapa, id_atividade, id_profissional, valor_hora, horas " +
+                    "FROM detalhamento WHRE id_projeto=?");
+            pstmt.setInt(1, idProjeto);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Detalhamento  d = new Detalhamento();
+                d.setId(rs.getInt("id"));
+                d.setIdProjeto(rs.getInt("id_projeto"));
+                d.setIdEtapa(rs.getInt("id_etapa"));
+                d.setIdAtividade(rs.getInt("id_atividade"));
+                d.setIdProfissional(rs.getInt("id_profissional"));
+                d.setValorHora(rs.getFloat("valor_hora"));
+                d.setHoras(rs.getFloat("horas"));
+                result.add(d);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return result;
+    }
 
 }

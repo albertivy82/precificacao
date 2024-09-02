@@ -96,4 +96,24 @@ public class ProjetoSQLite{
         return result;
     }
 
+    public String projetoPorNome(int idProjeto) {
+        String nome = "";
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT nome FROM projeto WHERE ID=?");
+            pstmt.setInt(1, idProjeto);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                nome = rs.getString("nome");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+
+        return nome;
+    }
+
+
 }
