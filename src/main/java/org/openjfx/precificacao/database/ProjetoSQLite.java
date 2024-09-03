@@ -100,11 +100,11 @@ public class ProjetoSQLite{
         String nome = "";
         Connection conn = SQLiteConnection.connect();
         try {
-            PreparedStatement pstmt = conn.prepareStatement("SELECT nome FROM projeto WHERE ID=?");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT nome_projeto FROM projeto WHERE ID=?");
             pstmt.setInt(1, idProjeto);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                nome = rs.getString("nome");
+                nome = rs.getString("nome_projeto");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

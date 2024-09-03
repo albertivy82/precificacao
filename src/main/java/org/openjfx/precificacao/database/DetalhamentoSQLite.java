@@ -78,7 +78,7 @@ public class DetalhamentoSQLite {
         ResultSet rs = null;
         try {
             pstmt = conn.prepareStatement("SELECT id, id_projeto, id_etapa, id_atividade, id_profissional, valor_hora, horas " +
-                    "FROM detalhamento WHRE id_projeto=?");
+                    "FROM detalhamento WHERE id_projeto=?");
             pstmt.setInt(1, idProjeto);
             rs = pstmt.executeQuery();
 

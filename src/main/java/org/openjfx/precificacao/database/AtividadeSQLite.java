@@ -46,21 +46,21 @@ public class AtividadeSQLite {
 
 
     public String atividadePorNome(int idAtividade) {
-        String nome = "";
+        String atividade = "";
         Connection conn = SQLiteConnection.connect();
         try {
-            PreparedStatement pstmt = conn.prepareStatement("SELECT nome FROM atividade WHERE ID=?");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT atividade FROM atividades WHERE ID=?");
             pstmt.setInt(1, idAtividade);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                nome = rs.getString("nome");
+                atividade = rs.getString("atividade");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
             SQLiteConnection.closeConnection(conn);
         }
-
-        return nome;
+        System.out.println(atividade);
+        return atividade;
     }
 }

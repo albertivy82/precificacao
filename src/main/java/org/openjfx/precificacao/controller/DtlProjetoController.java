@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import org.openjfx.precificacao.App;
+import org.openjfx.precificacao.dtos.DetalhementoDTO;
 import org.openjfx.precificacao.models.*;
 import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.ProjetoService;
@@ -32,6 +33,7 @@ public class DtlProjetoController {
 	private Etapa etapaSelecionada;
 	private Set<Detalhamento> listaDeItens = new HashSet<>();
 	private int idAtividadeSelecionada;
+	private float totalAtividade;
 
 
 
@@ -199,17 +201,8 @@ public class DtlProjetoController {
 				HBox buttonBox = new HBox(btnAddResponsavel);
 				buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
-
-		Label totalizandoAtividade = new Label("Subtotal-> ");
-		TextField subTotalAtividade = new TextField("R$ 0,00");
-		subTotalAtividade.getStyleClass().add("text-field-transparent");
-		subTotalAtividade.setEditable(false);
-
-		HBox totalAtividade = new HBox(totalizandoAtividade, subTotalAtividade);
-		totalAtividade.setAlignment(Pos.CENTER_RIGHT);
-
 		// Adiciona o ComboBox e o container de responsáveis ao HBox da atividade
-		activityBox.getChildren().addAll(comboBoxAtividade, responsaveisContainer, totalAtividade, buttonBox);
+		activityBox.getChildren().addAll(comboBoxAtividade, responsaveisContainer, buttonBox);
 
 		// Adiciona o HBox ao container de atividades
 		activitiesContainer.getChildren().add(activityBox);
@@ -274,13 +267,9 @@ public class DtlProjetoController {
 						detalhamento.setIdAtividade(this.idAtividadeSelecionada);
 						detalhamento.setIdProfissional(newValue.getId());
 						detalhamento.setValorHora(newValue.getValorHora());
-
 						valorHora.setText(newValue.getValorHora().toString());
 						listaDeItens.add(detalhamento);
 
-						// Atualiza a interface com o novo item
-						VBox listaDetalhamento = new VBox(5);
-						savedEtapasContainer.getChildren().add(listaDetalhamento);
 					}
 				} else {
 					Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -291,8 +280,6 @@ public class DtlProjetoController {
 				}
 			}
 		});
-
-
 
 		// TextField para inserir a quantidade do serviço
 		TextField quantidade = new TextField();
@@ -310,24 +297,7 @@ public class DtlProjetoController {
 				total.setText("R$ " + (qtd * valorHoraCovertido));
 				// Atualiza o valorHoras no detalhamento correspondente
 				detalhamento.setHoras(qtd * valorHoraCovertido);
-
-				// Limpa o container
-				savedEtapasContainer.getChildren().clear();
-
-				// Cria um VBox para listar os itens
-				VBox listaDetalhamento = new VBox(5);
-
-				// Recria a lista de detalhamentos na interface
-				for (Detalhamento item : listaDeItens) {
-					Label lista = new Label(item.toString());
-					listaDetalhamento.getChildren().add(lista);
-				}
-
-				// Adiciona a lista ao container
-				savedEtapasContainer.getChildren().add(listaDetalhamento);
 				comboBoxProfissional.setDisable(true);
-
-
 			} catch (NumberFormatException e) {
 				total.setText("R$ 0,00"); // Se o valor não for numérico, define o total como 0
 			}
@@ -341,16 +311,6 @@ public class DtlProjetoController {
 			// Remover o objeto `Detalhamento` correspondente da lista
 			listaDeItens.remove(detalhamento);
 
-			// Atualizar a exibição das etapas salvas
-			savedEtapasContainer.getChildren().clear();
-			VBox listaDetalhamento = new VBox(5);
-
-			for (Detalhamento item : listaDeItens) {
-				Label lista = new Label(item.toString());
-				listaDetalhamento.getChildren().add(lista);
-			}
-
-			savedEtapasContainer.getChildren().add(listaDetalhamento);
 		});
 
 
@@ -373,8 +333,17 @@ public class DtlProjetoController {
 
 	@FXML
 	protected void btnCadatrarEtapas(ActionEvent e) throws SQLException {
-		projetoService.cadastroDeEtapas(this.listaDeItens);
 
+
+		for (Detalhamento item : listaDeItens) {
+			System.out.print(item.toString());
+		}
+
+		projetoService.cadastroDeEtapas(this.listaDeItens);/*
+		List<DetalhementoDTO> list = projetoService.etapasSalvas(projeto.getId());
+		for (DetalhementoDTO item : list) {
+			System.out.print(item.getNomeProfissional());
+		}*/
 	}
 
 

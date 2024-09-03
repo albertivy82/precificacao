@@ -15,6 +15,4 @@ public class DetalhementoDTO {
     private float valorHoras;
     private float horas;
 
-    public DetalhementoDTO(String nomeProjeto, String nomeEtapa, String nomeAtividade, String nomeProfissional, float valorHoras, float horas) {
-    }
 }

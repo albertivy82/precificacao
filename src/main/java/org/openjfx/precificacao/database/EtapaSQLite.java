@@ -42,14 +42,14 @@ public class EtapaSQLite {
     }
 
     public String etapaPorNome(int idEtapa) {
-        String nome = "";
+        String etapa = "";
         Connection conn = SQLiteConnection.connect();
         try {
-            PreparedStatement pstmt = conn.prepareStatement("SELECT nome FROM etapa WHERE ID=?");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT etapa FROM etapas WHERE ID=?");
             pstmt.setInt(1, idEtapa);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                nome = rs.getString("nome");
+                etapa = rs.getString("etapa");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -57,6 +57,6 @@ public class EtapaSQLite {
             SQLiteConnection.closeConnection(conn);
         }
 
-        return nome;
+        return etapa;
     }
 }

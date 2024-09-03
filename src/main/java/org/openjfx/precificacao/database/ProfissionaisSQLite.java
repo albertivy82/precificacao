@@ -104,7 +104,7 @@ public class ProfissionaisSQLite {
         String nome = "";
         Connection conn = SQLiteConnection.connect();
         try {
-            PreparedStatement pstmt = conn.prepareStatement("SELECT nome FROM profissional WHERE ID=?");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT nome FROM profissionais WHERE ID=?");
             pstmt.setInt(1, idProfissional);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
