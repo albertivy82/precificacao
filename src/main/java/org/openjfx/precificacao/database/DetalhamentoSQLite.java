@@ -78,7 +78,7 @@ public class DetalhamentoSQLite {
         ResultSet rs = null;
         try {
             pstmt = conn.prepareStatement("SELECT id, id_projeto, id_etapa, id_atividade, id_profissional, valor_hora, horas " +
-                    "FROM detalhamento WHERE id_projeto=?");
+                    "FROM detalhamento WHERE id_projeto=? ORDER BY id_etapa ASC");
             pstmt.setInt(1, idProjeto);
             rs = pstmt.executeQuery();
 
@@ -93,6 +93,7 @@ public class DetalhamentoSQLite {
                 d.setHoras(rs.getFloat("horas"));
                 result.add(d);
             }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {

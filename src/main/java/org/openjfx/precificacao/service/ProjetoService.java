@@ -1,14 +1,18 @@
 package org.openjfx.precificacao.service;
 
 import org.openjfx.precificacao.database.*;
-import org.openjfx.precificacao.dtos.DetalhementoDTO;
+import org.openjfx.precificacao.dtos.DetalhamentoDTO;
 import org.openjfx.precificacao.models.Atividade;
 import org.openjfx.precificacao.models.Detalhamento;
 import org.openjfx.precificacao.models.Etapa;
 import org.openjfx.precificacao.models.Profissionais;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class ProjetoService {
 
@@ -46,32 +50,33 @@ public class ProjetoService {
         return this.detalhamentos.all();
     }
 
-    public Map<String, Map<String, List<DetalhementoDTO>>> etapasSalvas(int idProjeto){
+    public Map<String, Map<String, List<DetalhamentoDTO>>> etapasSalvas(int idProjeto) {
+        List<Detalhamento> detalhesDoProjetoAtual = this.detalhamentos.detalhementoPorProjeto(idProjeto);
 
-        List<Detalhamento> detahesDoProjetoAtual = this.detalhamentos.detalhementoPorProjeto(idProjeto);
-        List<DetalhementoDTO> detalhesCompletos = new ArrayList<>();
-        for(Detalhamento item: detahesDoProjetoAtual){
-            DetalhementoDTO detalhamentoatual = new DetalhementoDTO();
+        List<DetalhamentoDTO> detalhesCompletos = detalhesDoProjetoAtual.stream().map(item -> {
+            DetalhamentoDTO detalhamentoatual = new DetalhamentoDTO();
             detalhamentoatual.setNomeProjeto(buscarNomeProjetoPorId(item.getIdProjeto()));
             detalhamentoatual.setNomeEtapa(buscarNomeEtapaPorId(item.getIdEtapa()));
             detalhamentoatual.setNomeAtividade(buscarNomeAtividadePorId(item.getIdAtividade()));
             detalhamentoatual.setNomeProfissional(buscarNomeProfissionalPorId(item.getIdProfissional()));
             detalhamentoatual.setValorHoras(item.getValorHora());
             detalhamentoatual.setHoras(item.getHoras());
-            detalhesCompletos.add(detalhamentoatual);
-        }
+            return detalhamentoatual;
+        }).collect(Collectors.toList());
 
-        Map<String, Map<String, List<DetalhementoDTO>>> agrupados = new HashMap<>();
-
-        for (DetalhementoDTO detalhe : detalhesCompletos) {
-            agrupados
-                    .computeIfAbsent(detalhe.getNomeEtapa(), k -> new HashMap<>())
-                    .computeIfAbsent(detalhe.getNomeAtividade(), k -> new ArrayList<>())
-                    .add(detalhe);
-        }
-
-        return agrupados;
+        return detalhesCompletos.stream()
+                .collect(Collectors.groupingBy(
+                        DetalhamentoDTO::getNomeEtapa,
+                        () -> new TreeMap<>(String::compareTo), // TreeMap garante a ordenação das etapas
+                        Collectors.groupingBy(
+                                DetalhamentoDTO::getNomeAtividade,
+                                () -> new TreeMap<>(String::compareTo), // TreeMap garante a ordenação das atividades
+                                Collectors.toList()
+                        )
+                ));
     }
+
+
 
 
     private String buscarNomeProjetoPorId(int idProjeto) {

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DetalhementoDTO {
+public class DetalhamentoDTO {
 
     private String nomeProjeto;
     private String nomeEtapa;

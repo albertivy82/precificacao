@@ -75,7 +75,7 @@
 
          <!-- ScrollPane para Listar Etapas Salvas -->
 
-         <ScrollPane fx:id="savedEtapasScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS">
+         <ScrollPane fx:id="savedEtapasScrollPane" fitToWidth="true" prefHeight="250.0" VBox.vgrow="NEVER">
             <content>
                <VBox fx:id="savedEtapasContainer" spacing="10">
                   <!-- As etapas salvas serão adicionadas dinamicamente aqui -->

@@ -1,7 +1,6 @@
 package org.openjfx.precificacao.controller;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,16 +11,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import org.openjfx.precificacao.App;
-import org.openjfx.precificacao.dtos.DetalhementoDTO;
+import org.openjfx.precificacao.dtos.DetalhamentoDTO;
 import org.openjfx.precificacao.models.*;
 import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.ProjetoService;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class DtlProjetoController {
@@ -332,19 +331,48 @@ public class DtlProjetoController {
 	}
 
 	@FXML
-	protected void btnCadatrarEtapas(ActionEvent e) throws SQLException {
-
-
-		for (Detalhamento item : listaDeItens) {
-			System.out.print(item.toString());
+	protected void btnCadatrarEtapas(ActionEvent e) {
+		try {
+			salvarEtapas();
+			Map<String, Map<String, List<DetalhamentoDTO>>> etapasAgrupadas = projetoService.etapasSalvas(projeto.getId());
+			exibirDetalhamentos(etapasAgrupadas);
+		} catch (SQLException ex) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Erro");
+			alert.setHeaderText("Ocorreu um erro ao salvar as etapas.");
+			alert.setContentText(ex.getMessage());
+			alert.showAndWait();
 		}
-
-		projetoService.cadastroDeEtapas(this.listaDeItens);/*
-		List<DetalhementoDTO> list = projetoService.etapasSalvas(projeto.getId());
-		for (DetalhementoDTO item : list) {
-			System.out.print(item.getNomeProfissional());
-		}*/
 	}
+
+	private void salvarEtapas() throws SQLException {
+		projetoService.cadastroDeEtapas(this.listaDeItens);
+	}
+
+
+	public void exibirDetalhamentos(Map<String, Map<String, List<DetalhamentoDTO>>> agrupados) {
+		savedEtapasContainer.getChildren().clear(); // Limpa o container de etapas previamente exibido
+		agrupados.forEach((etapa, atividades) -> {
+			Label labelEtapa = new Label("Etapa: " + etapa);
+			savedEtapasContainer.getChildren().add(labelEtapa);
+
+			atividades.forEach((atividade, profissionais) -> {
+				Label labelAtividade = new Label("  Atividade: " + atividade);
+				savedEtapasContainer.getChildren().add(labelAtividade);
+
+				profissionais.forEach(detalhe -> {
+					Label labelProfissional = new Label("    Profissional: " + detalhe.getNomeProfissional() +
+							" - Valor Hora: " + detalhe.getValorHoras() +
+							" - Valor Orçado: " + detalhe.getHoras());
+					savedEtapasContainer.getChildren().add(labelProfissional);
+				});
+			});
+		});
+	}
+
+
+
+
 
 
 }
