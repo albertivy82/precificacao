@@ -46,15 +46,11 @@
             <Label fx:id="StatusLabel" text="..." />
          </VBox>
 
-        <ScrollPane fx:id="activityScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
+        <ScrollPane fx:id="activityScrollPane" fitToWidth="true" prefHeight="400.0" VBox.vgrow="NEVER" styleClass="scroll-pane">
             <content>
                <!-- Container Fixo para Etapa -->
                <VBox fx:id="etapaContainer" spacing="10" styleClass="etapa-container">
                   <!-- Exibição do Total da Etapa -->
-                  <HBox spacing="5">
-                     <Label text="Total da Etapa -> "/>
-                     <TextField fx:id="subtotalEtapa" text="R$ 0,00" styleClass="text-field-transparent" editable="false"/>
-                  </HBox>
                   <ComboBox fx:id="etapaComboBox" promptText="Selecione a Etapa" />
 
                   <!-- Container Dinâmico para Atividades -->

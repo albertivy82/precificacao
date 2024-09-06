@@ -1,7 +1,7 @@
 package org.openjfx.precificacao.database;
 
-import org.openjfx.precificacao.models.Cliente;
 import org.openjfx.precificacao.models.Detalhamento;
+import org.openjfx.precificacao.dtos.totalProfissionalPorProjetoDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -71,6 +71,7 @@ public class DetalhamentoSQLite {
         }
         return result;
     }
+
     public List<Detalhamento> detalhementoPorProjeto(int idProjeto) {
         List<Detalhamento> result = new ArrayList<>();
         Connection conn = SQLiteConnection.connect();
@@ -107,5 +108,72 @@ public class DetalhamentoSQLite {
         }
         return result;
     }
+
+    public Float totalPorProjeto(int idProjeto) {
+
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet result = null;
+        Float totalProjeto = null;
+
+        try {
+            pstmt = conn.prepareStatement("SELECT SUM(valor_hora * horas) AS total_projeto FROM detalhamento WHERE id_projeto = ?");
+            pstmt.setInt(1, idProjeto);
+            result = pstmt.executeQuery();
+           if (result.next()) {
+                totalProjeto = result.getFloat("total_projeto");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+        return totalProjeto;
+    }
+
+
+    public List<totalProfissionalPorProjetoDTO> totalPorProfissional(int idProjeto) {
+        List<totalProfissionalPorProjetoDTO> result = new ArrayList<>();
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement("SELECT p.nome, d.id_profissional, SUM(d.valor_hora * d.horas) AS total_por_profissional" +
+                    "FROM detalhamento d" +
+                    "INNER JOIN profissionais p ON d.id_profissional = p.id_profissional" +
+                    "WHERE d.id_projeto = ?" +
+                    "GROUP BY p.nome, d.id_profissional");
+            pstmt.setInt(1, idProjeto);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                totalProfissionalPorProjetoDTO t = new totalProfissionalPorProjetoDTO();
+                t.setNome(rs.getString("nome"));
+                t.setTotalPorProfissional(rs.getFloat("total"));
+                result.add(t);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return result;
+    }
+
 
 }

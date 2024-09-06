@@ -79,6 +79,7 @@ public class DtlProjetoController {
 		this.projetoService = new ProjetoService();
 		populaLista();
 		identificacaoProjeto();
+		listaResultados();
 	}
 
 	@FXML
@@ -334,8 +335,7 @@ public class DtlProjetoController {
 	protected void btnCadatrarEtapas(ActionEvent e) {
 		try {
 			salvarEtapas();
-			Map<String, Map<String, List<DetalhamentoDTO>>> etapasAgrupadas = projetoService.etapasSalvas(projeto.getId());
-			exibirDetalhamentos(etapasAgrupadas);
+			listaResultados();
 		} catch (SQLException ex) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Erro");
@@ -345,30 +345,119 @@ public class DtlProjetoController {
 		}
 	}
 
+
+
 	private void salvarEtapas() throws SQLException {
 		projetoService.cadastroDeEtapas(this.listaDeItens);
+		//verificar se esta é uma boa medida
+		listaDeItens.clear();
+		//depois que tudo der certo e limpar o combobbox:
+		dynamicAtvivityContainer.getChildren().clear();
+	}
+
+	public void listaResultados(){
+		Map<String, Map<String, List<DetalhamentoDTO>>> etapasAgrupadas = projetoService.etapasSalvas(projeto.getId());
+		exibirDetalhamentos(etapasAgrupadas);
 	}
 
 
 	public void exibirDetalhamentos(Map<String, Map<String, List<DetalhamentoDTO>>> agrupados) {
 		savedEtapasContainer.getChildren().clear(); // Limpa o container de etapas previamente exibido
+
 		agrupados.forEach((etapa, atividades) -> {
-			Label labelEtapa = new Label("Etapa: " + etapa);
-			savedEtapasContainer.getChildren().add(labelEtapa);
+			exibirEtapa(etapa, atividades);
+		});
+	}
 
-			atividades.forEach((atividade, profissionais) -> {
-				Label labelAtividade = new Label("  Atividade: " + atividade);
-				savedEtapasContainer.getChildren().add(labelAtividade);
+	private void exibirEtapa(String etapa, Map<String, List<DetalhamentoDTO>> atividades) {
+		Label labelEtapa = new Label("Etapa: " + etapa);
+		savedEtapasContainer.getChildren().add(labelEtapa);
 
-				profissionais.forEach(detalhe -> {
-					Label labelProfissional = new Label("    Profissional: " + detalhe.getNomeProfissional() +
-							" - Valor Hora: " + detalhe.getValorHoras() +
-							" - Valor Orçado: " + detalhe.getHoras());
-					savedEtapasContainer.getChildren().add(labelProfissional);
-				});
+		atividades.forEach((atividade, profissionais) -> {
+			exibirAtividade(atividade, profissionais);
+		});
+	}
+
+	private void exibirAtividade(String atividade, List<DetalhamentoDTO> profissionais) {
+		Label labelAtividade = new Label("  Atividade: " + atividade);
+		savedEtapasContainer.getChildren().add(labelAtividade);
+
+		// Inicializa o subtotal da atividade
+		float sbtAtividade = 0;
+
+		for (DetalhamentoDTO detalhe : profissionais) {
+			// Exibe cada profissional
+			sbtAtividade += exibirProfissional(detalhe);
+		}
+
+		// Exibe o subtotal da atividade
+		Label labelSubtotalAtividade = new Label("  Subtotal da Atividade: R$ " + String.format("%.2f", sbtAtividade));
+		savedEtapasContainer.getChildren().add(labelSubtotalAtividade);
+	}
+
+	private float exibirProfissional(DetalhamentoDTO detalhe) {
+		// Torna a variável detalhe efetivamente final
+		final DetalhamentoDTO detalheFinal = detalhe;
+
+		Label labelProfissional = new Label("    Profissional: " + detalheFinal.getNomeProfissional() +
+				" - Valor Hora: " + String.format("%.2f", detalheFinal.getValorHoras()) +
+				" - Valor Orçado: " + String.format("%.2f", detalheFinal.getHoras()));
+
+		// Adiciona a lógica de clique para excluir o profissional
+		adicionarLogicaExclusao(labelProfissional, detalheFinal);
+
+		// Adiciona o label à interface
+		savedEtapasContainer.getChildren().add(labelProfissional);
+
+		// Retorna o valor orçado para acumular o subtotal
+		return detalheFinal.getHoras();
+	}
+
+	private void adicionarLogicaExclusao(Label labelProfissional, DetalhamentoDTO detalheFinal) {
+		labelProfissional.setOnMouseClicked(event -> {
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+			alert.setTitle("Informações do Profissional");
+			alert.setHeaderText("Detalhes do profissional");
+			alert.setContentText("Profissional: " + detalheFinal.getNomeProfissional() + "\nValor Hora: R$ "
+					+ String.format("%.2f", detalheFinal.getValorHoras()) + "\n\nDeseja excluir este profissional?");
+
+			// Define os botões de confirmação e cancelamento
+			ButtonType buttonExcluir = new ButtonType("Excluir", ButtonBar.ButtonData.OK_DONE);
+			ButtonType buttonCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+			alert.getButtonTypes().setAll(buttonExcluir, buttonCancelar);
+
+			// Captura a resposta do usuário
+			alert.showAndWait().ifPresent(response -> {
+				if (response == buttonExcluir) {
+					// Lógica para remover o profissional da lista
+					removerProfissional(labelProfissional, detalheFinal);
+
+					// Exibe uma mensagem de confirmação
+					exibirConfirmacaoExclusao();
+				}
 			});
 		});
 	}
+
+	private void removerProfissional(Label labelProfissional, DetalhamentoDTO detalheFinal) {
+		// Remova o profissional da lista de profissionais (isso pode depender da estrutura da sua lista)
+		// Exemplo: profissionais.remove(detalheFinal); se você estiver manipulando uma lista local
+
+		// Atualiza a interface removendo o label do profissional excluído
+		savedEtapasContainer.getChildren().remove(labelProfissional);
+	}
+
+	private void exibirConfirmacaoExclusao() {
+		Alert confirmacao = new Alert(Alert.AlertType.INFORMATION);
+		confirmacao.setTitle("Confirmação");
+		confirmacao.setHeaderText(null);
+		confirmacao.setContentText("Profissional excluído com sucesso.");
+		confirmacao.showAndWait();
+	}
+
+
+
 
 
 
