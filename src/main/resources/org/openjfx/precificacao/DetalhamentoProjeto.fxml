@@ -51,7 +51,7 @@
                <!-- Container Fixo para Etapa -->
                <VBox fx:id="etapaContainer" spacing="10" styleClass="etapa-container">
                   <!-- Exibição do Total da Etapa -->
-                  <ComboBox fx:id="etapaComboBox" promptText="Selecione a Etapa" />
+                 <ComboBox fx:id="etapaComboBox" promptText="Selecione a Etapa" />
 
                   <!-- Container Dinâmico para Atividades -->
                   <VBox fx:id="dynamicAtvivityContainer" spacing="10">
@@ -78,6 +78,9 @@
                </VBox>
             </content>
          </ScrollPane>
+         <HBox spacing="5">
+            <Label text="Clique sobre os itens para excluir"/>
+         </HBox>
       </VBox>
    </center>
 </BorderPane>

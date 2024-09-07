@@ -371,6 +371,7 @@ public class DtlProjetoController {
 
 	private void exibirEtapa(String etapa, Map<String, List<DetalhamentoDTO>> atividades) {
 		Label labelEtapa = new Label("Etapa: " + etapa);
+		adicionarLogicaExclusaoEtapa(labelEtapa, etapa);
 		savedEtapasContainer.getChildren().add(labelEtapa);
 
 		atividades.forEach((atividade, profissionais) -> {
@@ -392,6 +393,7 @@ public class DtlProjetoController {
 
 		// Exibe o subtotal da atividade
 		Label labelSubtotalAtividade = new Label("  Subtotal da Atividade: R$ " + String.format("%.2f", sbtAtividade));
+		adicionarLogicaExclusaoAtividades(labelAtividade, atividade);
 		savedEtapasContainer.getChildren().add(labelSubtotalAtividade);
 	}
 
@@ -404,7 +406,7 @@ public class DtlProjetoController {
 				" - Valor Orçado: " + String.format("%.2f", detalheFinal.getHoras()));
 
 		// Adiciona a lógica de clique para excluir o profissional
-		adicionarLogicaExclusao(labelProfissional, detalheFinal);
+		adicionarLogicaExclusaoProfissionais(labelProfissional, detalheFinal);
 
 		// Adiciona o label à interface
 		savedEtapasContainer.getChildren().add(labelProfissional);
@@ -413,7 +415,59 @@ public class DtlProjetoController {
 		return detalheFinal.getHoras();
 	}
 
-	private void adicionarLogicaExclusao(Label labelProfissional, DetalhamentoDTO detalheFinal) {
+	private void adicionarLogicaExclusaoEtapa(Label labelEtapa, String etapa) {
+		labelEtapa.setOnMouseClicked(event -> {
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+			alert.setTitle("Apagar etapa");
+			alert.setHeaderText("Deseja apagar a etapa selecionada do projeto?");
+			alert.setContentText("etapa selecionada: "+ etapa);
+
+			// Define os botões de confirmação e cancelamento
+			ButtonType buttonExcluir = new ButtonType("Excluir", ButtonBar.ButtonData.OK_DONE);
+			ButtonType buttonCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+			alert.getButtonTypes().setAll(buttonExcluir, buttonCancelar);
+
+			// Captura a resposta do usuário
+			alert.showAndWait().ifPresent(response -> {
+				if (response == buttonExcluir) {
+					// Lógica para remover o profissional da lista
+					//removerProfissional(labelProfissional, detalheFinal);
+
+					// Exibe uma mensagem de confirmação
+					exibirConfirmacaoExclusao();
+				}
+			});
+		});
+	}
+
+	private void adicionarLogicaExclusaoAtividades(Label labelSubtotalAtividade, String atividade) {
+		labelSubtotalAtividade.setOnMouseClicked(event -> {
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+			alert.setTitle("Apagar atividade");
+			alert.setHeaderText("Deseja apagar a atividade selecionada do projeto?");
+			alert.setContentText("atividade selecionada: "+ atividade);
+
+			// Define os botões de confirmação e cancelamento
+			ButtonType buttonExcluir = new ButtonType("Excluir", ButtonBar.ButtonData.OK_DONE);
+			ButtonType buttonCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+			alert.getButtonTypes().setAll(buttonExcluir, buttonCancelar);
+
+			// Captura a resposta do usuário
+			alert.showAndWait().ifPresent(response -> {
+				if (response == buttonExcluir) {
+					// Lógica para remover o profissional da lista
+					//removerProfissional(labelProfissional, detalheFinal);
+
+					// Exibe uma mensagem de confirmação
+					exibirConfirmacaoExclusao();
+				}
+			});
+		});
+	}
+
+	private void adicionarLogicaExclusaoProfissionais(Label labelProfissional, DetalhamentoDTO detalheFinal) {
 		labelProfissional.setOnMouseClicked(event -> {
 			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 			alert.setTitle("Informações do Profissional");
@@ -441,6 +495,14 @@ public class DtlProjetoController {
 	}
 
 	private void removerProfissional(Label labelProfissional, DetalhamentoDTO detalheFinal) {
+
+		//buscarProjetoPorNome(detalheFinal.getNomeProjeto())
+		//buscarEtapaPorNome(detalheFinal.getNomeEtapa())
+		//buscarAtividadePorNome(detalheFinal.getNomeAtividade())
+		//buscarProfissionalPorNome(detalheFinal.getNomeProfissional())
+		//detalheFinal.getValorHoras())
+		//detalheFinal.getHoras())
+
 		// Remova o profissional da lista de profissionais (isso pode depender da estrutura da sua lista)
 		// Exemplo: profissionais.remove(detalheFinal); se você estiver manipulando uma lista local
 
