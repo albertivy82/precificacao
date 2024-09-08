@@ -83,3 +83,50 @@
 #activityScrollPane .viewport {
     -fx-background-color: #FFF3E0; /* Fundo laranja claro */
 }
+
+.label-etapa {
+    -fx-background-color: #FFA07A;
+    -fx-border-color: #E9967A;
+    -fx-border-width: 2px;
+    -fx-padding: 0px; /* Remova o padding para minimizar o espaço */
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-pref-width: 100%;
+}
+
+.label-atividades {
+   -fx-background-color: #FFDAB9;
+   -fx-border-color: #CD853F;
+   -fx-border-width: 0 0 2px 0;
+   -fx-padding: 0px; /* Remova o padding */
+   -fx-font-size: 12px;
+   -fx-text-fill: #8B4513;
+   -fx-pref-width: 90%;
+
+}
+
+.label-profissionais {
+   -fx-background-color: #F0F0F0; /* Leve tom acinzentado */
+   -fx-border-color: #A9A9A9; /* Cor da borda inferior um pouco mais escura */
+   -fx-border-width: 0 0 2px 0; /* Borda apenas na parte inferior */
+   -fx-padding: 3px; /* Pequeno espaçamento */
+   -fx-font-size: 12px; /* Tamanho da fonte */
+   -fx-font-style: italic; /* Texto em itálico */
+   -fx-text-fill: #333333; /* Cor do texto levemente escura */
+   -fx-pref-width: 100%; /* Preenche a largura do container */
+}
+
+.label-subtotal {
+   -fx-font-size: 14px; /* Tamanho da fonte um pouco maior */
+   -fx-font-weight: bold; /* Negrito para destaque */
+   -fx-text-fill: #2F4F4F; /* Cor do texto em cinza escuro suave */
+   -fx-font-style: italic; /* Itálico para dar ênfase */
+   -fx-alignment: center-right; /* Alinha o texto à direita */
+}
+
+
+
+
+
+
+

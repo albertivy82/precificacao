@@ -110,13 +110,17 @@ public class ProjetoService {
         this.detalhamentos.deletarRegistro(idProjeto, idEtapa, idAtividade, idProfissional, valorHoras, horas);
     }
 
-    public void deletarEtapa( int idEtapa){
-        this.detalhamentos.deletarEtapa(idEtapa);
+    public boolean deletarEtapa( int idProjeto, int idEtapa){
+        return this.detalhamentos.deletarEtapa(idProjeto, idEtapa);
     }
 
-    public void deletarAtividade( int idAtividade){
-        this.detalhamentos.deletarAtividade(idAtividade);
+    public boolean deletarAtividade( int idProjeto, int idAtividade){
+        return this.detalhamentos.deletarAtividade(idProjeto, idAtividade);
     }
+    public float totalDoProjeto(int idProjeto) {
+        return this.detalhamentos.totalPorProjeto(idProjeto);
+    }
+
 
 
 

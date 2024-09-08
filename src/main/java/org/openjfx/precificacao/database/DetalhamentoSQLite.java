@@ -211,18 +211,21 @@ public class DetalhamentoSQLite {
         }
     }
 
-    public void deletarEtapa(int idEtapa) {
+    public boolean deletarEtapa(int idProjeto, int idEtapa) {
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
+        boolean success = false;
 
         try {
 
-            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE id_etapa = ?");
+            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE idProjeto = ? AND  id_etapa = ?");
 
-            pstmt.setInt(1, idEtapa);
+            pstmt.setInt(1, idProjeto);
+            pstmt.setInt(2, idEtapa);
             // Executa a query
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {
+                success = true;
                 System.out.println("Registro deletado com sucesso.");
             } else {
                 System.out.println("Nenhum registro encontrado para deletar.");
@@ -238,22 +241,27 @@ public class DetalhamentoSQLite {
                 System.out.println(ex.getMessage());
             }
         }
+
+        return success;
     }
 
-    public void deletarAtividade(int idAtividade) {
+    public boolean deletarAtividade(int idProjeto, int idAtividade) {
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
+        boolean success = false;
 
         try {
 
-            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE id_atividade = ?");
+            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE idProjeto = ? AND id_atividade = ?");
 
-            pstmt.setInt(1, idAtividade);
+            pstmt.setInt(1, idProjeto);
+            pstmt.setInt(2, idAtividade);
 
             System.out.println("RESULTADO DA QUERY :" +pstmt.toString());
             // Executa a query
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {
+                success = true;
                 System.out.println("Registro deletado com sucesso.");
             } else {
                 System.out.println("Nenhum registro encontrado para deletar.");
@@ -269,6 +277,8 @@ public class DetalhamentoSQLite {
                 System.out.println(ex.getMessage());
             }
         }
+
+        return success;
     }
 
 

@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import org.openjfx.precificacao.App;
@@ -367,20 +368,36 @@ public class DtlProjetoController {
 		agrupados.forEach((etapa, atividades) -> {
 			exibirEtapa(etapa, atividades);
 		});
+		Label totalDoProjeto = new Label("TOTAL DO PROJETO: " + projetoService.totalDoProjeto(projeto.getId()));
+		totalDoProjeto.getStyleClass().add("label-subtotal");
+		savedEtapasContainer.getChildren().add(totalDoProjeto);
 	}
 
 	private void exibirEtapa(String etapa, Map<String, List<DetalhamentoDTO>> atividades) {
 		Label labelEtapa = new Label("Etapa: " + etapa);
+		labelEtapa.getStyleClass().add("label-etapa");
+		// Faz a label ocupar todo o espaço disponível no HBox
+		HBox.setHgrow(labelEtapa, Priority.ALWAYS);
+		labelEtapa.setMaxWidth(Double.MAX_VALUE);
 		adicionarLogicaExclusaoEtapa(labelEtapa, etapa);
 		savedEtapasContainer.getChildren().add(labelEtapa);
 
 		atividades.forEach((atividade, profissionais) -> {
 			exibirAtividade(atividade, profissionais);
 		});
+
+		Label totalDaEtapa = new Label("Total da Etapa: ");
+		totalDaEtapa.getStyleClass().add("label-subtotal");
+		savedEtapasContainer.getChildren().add(totalDaEtapa);
+
 	}
 
 	private void exibirAtividade(String atividade, List<DetalhamentoDTO> profissionais) {
-		Label labelAtividade = new Label("  Atividade: " + atividade);
+		Label labelAtividade = new Label("Atividade: " + atividade);
+		labelAtividade.getStyleClass().add("label-atividades");
+		// Faz a label ocupar todo o espaço disponível no HBox
+		HBox.setHgrow(labelAtividade, Priority.ALWAYS);
+		labelAtividade.setMaxWidth(Double.MAX_VALUE);
 		savedEtapasContainer.getChildren().add(labelAtividade);
 
 		// Inicializa o subtotal da atividade
@@ -392,7 +409,7 @@ public class DtlProjetoController {
 		}
 
 		// Exibe o subtotal da atividade
-		Label labelSubtotalAtividade = new Label("  Subtotal da Atividade: R$ " + String.format("%.2f", sbtAtividade));
+		Label labelSubtotalAtividade = new Label("Subtotal da Atividade: R$ " + String.format("%.2f", sbtAtividade));
 		adicionarLogicaExclusaoAtividades(labelAtividade, atividade);
 		savedEtapasContainer.getChildren().add(labelSubtotalAtividade);
 	}
@@ -401,9 +418,13 @@ public class DtlProjetoController {
 		// Torna a variável detalhe efetivamente final
 		final DetalhamentoDTO detalheFinal = detalhe;
 
-		Label labelProfissional = new Label("    Profissional: " + detalheFinal.getNomeProfissional() +
+		Label labelProfissional = new Label("Profissional: " + detalheFinal.getNomeProfissional() +
 				" - Valor Hora: " + String.format("%.2f", detalheFinal.getValorHoras()) +
 				" - Valor Orçado: " + String.format("%.2f", detalheFinal.getHoras()));
+
+		labelProfissional.getStyleClass().add("label-profissionais");
+		HBox.setHgrow(labelProfissional, Priority.ALWAYS);
+		labelProfissional.setMaxWidth(Double.MAX_VALUE);
 
 		// Adiciona a lógica de clique para excluir o profissional
 		adicionarLogicaExclusaoProfissionais(labelProfissional, detalheFinal);
@@ -431,7 +452,7 @@ public class DtlProjetoController {
 			// Captura a resposta do usuário
 			alert.showAndWait().ifPresent(response -> {
 				if (response == buttonExcluir) {
-					removerEtapa(etapa);
+					removerEtapa(projeto.getId(),etapa);
 					exibirConfirmacaoExclusao();
 				}
 			});
@@ -454,7 +475,7 @@ public class DtlProjetoController {
 			// Captura a resposta do usuário
 			alert.showAndWait().ifPresent(response -> {
 				if (response == buttonExcluir) {
-					removerAtividade(atividade);
+					removerAtividade(projeto.getId(), atividade);
 					exibirConfirmacaoExclusao();
 				}
 			});
@@ -503,18 +524,18 @@ public class DtlProjetoController {
 
 	}
 
-	private void removerEtapa(String nomeEtapa) {
+	private void removerEtapa(int idProjeto, String nomeEtapa) {
 
 		int idEtapa = this.projetoService.buscarIdEtapaPorNome(nomeEtapa);
-		this.projetoService.deletarEtapa(idEtapa);
+		this.projetoService.deletarEtapa(idProjeto, idEtapa);
 		listaResultados();
 
 	}
 
-	private void removerAtividade(String nomeAtividade) {
+	private void removerAtividade(int idProjeto,String nomeAtividade) {
 
 		int idAtividade = this.projetoService.buscarIdAtividadePorNome(nomeAtividade);
-		this.projetoService.deletarAtividade(idAtividade);
+		this.projetoService.deletarAtividade(idProjeto, idAtividade);
 		listaResultados();
 
 	}
