@@ -1,5 +1,7 @@
 package org.openjfx.precificacao.database;
 
+import org.openjfx.precificacao.dtos.EtapaDTO;
+import org.openjfx.precificacao.dtos.ProfissionalDTO;
 import org.openjfx.precificacao.models.Cliente;
 import org.openjfx.precificacao.models.Profissionais;
 
@@ -53,11 +55,11 @@ public class ProfissionaisSQLite {
     }
 
 
-    public void deletarProfissional(Profissionais profissional) {
+    public void deletarProfissional(int id) {
         Connection conn = SQLiteConnection.connect();
         try {
             PreparedStatement pstmt = conn.prepareStatement("DELETE FROM profissionais WHERE ID=?");
-            pstmt.setInt(1, profissional.getId());
+            pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -117,5 +119,61 @@ public class ProfissionaisSQLite {
         }
 
         return nome;
+    }
+
+    public int buscaIdProfissionalPorNome(String nome) {
+        int idProfissional = 0;
+        Connection conn = SQLiteConnection.connect();
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT id FROM profissionais WHERE nome =?")) {
+            pstmt.setString(1, nome);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    idProfissional = rs.getInt("id");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return idProfissional;
+    }
+
+
+    public List<ProfissionalDTO> totalPorProfissional(int idProjeto) {
+        List<ProfissionalDTO> profissionais = new ArrayList<>();
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet result = null;
+
+        try {
+            pstmt = conn.prepareStatement("SELECT d.id_profissional, p.nome, SUM(d.valor_hora * d.horas) AS total_por_profissional" +
+                    "FROM detalhamento d" +
+                    "INNER JOIN profissionais p ON d.id_profissional = p.id" +
+                    "WHERE d.id_projeto = ?" +
+                    "GROUP BY d.id_etapa, p.nome;");
+            pstmt.setInt(1, idProjeto);
+            result = pstmt.executeQuery();
+
+            while (result.next()) {
+                ProfissionalDTO profissional = new ProfissionalDTO();
+                profissional.setId(result.getInt("id_profissional"));
+                profissional.setNome(result.getString("nome"));
+                profissional.setTotalPorProfissionalProjeto(result.getFloat("total_por_profissional"));
+                profissionais.add(profissional);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return profissionais;
     }
 }

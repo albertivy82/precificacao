@@ -175,5 +175,102 @@ public class DetalhamentoSQLite {
         return result;
     }
 
+    public void deletarRegistro(int idProjeto, int idEtapa, int idAtividade, int idProfissional, float valorHoras, float horas) {
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+
+        try {
+            // Prepara a query DELETE com todos os parâmetros no WHERE
+            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE id_projeto = ? AND id_etapa = ? AND id_atividade = ? AND id_profissional = ? AND valor_hora = ? AND horas = ?");
+
+            // Define os valores dos parâmetros
+            pstmt.setInt(1, idProjeto);
+            pstmt.setInt(2, idEtapa);
+            pstmt.setInt(3, idAtividade);
+            pstmt.setInt(4, idProfissional);
+            pstmt.setFloat(5, valorHoras);
+            pstmt.setFloat(6, horas);
+
+            // Executa a query
+            int rowsDeleted = pstmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Registro deletado com sucesso.");
+            } else {
+                System.out.println("Nenhum registro encontrado para deletar.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
+    public void deletarEtapa(int idEtapa) {
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+
+        try {
+
+            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE id_etapa = ?");
+
+            pstmt.setInt(1, idEtapa);
+            // Executa a query
+            int rowsDeleted = pstmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Registro deletado com sucesso.");
+            } else {
+                System.out.println("Nenhum registro encontrado para deletar.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
+    public void deletarAtividade(int idAtividade) {
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+
+        try {
+
+            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE id_atividade = ?");
+
+            pstmt.setInt(1, idAtividade);
+
+            System.out.println("RESULTADO DA QUERY :" +pstmt.toString());
+            // Executa a query
+            int rowsDeleted = pstmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Registro deletado com sucesso.");
+            } else {
+                System.out.println("Nenhum registro encontrado para deletar.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
+
 
 }

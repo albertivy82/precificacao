@@ -86,11 +86,39 @@ public class ProjetoService {
         return this.etapas.etapaPorNome(idEtapa);
     }
     private String buscarNomeAtividadePorId(int idAtividade) {
-        return this.atividades.atividadePorNome(idAtividade);
+        return this.atividades.buscaNomeAtividadePorId(idAtividade);
     }
     private String buscarNomeProfissionalPorId(int idProfissional) {
         return this.profissionais.profissionalPorNome(idProfissional);
     }
+
+
+    public int buscarIdProjetoPorNome(String nome) {
+        return this.projetosBnaco.buscaIdProjetoPorNome(nome);
+    }
+    public int buscarIdEtapaPorNome(String nome) {
+        return this.etapas.buscaIdEtapaPorNome(nome);
+    }
+    public int buscarIdAtividadePorNome(String nome) {
+        return this.atividades.buscaIdAtividadePorNome(nome);
+    }
+    public int buscarIdProfissionalPorNome(String nome) {
+        return this.profissionais.buscaIdProfissionalPorNome(nome);
+    }
+
+    public void deletarRegistroDetalhamento(int idProjeto, int idEtapa, int idAtividade, int idProfissional, float valorHoras, float horas){
+        this.detalhamentos.deletarRegistro(idProjeto, idEtapa, idAtividade, idProfissional, valorHoras, horas);
+    }
+
+    public void deletarEtapa( int idEtapa){
+        this.detalhamentos.deletarEtapa(idEtapa);
+    }
+
+    public void deletarAtividade( int idAtividade){
+        this.detalhamentos.deletarAtividade(idAtividade);
+    }
+
+
 
 
 

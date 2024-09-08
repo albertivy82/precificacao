@@ -116,4 +116,42 @@ public class ProjetoSQLite{
     }
 
 
+    public int buscaIdProjetoPorNome(String projeto) {
+        int idProjeto = 0;
+        Connection conn = SQLiteConnection.connect();
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT id FROM projeto WHERE nome_projeto =?")) {
+            pstmt.setString(1, projeto);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    idProjeto = rs.getInt("id");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return idProjeto;
+    }
+
+    public Float totalDoProjeto(String projeto) {
+        float idProjeto = 0;
+        Connection conn = SQLiteConnection.connect();
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT SUM(valor_hora * horas) AS total_projeto FROM detalhamento WHERE id_projeto = ?"))
+        {
+            pstmt.setString(1, "nome_projeto");
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    idProjeto = rs.getInt("id");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return idProjeto;
+    }
+
+
 }

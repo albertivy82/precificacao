@@ -431,10 +431,7 @@ public class DtlProjetoController {
 			// Captura a resposta do usuário
 			alert.showAndWait().ifPresent(response -> {
 				if (response == buttonExcluir) {
-					// Lógica para remover o profissional da lista
-					//removerProfissional(labelProfissional, detalheFinal);
-
-					// Exibe uma mensagem de confirmação
+					removerEtapa(etapa);
 					exibirConfirmacaoExclusao();
 				}
 			});
@@ -457,10 +454,7 @@ public class DtlProjetoController {
 			// Captura a resposta do usuário
 			alert.showAndWait().ifPresent(response -> {
 				if (response == buttonExcluir) {
-					// Lógica para remover o profissional da lista
-					//removerProfissional(labelProfissional, detalheFinal);
-
-					// Exibe uma mensagem de confirmação
+					removerAtividade(atividade);
 					exibirConfirmacaoExclusao();
 				}
 			});
@@ -485,36 +479,51 @@ public class DtlProjetoController {
 			alert.showAndWait().ifPresent(response -> {
 				if (response == buttonExcluir) {
 					// Lógica para remover o profissional da lista
-					removerProfissional(labelProfissional, detalheFinal);
+					removerProfissional(detalheFinal);
 
-					// Exibe uma mensagem de confirmação
+					// Exibe uma mensagem de confirmação. É preciso incluir verificação!!!!!
 					exibirConfirmacaoExclusao();
 				}
 			});
 		});
 	}
 
-	private void removerProfissional(Label labelProfissional, DetalhamentoDTO detalheFinal) {
+	private void removerProfissional(DetalhamentoDTO detalheFinal) {
 
-		//buscarProjetoPorNome(detalheFinal.getNomeProjeto())
-		//buscarEtapaPorNome(detalheFinal.getNomeEtapa())
-		//buscarAtividadePorNome(detalheFinal.getNomeAtividade())
-		//buscarProfissionalPorNome(detalheFinal.getNomeProfissional())
-		//detalheFinal.getValorHoras())
-		//detalheFinal.getHoras())
+		int idProjeto = this.projetoService.buscarIdProjetoPorNome(detalheFinal.getNomeProjeto());
+		int idEtapa = this.projetoService.buscarIdEtapaPorNome(detalheFinal.getNomeEtapa());
+		int idAtividade = this.projetoService.buscarIdAtividadePorNome(detalheFinal.getNomeAtividade());
+		int idProfissional = this.projetoService.buscarIdProfissionalPorNome(detalheFinal.getNomeProfissional());
+		float totalHoras = detalheFinal.getValorHoras();
+		float horas = detalheFinal.getHoras();
 
-		// Remova o profissional da lista de profissionais (isso pode depender da estrutura da sua lista)
-		// Exemplo: profissionais.remove(detalheFinal); se você estiver manipulando uma lista local
+		this.projetoService.deletarRegistroDetalhamento(idProjeto, idEtapa, idAtividade, idProfissional, totalHoras, horas);
 
-		// Atualiza a interface removendo o label do profissional excluído
-		savedEtapasContainer.getChildren().remove(labelProfissional);
+		listaResultados();
+
+	}
+
+	private void removerEtapa(String nomeEtapa) {
+
+		int idEtapa = this.projetoService.buscarIdEtapaPorNome(nomeEtapa);
+		this.projetoService.deletarEtapa(idEtapa);
+		listaResultados();
+
+	}
+
+	private void removerAtividade(String nomeAtividade) {
+
+		int idAtividade = this.projetoService.buscarIdAtividadePorNome(nomeAtividade);
+		this.projetoService.deletarAtividade(idAtividade);
+		listaResultados();
+
 	}
 
 	private void exibirConfirmacaoExclusao() {
 		Alert confirmacao = new Alert(Alert.AlertType.INFORMATION);
 		confirmacao.setTitle("Confirmação");
 		confirmacao.setHeaderText(null);
-		confirmacao.setContentText("Profissional excluído com sucesso.");
+		confirmacao.setContentText("Item excluído com sucesso.");
 		confirmacao.showAndWait();
 	}
 

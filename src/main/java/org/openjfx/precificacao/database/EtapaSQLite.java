@@ -1,5 +1,7 @@
 package org.openjfx.precificacao.database;
 
+import org.openjfx.precificacao.dtos.AtividadeDTO;
+import org.openjfx.precificacao.dtos.EtapaDTO;
 import org.openjfx.precificacao.models.Etapa;
 
 import java.sql.Connection;
@@ -58,5 +60,75 @@ public class EtapaSQLite {
         }
 
         return etapa;
+    }
+
+    public void deletarEtapa(int id) {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM etapas WHERE ID=?");
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
+
+
+    public int buscaIdEtapaPorNome(String etapa) {
+        int idEtapa = 0;
+        Connection conn = SQLiteConnection.connect();
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT id FROM etapas WHERE etapa =?")) {
+            pstmt.setString(1, etapa);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    idEtapa = rs.getInt("id");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return idEtapa;
+    }
+
+
+    public List<EtapaDTO> totalPorEtapa(int idProjeto) {
+        List<EtapaDTO> etapas = new ArrayList<>();
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet result = null;
+
+        try {
+            pstmt = conn.prepareStatement("SELECT d.id_etapa, e.etapa, SUM(d.valor_hora * d.horas) AS total_por_etapa" +
+                    "FROM detalhamento d" +
+                    "INNER JOIN etapas e ON d.id_etapa = e.id" +
+                    "WHERE d.id_projeto = ?" +
+                    "GROUP BY d.id_etapa, e.etapa;");
+            pstmt.setInt(1, idProjeto);
+            result = pstmt.executeQuery();
+
+            while (result.next()) {
+                EtapaDTO etapa = new EtapaDTO();
+                etapa.setId(result.getInt("id_etapa"));
+                etapa.setEtapa(result.getString("etapa"));
+                etapa.setTotalPorEtapaProjeto(result.getFloat("total_por_etapa"));
+                etapas.add(etapa);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return etapas;
     }
 }

@@ -149,7 +149,7 @@ public class ProfissionaisController {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                profissionaisDB.deletarProfissional(profissionalEscolhido);
+                profissionaisDB.deletarProfissional(profissionalEscolhido.getId());
                 updateList();
             }
         } else {

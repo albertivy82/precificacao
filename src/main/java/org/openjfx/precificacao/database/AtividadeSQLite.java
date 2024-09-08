@@ -1,5 +1,6 @@
 package org.openjfx.precificacao.database;
 
+import org.openjfx.precificacao.dtos.AtividadeDTO;
 import org.openjfx.precificacao.models.Atividade;
 
 import java.sql.Connection;
@@ -63,6 +64,19 @@ public class AtividadeSQLite {
         return atividade;
     }
 
+    public void deletarAtividde(int id) {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM atividades WHERE ID=?");
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
+
     // Método para buscar o ID da atividade pelo nome
     public int buscaIdAtividadePorNome(String atividade) {
         int idAtividade = 0;
@@ -83,22 +97,24 @@ public class AtividadeSQLite {
     }
 
     // Método solicitado para buscar o total por atividade para um projeto específico
-    public List<Atividade> totalPorAtividade(int idProjeto) {
-        List<Atividade> atividades = new ArrayList<>();
+    public List<AtividadeDTO> totalPorAtividade(int idProjeto) {
+        List<AtividadeDTO> atividades = new ArrayList<>();
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
         ResultSet result = null;
 
         try {
-            pstmt = conn.prepareStatement("SELECT id_atividade, SUM(valor_hora * horas) AS total_por_atividade " +
-                    "FROM detalhamento WHERE id_projeto = ? GROUP BY id_atividade");
+            pstmt = conn.prepareStatement("SELECT d.id_atividade, a.atividade, SUM(d.valor_hora * d.horas) " +
+                    "AS total_por_atividade FROM detalhamento INNER JOIN atividades a ON d.id_etapa = a.id " +
+                    "WHERE d.id_projeto = ? GROUP BY d.id_atividade, a.atividade");
             pstmt.setInt(1, idProjeto);
             result = pstmt.executeQuery();
 
             while (result.next()) {
-                Atividade atividade = new Atividade();
-                atividade.setId(result.getInt("id_atividade"));
-               // atividade.setTotalPorAtividade(result.getFloat("total_por_atividade")); // Supondo que a classe Atividade tenha esse campo
+                AtividadeDTO atividade = new AtividadeDTO();
+                atividade.setId(result.getInt("atividade"));
+                atividade.setAtividade(result.getString("id_atividade"));
+                atividade.setTotalPorAtiidadeProjeto(result.getFloat("total_por_atividade"));
                 atividades.add(atividade);
             }
 
