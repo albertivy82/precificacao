@@ -16,6 +16,7 @@ import org.openjfx.precificacao.dtos.DetalhamentoDTO;
 import org.openjfx.precificacao.models.*;
 import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.ProjetoService;
+import org.openjfx.precificacao.shared.FormatadorMoeda;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
 
 import java.sql.SQLException;
@@ -50,6 +51,11 @@ public class DtlProjetoController {
 	private ComboBox<Etapa> etapaComboBox;
 
 	@FXML
+	protected void btnMain(ActionEvent e){
+		App.mudarTela("DashBoard");
+	};
+
+	@FXML
 	protected void btnClientes(ActionEvent e) {
 		App.mudarTela("Clientes");
 	};
@@ -73,18 +79,27 @@ public class DtlProjetoController {
 	protected VBox savedEtapasContainer;
 
 
-
-
 	@FXML
-	void initialize(){
+	void initialize() throws SQLException {
 		this.projetoService = new ProjetoService();
 		populaLista();
 		identificacaoProjeto();
 		listaResultados();
+		atualizarStatusBtnPrecificar();
+
 	}
 
 	@FXML
 	private VBox dynamicAtvivityContainer;
+
+	@FXML
+	private Button btnPrecificar;
+
+	private void atualizarStatusBtnPrecificar() {
+		float ttProjeto = projetoService.totalDoProjeto(projeto.getId());
+		btnPrecificar.setDisable(ttProjeto <= 0);
+	}
+
 
 
 
@@ -337,6 +352,8 @@ public class DtlProjetoController {
 		try {
 			salvarEtapas();
 			listaResultados();
+			identificacaoProjeto();
+			atualizarStatusBtnPrecificar();
 		} catch (SQLException ex) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Erro");
@@ -356,27 +373,37 @@ public class DtlProjetoController {
 		dynamicAtvivityContainer.getChildren().clear();
 	}
 
-	public void listaResultados(){
+	public void listaResultados() throws SQLException {
 		Map<String, Map<String, List<DetalhamentoDTO>>> etapasAgrupadas = projetoService.etapasSalvas(projeto.getId());
 		exibirDetalhamentos(etapasAgrupadas);
 	}
 
 
-	public void exibirDetalhamentos(Map<String, Map<String, List<DetalhamentoDTO>>> agrupados) {
+	public void exibirDetalhamentos(Map<String, Map<String, List<DetalhamentoDTO>>> agrupados) throws SQLException {
 		savedEtapasContainer.getChildren().clear(); // Limpa o container de etapas previamente exibido
 
 		agrupados.forEach((etapa, atividades) -> {
 			exibirEtapa(etapa, atividades);
 		});
-		Label totalDoProjeto = new Label("TOTAL DO PROJETO: " + projetoService.totalDoProjeto(projeto.getId()));
-		totalDoProjeto.getStyleClass().add("label-subtotal");
+
+		float ttProjeto = projetoService.totalDoProjeto(projeto.getId());
+		Label totalDoProjeto = new Label("TOTAL DO PROJETO: " + FormatadorMoeda.formatarValorComoMoeda(ttProjeto));
+		if(ttProjeto>0){
+			projeto.setStatus("Orçado");
+			projetoService.statusProjeto(projeto);
+		}else{
+			projeto.setStatus("Cadastrado");
+			projetoService.statusProjeto(projeto);
+
+		}
+		totalDoProjeto.getStyleClass().add("label-subtotal-tt");
 		savedEtapasContainer.getChildren().add(totalDoProjeto);
 	}
 
 	private void exibirEtapa(String etapa, Map<String, List<DetalhamentoDTO>> atividades) {
 		Label labelEtapa = new Label("Etapa: " + etapa);
 		labelEtapa.getStyleClass().add("label-etapa");
-		// Faz a label ocupar todo o espaço disponível no HBox
+
 		HBox.setHgrow(labelEtapa, Priority.ALWAYS);
 		labelEtapa.setMaxWidth(Double.MAX_VALUE);
 		adicionarLogicaExclusaoEtapa(labelEtapa, etapa);
@@ -386,8 +413,11 @@ public class DtlProjetoController {
 			exibirAtividade(atividade, profissionais);
 		});
 
-		Label totalDaEtapa = new Label("Total da Etapa: ");
-		totalDaEtapa.getStyleClass().add("label-subtotal");
+
+		int idEtapa = this.projetoService.buscarIdEtapaPorNome(etapa);
+
+		Label totalDaEtapa = new Label("subtotal da Etapa: " + FormatadorMoeda.formatarValorComoMoeda(projetoService.totalEtapaPeloId(projeto.getId(), idEtapa)));
+		totalDaEtapa.getStyleClass().add("label-subtotal-etp");
 		savedEtapasContainer.getChildren().add(totalDaEtapa);
 
 	}
@@ -395,7 +425,7 @@ public class DtlProjetoController {
 	private void exibirAtividade(String atividade, List<DetalhamentoDTO> profissionais) {
 		Label labelAtividade = new Label("Atividade: " + atividade);
 		labelAtividade.getStyleClass().add("label-atividades");
-		// Faz a label ocupar todo o espaço disponível no HBox
+
 		HBox.setHgrow(labelAtividade, Priority.ALWAYS);
 		labelAtividade.setMaxWidth(Double.MAX_VALUE);
 		savedEtapasContainer.getChildren().add(labelAtividade);
@@ -409,8 +439,10 @@ public class DtlProjetoController {
 		}
 
 		// Exibe o subtotal da atividade
-		Label labelSubtotalAtividade = new Label("Subtotal da Atividade: R$ " + String.format("%.2f", sbtAtividade));
+		Label labelSubtotalAtividade = new Label("Subtotal da Atividade: " + FormatadorMoeda.formatarValorComoMoeda(sbtAtividade));
+		labelSubtotalAtividade.getStyleClass().add("label-subtotal-atv");
 		adicionarLogicaExclusaoAtividades(labelAtividade, atividade);
+		
 		savedEtapasContainer.getChildren().add(labelSubtotalAtividade);
 	}
 
@@ -452,7 +484,22 @@ public class DtlProjetoController {
 			// Captura a resposta do usuário
 			alert.showAndWait().ifPresent(response -> {
 				if (response == buttonExcluir) {
-					removerEtapa(projeto.getId(),etapa);
+                    try {
+                        removerEtapa(projeto.getId(),etapa);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+					float ttProjeto = projetoService.totalDoProjeto(projeto.getId());
+					if(ttProjeto==0){
+                        try {
+							projeto.setStatus("Cadastrado");
+                            projetoService.statusProjeto(projeto);
+							atualizarStatusBtnPrecificar();
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    identificacaoProjeto();
 					exibirConfirmacaoExclusao();
 				}
 			});
@@ -475,8 +522,12 @@ public class DtlProjetoController {
 			// Captura a resposta do usuário
 			alert.showAndWait().ifPresent(response -> {
 				if (response == buttonExcluir) {
-					removerAtividade(projeto.getId(), atividade);
-					exibirConfirmacaoExclusao();
+                    try {
+                        removerAtividade(projeto.getId(), atividade);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    exibirConfirmacaoExclusao();
 				}
 			});
 		});
@@ -500,16 +551,20 @@ public class DtlProjetoController {
 			alert.showAndWait().ifPresent(response -> {
 				if (response == buttonExcluir) {
 					// Lógica para remover o profissional da lista
-					removerProfissional(detalheFinal);
+                    try {
+                        removerProfissional(detalheFinal);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
 
-					// Exibe uma mensagem de confirmação. É preciso incluir verificação!!!!!
+                    // Exibe uma mensagem de confirmação. É preciso incluir verificação!!!!!
 					exibirConfirmacaoExclusao();
 				}
 			});
 		});
 	}
 
-	private void removerProfissional(DetalhamentoDTO detalheFinal) {
+	private void removerProfissional(DetalhamentoDTO detalheFinal) throws SQLException {
 
 		int idProjeto = this.projetoService.buscarIdProjetoPorNome(detalheFinal.getNomeProjeto());
 		int idEtapa = this.projetoService.buscarIdEtapaPorNome(detalheFinal.getNomeEtapa());
@@ -524,7 +579,7 @@ public class DtlProjetoController {
 
 	}
 
-	private void removerEtapa(int idProjeto, String nomeEtapa) {
+	private void removerEtapa(int idProjeto, String nomeEtapa) throws SQLException {
 
 		int idEtapa = this.projetoService.buscarIdEtapaPorNome(nomeEtapa);
 		this.projetoService.deletarEtapa(idProjeto, idEtapa);
@@ -532,7 +587,7 @@ public class DtlProjetoController {
 
 	}
 
-	private void removerAtividade(int idProjeto,String nomeAtividade) {
+	private void removerAtividade(int idProjeto,String nomeAtividade) throws SQLException {
 
 		int idAtividade = this.projetoService.buscarIdAtividadePorNome(nomeAtividade);
 		this.projetoService.deletarAtividade(idProjeto, idAtividade);
@@ -547,11 +602,6 @@ public class DtlProjetoController {
 		confirmacao.setContentText("Item excluído com sucesso.");
 		confirmacao.showAndWait();
 	}
-
-
-
-
-
 
 
 

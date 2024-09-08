@@ -1,7 +1,7 @@
 package org.openjfx.precificacao.database;
 
-import org.openjfx.precificacao.models.Detalhamento;
 import org.openjfx.precificacao.dtos.totalProfissionalPorProjetoDTO;
+import org.openjfx.precificacao.models.Detalhamento;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -117,7 +117,7 @@ public class DetalhamentoSQLite {
         Float totalProjeto = null;
 
         try {
-            pstmt = conn.prepareStatement("SELECT SUM(valor_hora * horas) AS total_projeto FROM detalhamento WHERE id_projeto = ?");
+            pstmt = conn.prepareStatement("SELECT SUM(horas) AS total_projeto FROM detalhamento WHERE id_projeto = ?");
             pstmt.setInt(1, idProjeto);
             result = pstmt.executeQuery();
            if (result.next()) {
@@ -146,7 +146,7 @@ public class DetalhamentoSQLite {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = conn.prepareStatement("SELECT p.nome, d.id_profissional, SUM(d.valor_hora * d.horas) AS total_por_profissional" +
+            pstmt = conn.prepareStatement("SELECT p.nome, d.id_profissional, SUM(d.horas) AS total_por_profissional" +
                     "FROM detalhamento d" +
                     "INNER JOIN profissionais p ON d.id_profissional = p.id_profissional" +
                     "WHERE d.id_projeto = ?" +
@@ -194,9 +194,9 @@ public class DetalhamentoSQLite {
             // Executa a query
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("Registro deletado com sucesso.");
+               // System.out.println("Registro deletado com sucesso.");
             } else {
-                System.out.println("Nenhum registro encontrado para deletar.");
+               // System.out.println("Nenhum registro encontrado para deletar.");
             }
 
         } catch (SQLException e) {
@@ -218,7 +218,7 @@ public class DetalhamentoSQLite {
 
         try {
 
-            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE idProjeto = ? AND  id_etapa = ?");
+            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE id_Projeto = ? AND  id_etapa = ?");
 
             pstmt.setInt(1, idProjeto);
             pstmt.setInt(2, idEtapa);
@@ -226,9 +226,9 @@ public class DetalhamentoSQLite {
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {
                 success = true;
-                System.out.println("Registro deletado com sucesso.");
+               // System.out.println("Registro deletado com sucesso.");
             } else {
-                System.out.println("Nenhum registro encontrado para deletar.");
+               // System.out.println("Nenhum registro encontrado para deletar.");
             }
 
         } catch (SQLException e) {
@@ -262,9 +262,9 @@ public class DetalhamentoSQLite {
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {
                 success = true;
-                System.out.println("Registro deletado com sucesso.");
+               // System.out.println("Registro deletado com sucesso.");
             } else {
-                System.out.println("Nenhum registro encontrado para deletar.");
+              //  System.out.println("Nenhum registro encontrado para deletar.");
             }
 
         } catch (SQLException e) {

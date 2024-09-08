@@ -1,9 +1,8 @@
 package org.openjfx.precificacao.controller;
 
-import org.openjfx.precificacao.App;
-
 import javafx.event.ActionEvent;
-import javafx.fxml.*;
+import javafx.fxml.FXML;
+import org.openjfx.precificacao.App;
 
 public class MainController {
 	

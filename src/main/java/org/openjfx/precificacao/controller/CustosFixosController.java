@@ -101,18 +101,16 @@ public class CustosFixosController {
             valid = false;
         }
         if (valorCustoInput.getText().trim().isEmpty()) {
-            showAlert("Valor Hora Vazio", "O campo valor hora não pode estar vazio.");
+            showAlert("Valor do custo vazio", "O campo valor não pode estar vazio.");
             valorCustoInput.requestFocus();
             valid = false;
         } else {
             try {
                 this.limpaMoeda = new LimparMoeda();
                 String valorHoraTexto = valorCustoInput.getText();
-                System.out.println("Valor hora input: " + valorHoraTexto);
                 this.valorCusto = this.limpaMoeda.LimpaMoeda(valorHoraTexto);
-                System.out.println("Valor hora trabalho: " + this.valorCusto);
             } catch (NumberFormatException e) {
-                showAlert("Valor Hora Inválido", "O campo valor hora deve ser um número válido.");
+                showAlert("Valor Inválido", "O campo valor deve ser um número válido.");
                 valorCustoInput.requestFocus();
                 valid = false;
             }
@@ -175,7 +173,7 @@ public class CustosFixosController {
                 itemCustoInput.setText(custoEscolhido.getItem());
                 valorCustoInput.setText(custoEscolhido.getItem());
                 this.id = custoEscolhido.getId();
-                System.out.println(this.id);
+                //System.out.println(this.id);
             }
 
         }else{

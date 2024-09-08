@@ -1,11 +1,5 @@
 package org.openjfx.precificacao.controller;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import org.openjfx.precificacao.App;
-import org.openjfx.precificacao.database.ProfissionaisSQLite;
-import org.openjfx.precificacao.models.Profissionais;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,7 +8,14 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import org.openjfx.precificacao.App;
+import org.openjfx.precificacao.database.ProfissionaisSQLite;
+import org.openjfx.precificacao.models.Profissionais;
 import org.openjfx.precificacao.service.LimparMoeda;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 public class ProfissionaisController {
 
@@ -57,6 +58,11 @@ public class ProfissionaisController {
     @FXML
     protected void btnClientes(ActionEvent e) {
         App.mudarTela("Clientes");
+    }
+
+    @FXML
+    protected void btnProjeto(ActionEvent e) {
+        App.mudarTela("Projeto");
     }
 
     @FXML
@@ -115,9 +121,9 @@ public class ProfissionaisController {
             try {
                 this.limpaMoeda = new LimparMoeda();
                 String valorHoraTexto = valorHoraInput.getText();
-                System.out.println("Valor hora input: " + valorHoraTexto);
+               // System.out.println("Valor hora input: " + valorHoraTexto);
                 this.valorHoraTrabalho = this.limpaMoeda.LimpaMoeda(valorHoraTexto);
-                System.out.println("Valor hora trabalho: " + this.valorHoraTrabalho);
+                //System.out.println("Valor hora trabalho: " + this.valorHoraTrabalho);
             } catch (NumberFormatException e) {
                 showAlert("Valor Hora Inválido", "O campo valor hora deve ser um número válido.");
                 valorHoraInput.requestFocus();

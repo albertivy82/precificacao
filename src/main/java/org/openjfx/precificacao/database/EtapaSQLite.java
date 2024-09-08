@@ -1,6 +1,5 @@
 package org.openjfx.precificacao.database;
 
-import org.openjfx.precificacao.dtos.AtividadeDTO;
 import org.openjfx.precificacao.dtos.EtapaDTO;
 import org.openjfx.precificacao.models.Etapa;
 
@@ -102,7 +101,7 @@ public class EtapaSQLite {
         ResultSet result = null;
 
         try {
-            pstmt = conn.prepareStatement("SELECT d.id_etapa, e.etapa, SUM(d.valor_hora * d.horas) AS total_por_etapa" +
+            pstmt = conn.prepareStatement("SELECT d.id_etapa, e.etapa, SUM(d.horas) AS total_por_etapa" +
                     "FROM detalhamento d" +
                     "INNER JOIN etapas e ON d.id_etapa = e.id" +
                     "WHERE d.id_projeto = ?" +
@@ -130,5 +129,36 @@ public class EtapaSQLite {
             }
         }
         return etapas;
+    }
+
+
+    public Float totalEtapaPorId(int idProjeto, int idEtapa) {
+        Float totalEtapa = null;
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet result = null;
+
+        try {
+            pstmt = conn.prepareStatement("SELECT SUM(horas) AS total_por_etapa FROM detalhamento WHERE id_Projeto = ? AND id_etapa = ?");
+            pstmt.setInt(1, idProjeto);
+            pstmt.setInt(2, idEtapa);
+            result = pstmt.executeQuery();
+
+            if (result.next()) {
+                totalEtapa = result.getFloat("total_por_etapa");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return totalEtapa;
     }
 }

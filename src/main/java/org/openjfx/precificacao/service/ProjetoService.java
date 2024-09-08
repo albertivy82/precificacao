@@ -2,10 +2,7 @@ package org.openjfx.precificacao.service;
 
 import org.openjfx.precificacao.database.*;
 import org.openjfx.precificacao.dtos.DetalhamentoDTO;
-import org.openjfx.precificacao.models.Atividade;
-import org.openjfx.precificacao.models.Detalhamento;
-import org.openjfx.precificacao.models.Etapa;
-import org.openjfx.precificacao.models.Profissionais;
+import org.openjfx.precificacao.models.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -120,6 +117,16 @@ public class ProjetoService {
     public float totalDoProjeto(int idProjeto) {
         return this.detalhamentos.totalPorProjeto(idProjeto);
     }
+
+   public float totalEtapaPeloId(int idProjeto, int idEtapa) {
+       return this.etapas.totalEtapaPorId(idProjeto, idEtapa);
+    }
+
+    public void statusProjeto(Projeto projeto) throws SQLException {
+       this.projetosBnaco.editarProjeto(projeto);
+
+    }
+
 
 
 

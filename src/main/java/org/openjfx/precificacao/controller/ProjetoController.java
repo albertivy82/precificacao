@@ -10,6 +10,7 @@ import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.database.ProjetoSQLite;
 import org.openjfx.precificacao.models.Projeto;
 import org.openjfx.precificacao.service.ClienteService;
+import org.openjfx.precificacao.service.ProjetoService;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
 
 import java.sql.SQLException;
@@ -26,6 +27,8 @@ public class ProjetoController {
 
     private int idCliente = -1;
 
+    private ProjetoService projetoService;
+
     @FXML
     private TextField nomeProjetolInput;
 
@@ -39,6 +42,7 @@ public class ProjetoController {
     void initialize() {
         updateList();
         populaLista();
+        this.projetoService = new ProjetoService();
     }
 
     private void showAlert(String title, String message) {
@@ -114,7 +118,7 @@ public class ProjetoController {
             if (camposEstaoValidos()) {
             Projeto novoProjeto = new Projeto();
             novoProjeto.setNomeProjeto(nomeProjetolInput.getText());
-            System.out.println(idCliente);
+           // System.out.println(idCliente);
             novoProjeto.setIdCliente(idCliente);
             novoProjeto.setStatus("Cadastrado");
 
@@ -236,7 +240,6 @@ public class ProjetoController {
         this.projetosDB = new ProjetoSQLite();
         LvProjetos.getItems().clear();
         List<Projeto> listaProjetos = this.projetosDB.all();
-        System.out.println(listaProjetos);
         listaProjetos.stream().forEach(projeto->LvProjetos.getItems().add(projeto));
 
     }

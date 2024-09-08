@@ -1,14 +1,5 @@
 package org.openjfx.precificacao.controller;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import org.openjfx.precificacao.App;
-import org.openjfx.precificacao.database.ClienteSQLite;
-import org.openjfx.precificacao.models.Cliente;
-import org.openjfx.precificacao.shared.CPFMaskedTextField;
-import org.openjfx.precificacao.shared.CPFValidator;
-import org.openjfx.precificacao.shared.TelefoneMaskedTextField;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +8,16 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import org.openjfx.precificacao.App;
+import org.openjfx.precificacao.database.ClienteSQLite;
+import org.openjfx.precificacao.models.Cliente;
+import org.openjfx.precificacao.shared.CPFMaskedTextField;
+import org.openjfx.precificacao.shared.CPFValidator;
+import org.openjfx.precificacao.shared.TelefoneMaskedTextField;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 
 public class ClienteController {
@@ -68,6 +69,11 @@ public class ClienteController {
 	protected void btnMain(ActionEvent e){
 		App.mudarTela("DashBoard");
 	};
+
+	@FXML
+	protected void btnProjeto(ActionEvent e) {
+		App.mudarTela("Projeto");
+	}
 
 	@FXML
 	protected void btnCustos(ActionEvent e) {

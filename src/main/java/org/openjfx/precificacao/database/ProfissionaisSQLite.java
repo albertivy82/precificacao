@@ -1,8 +1,6 @@
 package org.openjfx.precificacao.database;
 
-import org.openjfx.precificacao.dtos.EtapaDTO;
 import org.openjfx.precificacao.dtos.ProfissionalDTO;
-import org.openjfx.precificacao.models.Cliente;
 import org.openjfx.precificacao.models.Profissionais;
 
 import java.sql.Connection;

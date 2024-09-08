@@ -22,11 +22,11 @@
       <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
          <Button mnemonicParsing="false" styleClass="transparent-button" text="Inicio" disable="true"/>
          <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
-         <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
          <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
          <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" />
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" />
+         <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" disable="true"/>
       </VBox>
    </left>
 </BorderPane>

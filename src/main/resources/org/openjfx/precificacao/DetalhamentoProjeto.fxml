@@ -24,13 +24,13 @@
    </top>
    <left>
       <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Inicio" disable="true"/>
+         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio"/>
          <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
-         <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
          <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
          <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" />
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" />
+          <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" disable="true"/>
       </VBox>
    </left>
 
@@ -78,9 +78,12 @@
                </VBox>
             </content>
          </ScrollPane>
-         <HBox spacing="5">
-            <Label text="Clique sobre os itens para excluir"/>
-         </HBox>
+          <HBox fx:id="precificarContainer" spacing="5">
+              <Label text="↑Clique sobre os itens para excluir↑" style="-fx-font-style: italic; -fx-text-fill: red;"/>
+              <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+              <Button fx:id="btnPrecificar" text="Precificar >>>>" styleClass="button-precificar"/>
+          </HBox>
+
       </VBox>
    </center>
 </BorderPane>

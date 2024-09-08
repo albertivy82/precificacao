@@ -18,11 +18,13 @@
    </top>
    <left>
       <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio" />
-         <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes"/>
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Custos Fixos" disable="true"/>
+         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio"/>
+         <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
          <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
-         <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projeto" />
+         <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Custos Fixos" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" disable="true"/>
       </VBox>
    </left>
    <center>
@@ -36,13 +38,13 @@
               <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
                   <children>
                      <Label styleClass="label-style" text="Item:" />
-                     <TextField fx:id="itemCustoInput" promptText="Informe a profissião" styleClass="text-field-style" />
+                     <TextField fx:id="itemCustoInput" promptText="Informe o custo" styleClass="text-field-style" />
                   </children>
                </VBox>
                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
                   <children>
                      <Label styleClass="label-style" text="Valor:" />
-                     <MoedaMaskedTextField fx:id="valorCustoInput" promptText="Informe o valor por hora de trabalho" styleClass="text-field-style">
+                     <MoedaMaskedTextField fx:id="valorCustoInput" promptText="custo por mês" styleClass="text-field-style">
                         <padding>
                            <Insets right="100.0" />
                         </padding></MoedaMaskedTextField>

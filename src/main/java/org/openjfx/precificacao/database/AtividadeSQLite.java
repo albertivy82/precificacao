@@ -104,7 +104,7 @@ public class AtividadeSQLite {
         ResultSet result = null;
 
         try {
-            pstmt = conn.prepareStatement("SELECT d.id_atividade, a.atividade, SUM(d.valor_hora * d.horas) " +
+            pstmt = conn.prepareStatement("SELECT d.id_atividade, a.atividade, SUM(d.horas) " +
                     "AS total_por_atividade FROM detalhamento INNER JOIN atividades a ON d.id_etapa = a.id " +
                     "WHERE d.id_projeto = ? GROUP BY d.id_atividade, a.atividade");
             pstmt.setInt(1, idProjeto);

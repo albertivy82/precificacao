@@ -18,6 +18,13 @@
     -fx-font-weight: bold;
 }
 
+.button-precificar {
+    -fx-background-color: #ff4500; /* mesma cor de fundo */
+    -fx-text-fill: white; /* mesma cor do texto */
+    -fx-padding: 5px 10px; /* ajustes no padding para deixá-lo menor */
+    -fx-font-weight: bold; /* manter o texto em negrito */
+ }
+
 .transparent-button {
     -fx-background-color: none;
     -fx-text-fill: white;
@@ -116,8 +123,22 @@
    -fx-pref-width: 100%; /* Preenche a largura do container */
 }
 
-.label-subtotal {
+.label-subtotal-atv {
+   -fx-font-size: 12px; /* Tamanho da fonte um pouco maior */
+   -fx-text-fill: #ff4500; /* Cor do texto em cinza escuro suave */
+   -fx-font-style: italic; /* Itálico para dar ênfase */
+   -fx-alignment: center-right; /* Alinha o texto à direita */
+}
+
+.label-subtotal-etp {
    -fx-font-size: 14px; /* Tamanho da fonte um pouco maior */
+   -fx-text-fill: #ff4500; /* Cor do texto em cinza escuro suave */
+   -fx-font-style: italic; /* Itálico para dar ênfase */
+   -fx-alignment: center-right; /* Alinha o texto à direita */
+}
+
+.label-subtotal-tt {
+   -fx-font-size: 16px; /* Tamanho da fonte um pouco maior */
    -fx-font-weight: bold; /* Negrito para destaque */
    -fx-text-fill: #2F4F4F; /* Cor do texto em cinza escuro suave */
    -fx-font-style: italic; /* Itálico para dar ênfase */
