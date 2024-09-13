@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.PrecificacaoController">
+
+   <!-- Top - Logo -->
+   <top>
+      <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@/images/sindomar_logo.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+   </top>
+
+   <!-- Left - Sidebar with two sections -->
+   <left>
+      <VBox prefHeight="791.0" prefWidth="250.0" style="-fx-background-color: #d3d3d3;" spacing="20">
+         <!-- Top Section: Fixed Costs with Progress Bar -->
+         <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Custos Fixos" style="-fx-text-fill: white;" />
+            <ProgressBar fx:id="progressBarCustosFixos" prefWidth="120.0" progress="0.5" />
+            <HBox spacing="10">
+               <Button text="Calcular" />
+               <Button text="Resetar" />
+            </HBox>
+         </VBox>
+         <!-- Bottom Section: Two Checkboxes -->
+         <VBox spacing="10" style="-fx-padding: 10;">
+            <CheckBox text="Caixa de Marcar 1" style="-fx-text-fill: white;" />
+            <CheckBox text="Caixa de Marcar 2" style="-fx-text-fill: white;" />
+         </VBox>
+      </VBox>
+   </left>
+
+   <!-- Center - Main Content -->
+   <center>
+      <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+         <!-- Totals Display -->
+         <Label text="Total do Projeto" styleClass="header-label" />
+         <Label fx:id="totalProjetoLabel" text="R$ 0,00" styleClass="total-label" />
+
+         <Label text="Total de Custos Variáveis" styleClass="header-label" />
+         <Label fx:id="totalCustosVariaveisLabel" text="R$ 0,00" styleClass="total-label" />
+
+         <Label text="Total de Custos Fixos" styleClass="header-label" />
+         <Label fx:id="totalCustosFixosLabel" text="R$ 0,00" styleClass="total-label" />
+
+         <Label text="Total de Impostos" styleClass="header-label" />
+         <Label fx:id="totalImpostosLabel" text="R$ 0,00" styleClass="total-label" />
+
+         <Label text="Preço Total do Projeto" styleClass="header-label" />
+         <Label fx:id="precoTotalProjetoLabel" text="R$ 0,00" styleClass="total-label" />
+
+         <!-- Buttons at the bottom -->
+         <HBox alignment="CENTER" spacing="20">
+            <Button text="Voltar" />
+            <Button text="Salvar" />
+         </HBox>
+      </VBox>
+   </center>
+</BorderPane>

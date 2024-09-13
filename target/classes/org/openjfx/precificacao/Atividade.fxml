@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.AtividadeController">
+   <top>
+      <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;">
+         <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@/images/sindomar_logo.png" />
+            </image>
+         </ImageView>
+      </HBox>
+   </top>
+   <left>
+      <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
+         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio"/>
+         <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
+         <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
+         <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos"/>
+         <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
+         <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis" />
+         <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" disable="true"/>
+      </VBox>
+   </left>
+   <center>
+      <VBox alignment="CENTER" spacing="10">
+         <GridPane alignment="CENTER" hgap="10" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="534.0" minWidth="10.0" prefWidth="531.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="458.0" minWidth="10.0" prefWidth="202.0" />
+            </columnConstraints>
+            <children>
+               <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+                  <children>
+                     <Label styleClass="label-style" text="Nome da Etapa:" />
+                     <TextField fx:id="nomeAtividadeInput" promptText="Digite o nome da atividade" styleClass="text-field-style" />
+                  </children>
+               </VBox>
+                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+                  <children>
+                     <Label styleClass="label-style" text="Selecione a Etapa correspondente:" />
+                  </children>
+               </VBox>
+
+               <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="5">
+                  <children>
+                     <Button mnemonicParsing="false" onAction="#btnCadastrarAtividade" styleClass="button-style" text="Cadastrar" />
+                  </children>
+               </HBox>
+               <ComboBox fx:id="listaEtapas" prefHeight="25.0" prefWidth="547.0" GridPane.rowIndex="2" />
+            </children>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+
+         </GridPane>
+         <Label style="-fx-font-size: 16px; -fx-text-fill: #333;" text="LISTA DE ATIVIDADES" />
+         <ListView fx:id="LvAtividades" prefHeight="314.0" prefWidth="200.0" />
+               <HBox spacing="10" alignment="CENTER">
+                  <HBox spacing="10">
+                     <Button mnemonicParsing="false" onAction="#btnEditarAtividade" styleClass="button-style" text="Editar" />
+                     <Button mnemonicParsing="false" onAction="#btnDeletarAtividade" styleClass="button-style" text="Apagar" />
+                  </HBox>
+
+               </HBox>
+
+         <opaqueInsets>
+            <Insets right="15.0" />
+         </opaqueInsets>
+         <padding>
+            <Insets left="10.0" right="15.0" />
+         </padding>
+      </VBox>
+   </center>
+</BorderPane>

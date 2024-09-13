@@ -12,6 +12,37 @@ import java.util.List;
 
 public class EtapaSQLite {
 
+
+    public void novaEtapa(Etapa etapa) throws SQLException {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "INSERT INTO etapa (etapa) VALUES (?)");
+            pstmt.setString(1, etapa.getEtapa());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
+
+    // Método para editar uma etapa existente
+    public void editarEtapa(Etapa etapa) {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "UPDATE etapa SET etapa=? WHERE id=?");
+            pstmt.setString(1, etapa.getEtapa());
+            pstmt.setInt(2, etapa.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
+
     public List<Etapa> all() {
         List<Etapa> result = new ArrayList<>();
         Connection conn = SQLiteConnection.connect();
@@ -25,7 +56,7 @@ public class EtapaSQLite {
                 Etapa et = new Etapa();
                 et.setId(rs.getInt("id"));
                 et.setEtapa(rs.getString("etapa"));
-
+                System.out.println(et.getEtapa());
                 result.add(et);
             }
         } catch (SQLException e) {
@@ -160,5 +191,32 @@ public class EtapaSQLite {
             }
         }
         return totalEtapa;
+    }
+
+    public List<String> nomesEtapas() {
+        List<String> result = new ArrayList<>();
+        String sql = "SELECT etapa FROM etapas";
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                result.add(rs.getString("etapa"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return result;
     }
 }

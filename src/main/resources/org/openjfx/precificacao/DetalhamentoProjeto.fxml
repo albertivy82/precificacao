@@ -29,8 +29,9 @@
          <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
          <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
           <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" disable="true"/>
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" disable="true"/>
+          <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis"/>
+          <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
+          <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades"/>
       </VBox>
    </left>
 
@@ -81,7 +82,7 @@
           <HBox fx:id="precificarContainer" spacing="5">
               <Label text="↑Clique sobre os itens para excluir↑" style="-fx-font-style: italic; -fx-text-fill: red;"/>
               <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-              <Button fx:id="btnPrecificar" text="Precificar >>>>" styleClass="button-precificar"/>
+              <Button fx:id="btnPrecificar" text="Precificar >>>>" styleClass="button-precificar" onAction="#btnPrecificar"/>
           </HBox>
 
       </VBox>

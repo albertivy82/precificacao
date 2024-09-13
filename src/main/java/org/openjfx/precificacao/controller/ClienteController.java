@@ -90,6 +90,21 @@ public class ClienteController {
 		App.mudarTela("Projeto");
 	}
 
+	@FXML
+	protected void btnAtividade(ActionEvent e) {
+		App.mudarTela("Atividade");
+	}
+
+	@FXML
+	protected void btnCustosVariaveis(ActionEvent e) {
+		App.mudarTela("CustosVariaveis");
+	}
+
+	@FXML
+	protected void btnEtapas(ActionEvent e) {
+		App.mudarTela("Etapas");
+	}
+
 	
 	@FXML
 	protected void btnCadastrarCliente(ActionEvent e) {

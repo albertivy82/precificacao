@@ -74,6 +74,26 @@ public class ProjetoController {
     }
 
     @FXML
+    protected void btnAtividade(ActionEvent e) {
+        App.mudarTela("Atividade");
+    }
+
+    @FXML
+    protected void btnCustosVariaveis(ActionEvent e) {
+        App.mudarTela("CustosVariaveis");
+    }
+
+    @FXML
+    protected void btnEtapas(ActionEvent e) {
+        App.mudarTela("Etapas");
+    }
+
+
+
+
+
+
+    @FXML
     protected void btnDtlProjeto(ActionEvent e) {
 
       ObservableList<Projeto> projetoPEditar = LvProjetos.getSelectionModel().getSelectedItems();
@@ -118,7 +138,6 @@ public class ProjetoController {
             if (camposEstaoValidos()) {
             Projeto novoProjeto = new Projeto();
             novoProjeto.setNomeProjeto(nomeProjetolInput.getText());
-           // System.out.println(idCliente);
             novoProjeto.setIdCliente(idCliente);
             novoProjeto.setStatus("Cadastrado");
 

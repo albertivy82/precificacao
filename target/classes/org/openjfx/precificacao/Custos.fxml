@@ -23,8 +23,9 @@
          <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
          <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
          <Button mnemonicParsing="false" styleClass="transparent-button" text="Custos Fixos" disable="true"/>
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" disable="true"/>
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" disable="true"/>
+         <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis" />
+         <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
+         <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades"/>
       </VBox>
    </left>
    <center>
@@ -38,13 +39,13 @@
               <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
                   <children>
                      <Label styleClass="label-style" text="Item:" />
-                     <TextField fx:id="itemCustoInput" promptText="Informe a profissião" styleClass="text-field-style" />
+                     <TextField fx:id="itemCustoInput" promptText="Informe o custo" styleClass="text-field-style" />
                   </children>
                </VBox>
                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
                   <children>
                      <Label styleClass="label-style" text="Valor:" />
-                     <MoedaMaskedTextField fx:id="valorCustoInput" promptText="Informe o valor por hora de trabalho" styleClass="text-field-style">
+                     <MoedaMaskedTextField fx:id="valorCustoInput" promptText="custo por mês" styleClass="text-field-style">
                         <padding>
                            <Insets right="100.0" />
                         </padding></MoedaMaskedTextField>

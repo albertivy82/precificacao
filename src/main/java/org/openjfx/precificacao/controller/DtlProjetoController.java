@@ -76,6 +76,21 @@ public class DtlProjetoController {
 	}
 
 	@FXML
+	protected void btnAtividade(ActionEvent e) {
+		App.mudarTela("Atividade");
+	}
+
+	@FXML
+	protected void btnCustosVariaveis(ActionEvent e) {
+		App.mudarTela("CustosVariaveis");
+	}
+
+	@FXML
+	protected void btnEtapas(ActionEvent e) {
+		App.mudarTela("Etapas");
+	}
+
+	@FXML
 	protected VBox savedEtapasContainer;
 
 
@@ -93,7 +108,12 @@ public class DtlProjetoController {
 	private VBox dynamicAtvivityContainer;
 
 	@FXML
+	private void btnPrecificar(ActionEvent e) {
+		App.mudarTela("Precificacao");
+	}
+	@FXML
 	private Button btnPrecificar;
+
 
 	private void atualizarStatusBtnPrecificar() {
 		float ttProjeto = projetoService.totalDoProjeto(projeto.getId());
