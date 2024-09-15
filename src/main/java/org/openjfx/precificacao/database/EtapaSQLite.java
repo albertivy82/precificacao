@@ -56,7 +56,6 @@ public class EtapaSQLite {
                 Etapa et = new Etapa();
                 et.setId(rs.getInt("id"));
                 et.setEtapa(rs.getString("etapa"));
-                System.out.println(et.getEtapa());
                 result.add(et);
             }
         } catch (SQLException e) {

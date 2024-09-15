@@ -16,7 +16,7 @@ public class CustosVariaveis {
 
     @Override
     public String toString() {
-        return (item + ": "  + valor).toUpperCase();
+        return ("Item-"+id+": "+ item + " Valor Unitário: R$"  + valor).toUpperCase();
     }
 
 }

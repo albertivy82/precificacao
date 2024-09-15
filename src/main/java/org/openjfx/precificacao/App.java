@@ -71,6 +71,9 @@ public class App extends Application {
 				case "CustosVariaveis":
 					telaFxml = "CustosVariaveis";
 					break;
+				case "qnfrCustosVariaveis":
+					telaFxml = "qnfrCustosVariaveis";
+					break;
 	            default:
 	                System.err.println("Tela não reconhecida: " + outraTela);
 	                return;  // Encerra o método se o nome da tela não for reconhecido

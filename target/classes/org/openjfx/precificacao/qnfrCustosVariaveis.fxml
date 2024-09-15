@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.LancamentoCVController">
+
+   <!-- Top - Logo -->
+   <top>
+      <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@/images/sindomar_logo.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+   </top>
+
+   <!-- Left - Sidebar with buttons -->
+   <left>
+      <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;" spacing="10">
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Inicio" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Clientes" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Profissionais" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Projetos" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Custos Fixos" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Custos Variáveis" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" disable="true"/>
+      </VBox>
+   </left>
+
+   <!-- Center - Main Content -->
+   <center>
+      <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+
+         <!-- Detalhes do Projeto -->
+         <VBox spacing="5">
+            <Label fx:id="nomeProjetoLabel" text="..." />
+            <Label fx:id="clienteLabel" text="..." />
+            <Label fx:id="StatusLabel" text="..." />
+         </VBox>
+
+         <!-- ScrollPane to hold dynamically added items (custos variáveis) -->
+         <ScrollPane fx:id="custosScrollPane" fitToWidth="true" prefHeight="300.0" VBox.vgrow="ALWAYS">
+            <content>
+               <VBox fx:id="dynamicCustosContainer" spacing="10">
+                  <!-- HBoxes with dynamically added content will go here -->
+               </VBox>
+            </content>
+         </ScrollPane>
+
+         <!-- Total Display -->
+         <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 10;">
+            <Label text="Total:" styleClass="header-label"/>
+            <Label fx:id="totalLabel" text="R$ 0,00" styleClass="total-label"/>
+         </HBox>
+
+         <!-- Navigation buttons at the bottom -->
+         <HBox alignment="CENTER" spacing="20" style="-fx-padding: 10;">
+            <Button text="Voltar" />
+            <Button text="Custos Fixos" />
+            <Button text="Precificar" />
+         </HBox>
+      </VBox>
+   </center>
+</BorderPane>

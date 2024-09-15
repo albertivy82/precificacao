@@ -44,7 +44,7 @@
                </VBox>
                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
                   <children>
-                     <Label styleClass="label-style" text="Valor:" />
+                     <Label styleClass="label-style" text="Informe o Valor unitário do item:" />
                      <MoedaMaskedTextField fx:id="valorCustoInput" promptText="custo por mês" styleClass="text-field-style">
                         <padding>
                            <Insets right="100.0" />

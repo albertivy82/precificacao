@@ -28,6 +28,7 @@ import java.util.Set;
 public class DtlProjetoController {
 
 	Projeto projeto = ProjetoSingleton.getInstance().getProjeto();
+
 	private ProjetoService projetoService;
 	private ClienteService clienteService;
 	private List<Etapa> EtapasDoBanco;
@@ -88,6 +89,11 @@ public class DtlProjetoController {
 	@FXML
 	protected void btnEtapas(ActionEvent e) {
 		App.mudarTela("Etapas");
+	}
+
+	@FXML
+	protected void btnDetalharVariaveis(ActionEvent e) {
+		App.mudarTela("qnfrCustosVariaveis");
 	}
 
 	@FXML
