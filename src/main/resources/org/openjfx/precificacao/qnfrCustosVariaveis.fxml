@@ -64,9 +64,9 @@
 
          <!-- Navigation buttons at the bottom -->
          <HBox alignment="CENTER" spacing="20" style="-fx-padding: 10;">
-            <Button text="Voltar" />
-            <Button text="Custos Fixos" />
-            <Button text="Precificar" />
+            <Button text="Voltar" onAction="#btnVoltar" styleClass="button-style"/>
+            <Button text="Salvar" styleClass="button-style"/>
+            <Button text="Precificar" onAction="#btnPrecificar" styleClass="button-style"/>
          </HBox>
       </VBox>
    </center>

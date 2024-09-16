@@ -47,14 +47,12 @@ public class LancamentoCVController {
 	@FXML
 	private Label StatusLabel;
 
-	@FXML
-	private ComboBox<Etapa> etapaComboBox;
+
 
 	@FXML
-	protected VBox savedEtapasContainer;
-
-	@FXML
-	private VBox dynamicAtvivityContainer;
+	private void btnVoltar(ActionEvent e) {
+		App.mudarTela("DetalhamentoProjeto");
+	}
 
 	@FXML
 	private void btnPrecificar(ActionEvent e) {
@@ -85,27 +83,31 @@ public class LancamentoCVController {
 
 		List<CustosVariaveis> listaDeCustos = this.custosService.listaCustos();
 
-
 		// VBox principal para conter o custo
 		VBox custoVBox = new VBox(10);
+		custoVBox.getStyleClass().add("vbox-custos");
 
 		// HBox para organizar o item, quantidade, total e botão de exclusão
 		HBox custoBox = new HBox(10);
+		custoBox.getStyleClass().add("hbox-custos");
 
 		// Rótulo para o nome do custo variável
 		Label itemCusto = new Label(item.toString());
-		itemCusto.setPrefWidth(350); // Ajusta a largura do label para organizar melhor
+		itemCusto.setPrefWidth(350); // Ajusta a largura do label
+		itemCusto.getStyleClass().add("label-item-custo");
 
 		// Campo de entrada para a quantidade
 		TextField quantidade = new TextField();
-		quantidade.setPromptText("Quantidade");
-		quantidade.setPrefWidth(100); // Ajusta o tamanho da caixa de texto
+		quantidade.setPromptText("Qtd");
+		quantidade.setPrefWidth(80);
+		quantidade.getStyleClass().add("text-field-custo");
 
 		// Campo para armazenar o total (quantidade x valor unitário)
 		TextField total = new TextField();
 		total.setPromptText("Total");
-		total.setEditable(false); // Define como não editável, pois será calculado
-		total.setPrefWidth(150); // Define uma largura fixa para o campo total
+		total.setEditable(false);
+		total.setPrefWidth(80);
+		total.getStyleClass().add("text-field-custo");
 
 		// Listener para calcular o total automaticamente ao inserir a quantidade
 		quantidade.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -113,18 +115,25 @@ public class LancamentoCVController {
 				float qtd = Float.parseFloat(newValue);
 				total.setText("R$ " + String.format("%.2f", qtd * item.getValor()));
 			} catch (NumberFormatException e) {
-				total.setText("R$ 0,00"); // Se o valor não for numérico, define o total como 0
+				total.setText("R$ 0,00");
 			}
 		});
 
+		// Campo de entrada para a observação
+		TextField obs = new TextField();
+		obs.setPromptText("Observação (opcional)");
+		obs.setPrefWidth(200);
+		obs.getStyleClass().add("text-field-custo");
+
 		// Botão de exclusão para remover o item da lista
 		Button btnExcluir = new Button("x");
+		btnExcluir.getStyleClass().add("button-excluir");
 		btnExcluir.setOnAction(event -> {
 			dynamicCustosContainer.getChildren().remove(custoVBox);
 		});
 
 		// Adiciona todos os elementos ao HBox
-		custoBox.getChildren().addAll(itemCusto, quantidade, total, btnExcluir);
+		custoBox.getChildren().addAll(itemCusto, quantidade, total, obs, btnExcluir);
 
 		// Adiciona o HBox à VBox principal
 		custoVBox.getChildren().add(custoBox);
@@ -132,6 +141,7 @@ public class LancamentoCVController {
 		// Adiciona o VBox ao container principal (dynamicCustosContainer)
 		dynamicCustosContainer.getChildren().add(custoVBox);
 	}
+
 
 	// Método para adicionar vários custos, um por vez
 	private void adicionarCustos(List<CustosVariaveis> listaDeCustos) {
