@@ -9,7 +9,7 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.MainController">
 
    <top>
-      <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
+      <HBox prefHeight="90" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
               <image>

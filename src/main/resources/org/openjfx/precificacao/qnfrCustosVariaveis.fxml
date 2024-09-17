@@ -11,7 +11,7 @@
 
    <!-- Top - Logo -->
    <top>
-      <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
+      <HBox prefHeight="90" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
                <image>

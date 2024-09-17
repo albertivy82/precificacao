@@ -15,7 +15,7 @@ public class Detalhamento {
     private int idEtapa;
     private int idAtividade;
     private int idProfissional;
-     private Float valorHora;
+    private Float valorHora;
     private Float horas;
 
     @Override

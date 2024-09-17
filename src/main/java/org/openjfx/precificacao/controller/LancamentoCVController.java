@@ -1,35 +1,27 @@
 package org.openjfx.precificacao.controller;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.util.StringConverter;
 import org.openjfx.precificacao.App;
-import org.openjfx.precificacao.dtos.DetalhamentoDTO;
 import org.openjfx.precificacao.models.*;
 import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.CustosService;
 import org.openjfx.precificacao.service.ProjetoService;
-import org.openjfx.precificacao.shared.FormatadorMoeda;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
 
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class LancamentoCVController {
 
 	Projeto projeto = ProjetoSingleton.getInstance().getProjeto();
 
+	private Set<LancamentoCV> lacamentos;
 	private ProjetoService projetoService;
 	private CustosService custosService;
 	private ClienteService clienteService;
@@ -67,6 +59,7 @@ public class LancamentoCVController {
 
 	@FXML
 	void initialize() throws SQLException {
+		this.lacamentos = new HashSet<>();
 		this.projetoService = new ProjetoService();
 		this.custosService = new CustosService();
 		//manter a identificação do projeto
@@ -80,6 +73,8 @@ public class LancamentoCVController {
 	}
 
 	private void adicionarNovoCusto(CustosVariaveis item) {
+
+		LancamentoCV lancamento = new LancamentoCV();
 
 		List<CustosVariaveis> listaDeCustos = this.custosService.listaCustos();
 
@@ -112,8 +107,28 @@ public class LancamentoCVController {
 		// Listener para calcular o total automaticamente ao inserir a quantidade
 		quantidade.textProperty().addListener((observable, oldValue, newValue) -> {
 			try {
-				float qtd = Float.parseFloat(newValue);
-				total.setText("R$ " + String.format("%.2f", qtd * item.getValor()));
+				if (newValue == null || newValue.trim().isEmpty()) {
+					// Remover o lançamento correspondente se a quantidade for apagada
+					lacamentos.remove(lancamento);
+					System.out.println("Lançamento removido:");
+					lacamentos.stream()
+							.map(LancamentoCV::toString)
+							.forEach(System.out::println);
+				} else {
+					float qtd = Float.parseFloat(newValue);
+					total.setText("R$ " + String.format("%.2f", qtd * item.getValor()));
+					if (qtd > 0) {
+						lancamento.setIdProjeto(projeto.getId());
+						lancamento.setIdCustoVariavel(item.getId());
+						lancamento.setValorUnitario(item.getValor());
+						lancamento.setQuantidade(qtd);
+						lacamentos.add(lancamento);
+						System.out.println("Lançamento adicionado:");
+						lacamentos.stream()
+								.map(LancamentoCV::toString)
+								.forEach(System.out::println);
+					}
+				}
 			} catch (NumberFormatException e) {
 				total.setText("R$ 0,00");
 			}
@@ -161,7 +176,7 @@ public class LancamentoCVController {
 	}
 
 	@FXML
-	protected void btnCadatrarEtapas(ActionEvent e) {
+	protected void btnCadatrarLancamento(ActionEvent e) {
 		//Lógica para salvar
 	}
 
