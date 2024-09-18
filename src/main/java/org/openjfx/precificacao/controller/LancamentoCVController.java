@@ -21,10 +21,11 @@ public class LancamentoCVController {
 
 	Projeto projeto = ProjetoSingleton.getInstance().getProjeto();
 
-	private Set<LancamentoCV> lacamentos;
+	private Set<LancamentoCV> lancamentos;
 	private ProjetoService projetoService;
 	private CustosService custosService;
 	private ClienteService clienteService;
+	List<CustosVariaveis> listaDeCustos;
 	//private Set<CustosProjeto> listaDeItens = new HashSet<>();
 	private float totalAtividade;
 
@@ -38,6 +39,9 @@ public class LancamentoCVController {
 
 	@FXML
 	private Label StatusLabel;
+
+	@FXML
+	private ListView<LancamentoCV> LvLancamentos;
 
 
 
@@ -59,16 +63,17 @@ public class LancamentoCVController {
 
 	@FXML
 	void initialize() throws SQLException {
-		this.lacamentos = new HashSet<>();
+		this.lancamentos = new HashSet<>();
 		this.projetoService = new ProjetoService();
 		this.custosService = new CustosService();
 		//manter a identificação do projeto
 		identificacaoProjeto();
 		// Exemplo de chamada do método adicionarCustos no initialize
-		List<CustosVariaveis> listaDeCustos = this.custosService.listaCustos();
+		this.listaDeCustos = this.custosService.listaCustos();
 
 		// Adiciona todos os custos ao container
 		adicionarCustos(listaDeCustos);
+		updateList();
 
 	}
 
@@ -109,11 +114,8 @@ public class LancamentoCVController {
 			try {
 				if (newValue == null || newValue.trim().isEmpty()) {
 					// Remover o lançamento correspondente se a quantidade for apagada
-					lacamentos.remove(lancamento);
-					System.out.println("Lançamento removido:");
-					lacamentos.stream()
-							.map(LancamentoCV::toString)
-							.forEach(System.out::println);
+					lancamentos.remove(lancamento);
+
 				} else {
 					float qtd = Float.parseFloat(newValue);
 					total.setText("R$ " + String.format("%.2f", qtd * item.getValor()));
@@ -122,11 +124,8 @@ public class LancamentoCVController {
 						lancamento.setIdCustoVariavel(item.getId());
 						lancamento.setValorUnitario(item.getValor());
 						lancamento.setQuantidade(qtd);
-						lacamentos.add(lancamento);
-						System.out.println("Lançamento adicionado:");
-						lacamentos.stream()
-								.map(LancamentoCV::toString)
-								.forEach(System.out::println);
+						lancamentos.add(lancamento);
+
 					}
 				}
 			} catch (NumberFormatException e) {
@@ -176,8 +175,34 @@ public class LancamentoCVController {
 	}
 
 	@FXML
-	protected void btnCadatrarLancamento(ActionEvent e) {
-		//Lógica para salvar
+	protected void btnCadatrarLancamento(ActionEvent e) throws SQLException {
+
+			try {
+				this.custosService.cadastrarLancamento(this.lancamentos);
+				this.lancamentos.clear();
+				dynamicCustosContainer.getChildren().clear();
+				adicionarCustos(listaDeCustos);
+				updateList();
+				//listaResultados();
+				//identificacaoProjeto();
+				//atualizarStatusBtnPrecificar();
+			} catch (SQLException ex) {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Erro");
+				alert.setHeaderText("Ocorreu um erro ao salvar as etapas.");
+				alert.setContentText(ex.getMessage());
+				alert.showAndWait();
+			}
+
+	}
+
+	private void updateList() throws SQLException {
+
+		LvLancamentos.getItems().clear();
+		List<LancamentoCV> listaLancamentos = this.custosService.listagem();
+		System.out.println(listaLancamentos);
+		listaLancamentos.stream().forEach(c-> LvLancamentos.getItems().add(c));
+
 	}
 
 
