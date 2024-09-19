@@ -1,5 +1,6 @@
 package org.openjfx.precificacao.database;
 
+import org.openjfx.precificacao.dtos.totalProfissionalPorProjetoDTO;
 import org.openjfx.precificacao.models.LancamentoCV;
 
 import java.sql.Connection;
@@ -19,12 +20,13 @@ public class LancamentoCVSQLite {
         try {
                 for(LancamentoCV item : lancamentos) {
                     PreparedStatement pstmt = conn.prepareStatement(
-                            "INSERT INTO lancamento_cv (id_projeto, id_custo_variavel, valor_unitario, quantidade, obs) VALUES (?, ?, ?, ?, ?)");
+                            "INSERT INTO lancamento_cv (id_projeto, id_custo_variavel, nome_custo, valor_unitario, quantidade, obs) VALUES (?, ?, ?, ?, ?, ?)");
                     pstmt.setInt(1, item.getIdProjeto());
                     pstmt.setInt(2, item.getIdCustoVariavel());
-                    pstmt.setFloat(3, item.getValorUnitario());
-                    pstmt.setFloat(4, item.getQuantidade());
-                    pstmt.setString(5, item.getObs());
+                    pstmt.setString(3, item.getNomeCusto());
+                    pstmt.setFloat(4, item.getValorUnitario());
+                    pstmt.setFloat(5, item.getQuantidade());
+                    pstmt.setString(6, item.getObs());
                     pstmt.executeUpdate();
                 }
             } catch (SQLException e) {
@@ -42,7 +44,7 @@ public class LancamentoCVSQLite {
 
         try {
             if (conn != null) {
-                pstmt = conn.prepareStatement("SELECT id, id_projeto, id_custo_variavel, valor_unitario, quantidade, obs FROM lancamento_cv");
+                pstmt = conn.prepareStatement("SELECT id, id_projeto, id_custo_variavel, nome_custo, valor_unitario, quantidade, obs FROM lancamento_cv");
                 rs = pstmt.executeQuery();
 
                 while (rs.next()) {
@@ -50,6 +52,7 @@ public class LancamentoCVSQLite {
                     lcv.setId(rs.getInt("id"));
                     lcv.setIdProjeto(rs.getInt("id_projeto"));
                     lcv.setIdCustoVariavel(rs.getInt("id_custo_variavel"));
+                    lcv.setNomeCusto(rs.getString("nome_custo"));
                     lcv.setValorUnitario(rs.getFloat("valor_unitario"));
                     lcv.setQuantidade(rs.getFloat("quantidade"));
                     lcv.setObs(rs.getString("obs"));
@@ -89,6 +92,7 @@ public class LancamentoCVSQLite {
                 lcv.setId(rs.getInt("id"));
                 lcv.setIdProjeto(rs.getInt("id_projeto"));
                 lcv.setIdCustoVariavel(rs.getInt("id_custo_variavel"));
+                lcv.setNomeCusto(rs.getString("nome_custo"));
                 lcv.setValorUnitario(rs.getFloat("valor_unitario"));
                 lcv.setQuantidade(rs.getFloat("quantidade"));
                 lcv.setObs(rs.getNString("obs"));
@@ -121,7 +125,7 @@ public class LancamentoCVSQLite {
             pstmt.setInt(1, idProjeto);
             result = pstmt.executeQuery();
            if (result.next()) {
-                totalProjeto = result.getFloat("total_projeto");
+                totalProjeto = result.getFloat("total_lancamentos");
             }
 
         } catch (SQLException e) {
@@ -152,6 +156,10 @@ public class LancamentoCVSQLite {
             SQLiteConnection.closeConnection(conn);
         }
     }
+
+
+
+
 
 
 

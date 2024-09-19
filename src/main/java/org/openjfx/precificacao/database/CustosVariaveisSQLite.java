@@ -95,4 +95,24 @@ public class CustosVariaveisSQLite {
         return result;
     }
 
+    public String custoPorNome(int idCusto) {
+        String nome = "";
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT item FROM custos_variaveis WHERE ID=?");
+            pstmt.setInt(1, idCusto);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                nome = rs.getString("item");
+                System.out.println(nome);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+
+        return nome;
+    }
+
 }

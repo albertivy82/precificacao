@@ -41,6 +41,9 @@ public class LancamentoCVController {
 	private Label StatusLabel;
 
 	@FXML
+	private Label totalLabel;
+
+	@FXML
 	private ListView<LancamentoCV> LvLancamentos;
 
 
@@ -74,6 +77,8 @@ public class LancamentoCVController {
 		// Adiciona todos os custos ao container
 		adicionarCustos(listaDeCustos);
 		updateList();
+		atualizarTotal();
+
 
 	}
 
@@ -122,6 +127,7 @@ public class LancamentoCVController {
 					if (qtd > 0) {
 						lancamento.setIdProjeto(projeto.getId());
 						lancamento.setIdCustoVariavel(item.getId());
+						lancamento.setNomeCusto(this.custosService.nomeDeCusto(item.getId()));
 						lancamento.setValorUnitario(item.getValor());
 						lancamento.setQuantidade(qtd);
 						lancamentos.add(lancamento);
@@ -130,8 +136,11 @@ public class LancamentoCVController {
 				}
 			} catch (NumberFormatException e) {
 				total.setText("R$ 0,00");
-			}
-		});
+			} catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
 
 		// Campo de entrada para a observação
 		TextField obs = new TextField();
@@ -183,9 +192,8 @@ public class LancamentoCVController {
 				dynamicCustosContainer.getChildren().clear();
 				adicionarCustos(listaDeCustos);
 				updateList();
-				//listaResultados();
-				//identificacaoProjeto();
-				//atualizarStatusBtnPrecificar();
+				atualizarTotal();
+
 			} catch (SQLException ex) {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle("Erro");
@@ -196,14 +204,29 @@ public class LancamentoCVController {
 
 	}
 
+
+
 	private void updateList() throws SQLException {
 
 		LvLancamentos.getItems().clear();
 		List<LancamentoCV> listaLancamentos = this.custosService.listagem();
-		System.out.println(listaLancamentos);
 		listaLancamentos.stream().forEach(c-> LvLancamentos.getItems().add(c));
 
 	}
+
+	@FXML
+	private void btnDeletar(ActionEvent e) throws SQLException {
+		LancamentoCV lancamentoEscolhido = new LancamentoCV();
+		lancamentoEscolhido = LvLancamentos.getSelectionModel().getSelectedItem();
+		this.custosService.apagarLacamentoCV(lancamentoEscolhido);
+		updateList();
+		atualizarTotal();
+
+	}
+	private void atualizarTotal() throws SQLException {
+		totalLabel.setText("R$" +String.format("%.2f",this.custosService.totalProjeto(projeto.getId())));
+	}
+
 
 
 

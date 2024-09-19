@@ -15,6 +15,7 @@ public class LancamentoCV {
     private int id;
     private int idProjeto;
     private int idCustoVariavel;
+    private String nomeCusto;
     private Float valorUnitario;
     private Float quantidade;
     private String obs;
@@ -36,6 +37,6 @@ public class LancamentoCV {
 
     @Override
     public String toString() {
-        return ("Item-"+id+": "+ idProjeto + "//"  + idCustoVariavel + "//"  + valorUnitario + "//"  +quantidade).toUpperCase();
+        return (nomeCusto+": R$" +  String.format("%.2f", valorUnitario * quantidade)).toUpperCase();
     }
 }

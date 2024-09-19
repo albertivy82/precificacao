@@ -1,11 +1,9 @@
 package org.openjfx.precificacao.service;
 
-import org.openjfx.precificacao.database.ClienteSQLite;
 import org.openjfx.precificacao.database.CustosVariaveisSQLite;
 import org.openjfx.precificacao.database.LancamentoCVSQLite;
 import org.openjfx.precificacao.models.CustosVariaveis;
 import org.openjfx.precificacao.models.LancamentoCV;
-import org.openjfx.precificacao.models.Profissionais;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -35,6 +33,19 @@ public class CustosService {
         this.lancamentosDB = new LancamentoCVSQLite();
         return this.lancamentosDB.all();
 
+    }
+
+    public void apagarLacamentoCV(LancamentoCV lanCV) throws SQLException {
+        this.lancamentosDB.deletarLancamentoCV(lanCV);
+
+    }
+
+    public String nomeDeCusto(int id) throws SQLException {
+       return this.custosvariaveisDB.custoPorNome(id);
+    }
+
+    public Float totalProjeto(int id) throws SQLException {
+        return this.lancamentosDB.totalPorProjeto(id);
     }
 
 }
