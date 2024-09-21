@@ -36,7 +36,7 @@ public class CustosVariaveisSQLite {
         Connection conn = SQLiteConnection.connect();
         try {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE custos_variaveis SET item=?, valor=? WHERE ID=?");
+                    "UPDATE custos_variaveis SET item=?, valor=? WHERE id=?");
             pstmt.setString(1, custo.getItem());
 		    pstmt.setFloat(2, custo.getValor());
             pstmt.setFloat(3, custo.getId());

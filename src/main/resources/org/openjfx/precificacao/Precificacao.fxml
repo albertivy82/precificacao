@@ -24,8 +24,11 @@
       <VBox prefHeight="791.0" prefWidth="250.0" style="-fx-background-color: #d3d3d3;" spacing="20">
          <!-- Top Section: Fixed Costs with Progress Bar -->
          <VBox spacing="10" style="-fx-padding: 10;">
-            <Label text="Custos Fixos" style="-fx-text-fill: white;" />
-            <ProgressBar fx:id="progressBarCustosFixos" prefWidth="120.0" progress="0.5" />
+            <Label  fx:id= "custosFixos" style="-fx-text-fill: white;" />
+            <Label  fx:id= "saldoAtualDeCusto" style="-fx-text-fill: white;" />
+            <Label fx:id="valorFinanceiroLabel" text="Valor Percentual" />
+            <Label fx:id="valorPercentualLabel" text="Valor Percentual" />
+            <Slider fx:id="sliderCustosFixos" prefWidth="120.0" min="0" max="100" value="0" />
             <HBox spacing="10">
                <Button text="Calcular" />
                <Button text="Resetar" />
@@ -42,6 +45,13 @@
    <!-- Center - Main Content -->
    <center>
       <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+         <!-- Detalhes do Projeto -->
+         <VBox spacing="5">
+            <Label fx:id="nomeProjetoLabel" text="..." />
+            <Label fx:id="clienteLabel" text="..." />
+            <Label fx:id="StatusLabel" text="..." />
+         </VBox>
+
          <!-- Totals Display -->
          <Label text="Total do Projeto" styleClass="header-label" />
          <Label fx:id="totalProjetoLabel" text="R$ 0,00" styleClass="total-label" />

@@ -95,4 +95,30 @@ public class CustosFixosSQLite{
         return result;
     }
 
+    public Float totalCustosFixos() {
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet result = null;
+        Float totalDesconto = null;
+
+        try {
+            pstmt = conn.prepareStatement("SELECT SUM(valor) AS total_custos FROM custos_fixos");
+            result = pstmt.executeQuery();
+            if (result.next()) {
+                totalDesconto = result.getFloat("total_custos");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return totalDesconto;
+    }
+
 }

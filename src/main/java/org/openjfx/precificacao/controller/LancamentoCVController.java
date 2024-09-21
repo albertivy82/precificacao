@@ -79,6 +79,8 @@ public class LancamentoCVController {
 		updateList();
 		atualizarTotal();
 
+		atualizarStatusBtnLancamento();
+
 
 	}
 
@@ -120,6 +122,7 @@ public class LancamentoCVController {
 				if (newValue == null || newValue.trim().isEmpty()) {
 					// Remover o lançamento correspondente se a quantidade for apagada
 					lancamentos.remove(lancamento);
+					btnCadatrarLancamento.setDisable(true);
 
 				} else {
 					float qtd = Float.parseFloat(newValue);
@@ -131,6 +134,7 @@ public class LancamentoCVController {
 						lancamento.setValorUnitario(item.getValor());
 						lancamento.setQuantidade(qtd);
 						lancamentos.add(lancamento);
+						btnCadatrarLancamento.setDisable(false);
 
 					}
 				}
@@ -204,6 +208,14 @@ public class LancamentoCVController {
 
 	}
 
+	@FXML
+	private Button btnCadatrarLancamento;
+
+
+	private void atualizarStatusBtnLancamento() {
+		btnCadatrarLancamento.setDisable(true);
+	}
+
 
 
 	private void updateList() throws SQLException {
@@ -224,7 +236,8 @@ public class LancamentoCVController {
 
 	}
 	private void atualizarTotal() throws SQLException {
-		totalLabel.setText("R$" +String.format("%.2f",this.custosService.totalProjeto(projeto.getId())));
+		totalLabel.setText("Total R$" +String.format("%.2f",this.custosService.totalProjeto(projeto.getId())));
+		totalLabel.getStyleClass().add("label-subtotal-tt");
 	}
 
 

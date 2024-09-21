@@ -36,16 +36,20 @@ public class CustosService {
     }
 
     public void apagarLacamentoCV(LancamentoCV lanCV) throws SQLException {
+        this.lancamentosDB = new LancamentoCVSQLite();
         this.lancamentosDB.deletarLancamentoCV(lanCV);
 
     }
 
     public String nomeDeCusto(int id) throws SQLException {
+        this.lancamentosDB = new LancamentoCVSQLite();
        return this.custosvariaveisDB.custoPorNome(id);
     }
 
     public Float totalProjeto(int id) throws SQLException {
+        this.lancamentosDB = new LancamentoCVSQLite();
         return this.lancamentosDB.totalPorProjeto(id);
     }
+
 
 }
