@@ -21,22 +21,21 @@
 
    <!-- Left - Sidebar with two sections -->
    <left>
-      <VBox prefHeight="791.0" prefWidth="250.0" style="-fx-background-color: #d3d3d3;" spacing="20">
+      <VBox prefHeight="791.0" prefWidth="250.0" style="-fx-background-color: #444444;" spacing="20">
          <!-- Top Section: Fixed Costs with Progress Bar -->
          <VBox spacing="10" style="-fx-padding: 10;">
             <Label  fx:id= "custosFixos" style="-fx-text-fill: white;" />
-            <Label  fx:id= "saldoAtualDeCusto" style="-fx-text-fill: white;" />
-            <Label fx:id="valorFinanceiroLabel" text="Valor Percentual" />
-            <Label fx:id="valorPercentualLabel" text="Valor Percentual" />
+            <Label  fx:id= "totalDeLancamentosDeCF" style="-fx-text-fill: white;" />
+            <Label  fx:id= "situacaoDeCustos" style="-fx-text-fill: white;" />
+            <Label fx:id="valorPercentualLabel" style="-fx-text-fill: white;"/>
             <Slider fx:id="sliderCustosFixos" prefWidth="120.0" min="0" max="100" value="0" />
-            <HBox spacing="10">
-               <Button text="Calcular" />
-               <Button text="Resetar" />
-            </HBox>
+            <VBox spacing="10">
+               <Button text="Ver dados do Projeto" styleClass="button-style"/>
+            </VBox>
          </VBox>
          <!-- Bottom Section: Two Checkboxes -->
          <VBox spacing="10" style="-fx-padding: 10;">
-            <CheckBox text="Caixa de Marcar 1" style="-fx-text-fill: white;" />
+            <CheckBox text="ISS" style="-fx-text-fill: white;" />
             <CheckBox text="Caixa de Marcar 2" style="-fx-text-fill: white;" />
          </VBox>
       </VBox>
@@ -53,14 +52,14 @@
          </VBox>
 
          <!-- Totals Display -->
-         <Label text="Total do Projeto" styleClass="header-label" />
+         <Label text="Valor Total de Serviços" styleClass="header-label" />
          <Label fx:id="totalProjetoLabel" text="R$ 0,00" styleClass="total-label" />
 
          <Label text="Total de Custos Variáveis" styleClass="header-label" />
          <Label fx:id="totalCustosVariaveisLabel" text="R$ 0,00" styleClass="total-label" />
 
          <Label text="Total de Custos Fixos" styleClass="header-label" />
-         <Label fx:id="totalCustosFixosLabel" text="R$ 0,00" styleClass="total-label" />
+         <Label fx:id="valorFinanceiroLabel" styleClass="total-label"/>
 
          <Label text="Total de Impostos" styleClass="header-label" />
          <Label fx:id="totalImpostosLabel" text="R$ 0,00" styleClass="total-label" />

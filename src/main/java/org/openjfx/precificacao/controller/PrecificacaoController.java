@@ -56,6 +56,13 @@ public class PrecificacaoController {
 	private Label totalCustosVariaveisLabel;
 
 	@FXML
+	private Label totalDeLancamentosDeCF;
+
+	@FXML
+	private Label situacaoDeCustos;
+
+
+	@FXML
 	private void btnDetalhamentoProjeto(ActionEvent e) {
 		App.mudarTela("DetalhamentoProjeto");
 	}
@@ -71,6 +78,8 @@ public class PrecificacaoController {
 		this.custosFixosRaiz = new CustosFixosService();
 		identificacaoProjeto();
 		slider();
+		saldoAtualDeCusto();
+		siuacaoDeCustos();
 	}
 
 	private void identificacaoProjeto(){
@@ -79,7 +88,7 @@ public class PrecificacaoController {
 		this.clienteService = new ClienteService();
 		clienteLabel.setText("Cliente: " + this.clienteService.nomeCliente(projeto.getIdCliente()));
 		StatusLabel.setText("Status: " + projeto.getStatus());
-		custosFixos.setText("Custos Fixos Atual: " + String.format("%.2f", custosFixosRaiz.totalCustosFixos()));
+		custosFixos.setText("Custos Fixos Atual: " + String.format("R$ %.2f", custosFixosRaiz.totalCustosFixos()));
 	}
 
 	private void slider(){
@@ -91,19 +100,33 @@ public class PrecificacaoController {
 
 			valorFinanceiroLabel.setText(String.format("Valor: R$ %.2f", valorLancado));
 			// Atualiza o valor do Label ou outro componente que exibe o valor percentual.
-			valorPercentualLabel.setText(String.format("Percent: %.1f%%", percentual*100));
+			valorPercentualLabel.setText(String.format("Proporção: %.1f%%", percentual*100));
 
 		});
 	}
 
 	private void labelvalorDoProjeto(){
 		totalProjetoLabel.setText(String.format(" R$ %.2f", this.projetoService.totalDoProjeto(projeto.getId())));
-
 	}
 	//Retirar este exception daqui e ajeitar a aclasse de erviço
 	private void lalabelTotalCustosVariaveis() throws SQLException {
 		totalCustosVariaveisLabel.setText(String.format("R$ %.2f", this.custosVariaveisService.totalProjeto(projeto.getId())));
 	}
+
+	private void saldoAtualDeCusto(){
+		double totalDeCustosLancados = this.custosFixosRaiz.TotalDeLancamentos();
+		totalDeLancamentosDeCF.setText(String.format("Total custos distribuídos: R$ %.2f", totalDeCustosLancados));
+	}
+
+	private void siuacaoDeCustos(){
+		double situacao = this.custosFixosRaiz.totalCustosFixos() - this.custosFixosRaiz.TotalDeLancamentos();
+		if(situacao>0) {
+			situacaoDeCustos.setText(String.format("Déficit de R$ %.2f", situacao));
+		}else{
+			situacaoDeCustos.setText("Custo compensado");
+		}
+	}
+
 
 
 

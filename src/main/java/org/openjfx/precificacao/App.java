@@ -23,11 +23,6 @@ public class App extends Application {
 	        scene = new Scene(loadFXML("DashBoard"));
 	        stage.setScene(scene);
 
-			stage.setMinWidth(800);  // Ajuste o tamanho conforme necessário
-			stage.setMinHeight(600);
-
-			stage.setMaxWidth(1920);  // Ajuste conforme a resolução máxima desejada
-			stage.setMaxHeight(1080);
 
 			stage.setTitle("Precificação");
 			Image image = new Image("images/ico.png");
