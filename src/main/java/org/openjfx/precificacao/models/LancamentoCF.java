@@ -15,7 +15,7 @@ public class LancamentoCF {
 
     private int id;
     private int idProjeto;
-    private Float desconto;
+    private double desconto;
     private LocalDate data;
 
 

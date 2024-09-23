@@ -5,6 +5,7 @@ import org.openjfx.precificacao.database.LancamentoCFSQLite;
 import org.openjfx.precificacao.models.LancamentoCF;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class CustosFixosService {
 
@@ -26,8 +27,16 @@ public class CustosFixosService {
     }
 
     public void lancarCusto(LancamentoCF lancamento) throws SQLException {
-        this.lancamentoCF.cadastroLancamento(lancamento);
+
+        lancamento.setData(LocalDate.now());
+       this.lancamentoCF.cadastroLancamento(lancamento);
+
     }
+
+    public Float lancamentoProjetos(int projetoId){
+        return this.lancamentoCF.lancamentoPorProjeto(projetoId);
+    }
+
 
 
 }

@@ -11,7 +11,7 @@ public class Projeto {
     private String nomeProjeto;
     private Integer idCliente;
     private String status;
-    private float precificacao;
+    private double precificacao;
 
 
     @Override

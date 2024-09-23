@@ -15,13 +15,30 @@ public class LancamentoCFSQLite {
 
 
     public void cadastroLancamento(LancamentoCF lancamento) throws SQLException {
+        try (Connection conn = SQLiteConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(
+                     "INSERT INTO lancamento_cf (id_projeto, desconto, data) " +
+                             "VALUES (?, ?, ?) " +
+                             "ON CONFLICT(id_projeto) DO UPDATE " +
+                             "SET desconto = excluded.desconto, data = excluded.data;")) {
+
+            pstmt.setInt(1, lancamento.getIdProjeto());
+            pstmt.setDouble(2, lancamento.getDesconto());
+            pstmt.setString(3, lancamento.getData().toString()); // Usando LocalDate.toString()
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    public void deletarLancamentoCF(LancamentoCF lancamento) {
         Connection conn = SQLiteConnection.connect();
         try {
-            PreparedStatement pstmt = conn.prepareStatement(
-                    "INSERT INTO lancamento_cf (id_projeto, desconto, data) VALUES (?, ?, ?)");
-            pstmt.setInt(1, lancamento.getIdProjeto());
-            pstmt.setFloat(2, lancamento.getDesconto());
-            pstmt.setString(3, lancamento.getData().toString()); // Usando LocalDate.toString()
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM lancamento_cf WHERE id=?");
+            pstmt.setInt(1, lancamento.getId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -67,8 +84,8 @@ public class LancamentoCFSQLite {
         return result;
     }
 
-    public List<LancamentoCF> lancamentoPorProjeto(int idProjeto) {
-        List<LancamentoCF> result = new ArrayList<>();
+    public Float lancamentoPorProjeto(int idProjeto) {
+        float lancamentoProjeto = 0;
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -79,12 +96,7 @@ public class LancamentoCFSQLite {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                LancamentoCF lcf = new LancamentoCF();
-                lcf.setId(rs.getInt("id"));
-                lcf.setIdProjeto(rs.getInt("id_projeto"));
-                lcf.setDesconto(rs.getFloat("desconto"));
-                lcf.setData(LocalDate.parse(rs.getString("data")));
-                result.add(lcf);
+               lancamentoProjeto = rs.getFloat("desconto");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -97,7 +109,7 @@ public class LancamentoCFSQLite {
                 System.out.println(ex.getMessage());
             }
         }
-        return result;
+        return lancamentoProjeto;
     }
 
     public Float totalDescontoPorProjeto(int idProjeto) {
@@ -153,33 +165,5 @@ public class LancamentoCFSQLite {
         return totalDesconto;
     }
 
-    public void deletarLancamentoCF(LancamentoCF lancamento) {
-        Connection conn = SQLiteConnection.connect();
-        try {
-            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM lancamento_cf WHERE id=?");
-            pstmt.setInt(1, lancamento.getId());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            SQLiteConnection.closeConnection(conn);
-        }
-    }
 
-    public void editarLancamentoCF(LancamentoCF lancamento) {
-        Connection conn = SQLiteConnection.connect();
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE lancamento_cf SET id_projeto=?, desconto=?, data=? WHERE id=?");
-            pstmt.setInt(1, lancamento.getIdProjeto());
-            pstmt.setFloat(2, lancamento.getDesconto());
-            pstmt.setString(3, lancamento.getData().toString()); // Usando LocalDate.toString()
-            pstmt.setInt(4, lancamento.getId());
-            pstmt.executeUpdate(); // Certifique-se de executar a query.
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            SQLiteConnection.closeConnection(conn);
-        }
-    }
 }

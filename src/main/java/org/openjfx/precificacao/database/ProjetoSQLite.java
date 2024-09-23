@@ -36,11 +36,13 @@ public class ProjetoSQLite{
         Connection conn = SQLiteConnection.connect();
         try {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE projeto SET nome_projeto=?, id_cliente=?, status=? WHERE ID=?");
+                    "UPDATE projeto SET nome_projeto=?, id_cliente=?, status=?, precificacao=? WHERE ID=?");
+            System.out.println("testanto precificacao 2");
             pstmt.setString(1, projeto.getNomeProjeto());
 		    pstmt.setInt(2, projeto.getIdCliente());
 		    pstmt.setString(3, projeto.getStatus());
-            pstmt.setInt(4, projeto.getId());
+            pstmt.setDouble(4, projeto.getPrecificacao());
+            pstmt.setInt(5, projeto.getId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

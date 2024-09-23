@@ -93,6 +93,11 @@ public class ProjetoService {
     public int buscarIdProjetoPorNome(String nome) {
         return this.projetosBnaco.buscaIdProjetoPorNome(nome);
     }
+
+    public void precificarProjeto(Projeto projeto) throws SQLException {
+        System.out.println("testanto precificacao 1");
+        this.projetosBnaco.editarProjeto(projeto);
+    }
     public int buscarIdEtapaPorNome(String nome) {
         return this.etapas.buscaIdEtapaPorNome(nome);
     }
