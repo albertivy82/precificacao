@@ -335,6 +335,31 @@ public class PrecificacaoController {
 			// Adiciona o GridPane da etapa no container principal
 			savedEtapasContainer.getChildren().add(etapaGrid);
 		});
+
+		@FXML
+		private void btnGerarPdf(ActionEvent e) throws SQLException {
+			// Definir o caminho de destino para o PDF
+			String caminhoDoArquivoPdf = "caminho/do/arquivo.pdf";  // Atualize com o caminho desejado
+
+			// Recuperar os dados necessários para o PDF
+			Map<String, Map<String, List<DetalhamentoDTO>>> etapasAgrupadas = projetoService.etapasSalvas(projeto.getId());
+
+			String totalServicos = totalProjetoLabel.getText();
+			String totalCustosVariaveis = totalCustosVariaveisLabel.getText();
+			String custosFixosLancados = lancamentoCF.getText();
+			String totalImpostos = totalImpostosLabel.getText();
+			String quotaServicos = lucroLabel.getText();
+			String precoTotalProjeto = precoTotalProjetoLabel.getText();
+
+			// Gerar o PDF usando a classe PdfGenerator
+			PdfGenerator pdfGenerator = new PdfGenerator();
+			pdfGenerator.gerarPDF(caminhoDoArquivoPdf, etapasAgrupadas, totalServicos, totalCustosVariaveis,
+					custosFixosLancados, totalImpostos, quotaServicos, precoTotalProjeto);
+
+			// Exibir mensagem de confirmação (opcional)
+			System.out.println("PDF gerado com sucesso em: " + caminhoDoArquivoPdf);
+		}
+
 	}
 
 
