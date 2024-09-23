@@ -202,6 +202,46 @@
   }
 
 
+.link-style {
+    -fx-text-fill: lightblue; /* Cor do texto para parecer um link */
+    -fx-font-style: italic; /* Estilo itálico */
+    -fx-cursor: hand; /* Cursor de mão para indicar que é clicável */
+    -fx-underline: true; /* Adiciona sublinhado para parecer com um link */
+}
+
+.bordered-container {
+    -fx-border-color: #ccc;
+    -fx-border-width: 0 0 1 0; /* Apenas a borda inferior */
+    -fx-padding: 5 0 5 0; /* Ajuste do preenchimento */
+}
+
+.label-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+.label-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-alignment: center-right; /* Alinhado à direita */
+}
+
+
+/* Estilo para os itens (atividades e subtotais) com linha de baixo */
+.item {
+    -fx-border-color: transparent transparent #ccc transparent; /* Apenas a borda inferior */
+    -fx-border-width: 0 0 1px 0; /* Borda inferior de 1px */
+    -fx-padding: 5px 0; /* Espaçamento entre os itens */
+    -fx-max-width: Infinity; /* Permite que o item se expanda para ocupar a largura total */
+}
+
+
+/* Estilo para etapas, sem linha de baixo */
+.etapa {
+    -fx-font-weight: bold; /* Deixa a etapa em negrito */
+    -fx-padding: 10px 0; /* Espaçamento maior para as etapas */
+}
+
 
 
 

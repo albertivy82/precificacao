@@ -2,9 +2,14 @@ package org.openjfx.precificacao.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.dtos.DetalhamentoDTO;
@@ -273,46 +278,71 @@ public class PrecificacaoController {
 	}
 
 	public void exibirDetalhamentos(Map<String, Map<String, List<DetalhamentoDTO>>> agrupados) throws SQLException {
-		VBox container = new VBox(10);  // Cria o container principal
+		// Limpa o container antes de adicionar novos detalhes
+		savedEtapasContainer.getChildren().clear();
 
-		// Para cada etapa no mapa de agrupados
 		agrupados.forEach((etapa, atividades) -> {
-			// Cria um label para a etapa
+			// Cria o GridPane para a etapa
+			GridPane etapaGrid = new GridPane();
+			etapaGrid.setHgap(10);
+			etapaGrid.setVgap(10);
+			etapaGrid.setMaxWidth(Double.MAX_VALUE); // Permite que o GridPane ocupe toda a largura disponível
+
+			// Definir as restrições das colunas
+			ColumnConstraints col1 = new ColumnConstraints();
+			col1.setHgrow(Priority.ALWAYS); // Coluna esquerda se expande
+			col1.setHalignment(HPos.LEFT);
+
+			ColumnConstraints col2 = new ColumnConstraints();
+			col2.setHgrow(Priority.ALWAYS); // Coluna direita também se expande
+			col2.setHalignment(HPos.RIGHT); // Alinhamento à direita para os valores
+
+			etapaGrid.getColumnConstraints().addAll(col1, col2);
+
+			// Cria o label da etapa e aplica o estilo de "etapa"
 			Label labelEtapa = new Label("Etapa: " + etapa);
-			labelEtapa.getStyleClass().add("label-etapa");
+			labelEtapa.getStyleClass().add("etapa");
 
-			// Adiciona a label da etapa ao container principal
-			container.getChildren().add(labelEtapa);
+			// Adiciona a etapa na primeira linha (colunas 0 e 1)
+			etapaGrid.add(labelEtapa, 0, 0, 2, 1); // Span across both columns
 
-			// Para cada atividade dentro dessa etapa
-			atividades.forEach((atividade, profissionais) -> {
-				// Inicializa o subtotal da atividade
-				float subtotalAtividade = 0;
+			int rowIndex = 1;
+			for (String atividade : atividades.keySet()) {
+				// Cria o label para a atividade e aplica o estilo de "item"
+				Label labelAtividade = new Label("Atividade: " + atividade);
+				labelAtividade.getStyleClass().add("item");
+				labelAtividade.setMaxWidth(Double.MAX_VALUE); // Permite expandir a largura
 
-				// Acumula o valor total dos profissionais para a atividade
-				for (DetalhamentoDTO detalhe : profissionais) {
-					subtotalAtividade += detalhe.getHoras() * detalhe.getValorHoras();
-				}
+				// Calcula o subtotal da atividade
+				float subtotalAtividade = atividades.get(atividade).stream()
+						.map(DetalhamentoDTO::getHoras)
+						.reduce(0f, Float::sum);
 
-				// Cria um label para a atividade, exibindo o subtotal
-				Label labelAtividade = new Label("Atividade: " + atividade +
-						" | Valor Total: " + FormatadorMoeda.formatarValorComoMoeda(subtotalAtividade));
-				labelAtividade.getStyleClass().add("label-atividade");
+				// Cria o label para o subtotal da atividade e aplica o alinhamento à direita
+				Label labelSubtotalAtividade = new Label(FormatadorMoeda.formatarValorComoMoeda(subtotalAtividade));
+				labelSubtotalAtividade.getStyleClass().add("item");
+				labelSubtotalAtividade.setMaxWidth(Double.MAX_VALUE); // Permite expandir a largura
+				labelSubtotalAtividade.setAlignment(Pos.CENTER_RIGHT); // Garante que o texto seja alinhado à direita
+				GridPane.setHalignment(labelSubtotalAtividade, HPos.RIGHT); // Alinhamento no GridPane
 
-				// Adiciona a label da atividade ao container principal
-				container.getChildren().add(labelAtividade);
-			});
+				// Adiciona a atividade e o valor no GridPane
+				etapaGrid.add(labelAtividade, 0, rowIndex); // Coluna 0 para a atividade (alinhado à esquerda)
+				etapaGrid.add(labelSubtotalAtividade, 1, rowIndex); // Coluna 1 para o valor (alinhado à direita)
+
+				rowIndex++;
+			}
+
+			// Adiciona o GridPane da etapa no container principal
+			savedEtapasContainer.getChildren().add(etapaGrid);
 		});
-
-		// Exibe o total do projeto
-		float ttProjeto = projetoService.totalDoProjeto(projeto.getId());
-		Label totalDoProjeto = new Label("Subtotal - Serviços: " + FormatadorMoeda.formatarValorComoMoeda(ttProjeto));
-		totalDoProjeto.getStyleClass().add("label-subtotal-tt");
-		container.getChildren().add(totalDoProjeto);
-
-		// Adiciona o container ao layout da interface
-		savedEtapasContainer.getChildren().add(container);  // Certifique-se de que o `savedEtapasContainer` está acessível
 	}
+
+
+
+
+
+
+
 
 
 

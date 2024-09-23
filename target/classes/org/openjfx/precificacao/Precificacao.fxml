@@ -4,11 +4,11 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.PrecificacaoController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.PrecificacaoController">
 
    <!-- Top - Logo -->
    <top>
-      <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
+      <HBox style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -19,82 +19,134 @@
       </HBox>
    </top>
 
-   <!-- Left - Sidebar with two sections -->
+   <!-- Left - Sidebar -->
    <left>
-      <VBox prefHeight="791.0" prefWidth="250.0" style="-fx-background-color: #444444;" spacing="20">
-         <!-- Top Section: Fixed Costs with Progress Bar -->
+      <VBox style="-fx-background-color: #444444;" spacing="20" VBox.vgrow="ALWAYS">
          <VBox spacing="10" style="-fx-padding: 10;">
-            <Label  fx:id= "custosFixos" style="-fx-text-fill: white;" />
-            <Label  fx:id= "totalDeLancamentosDeCF" style="-fx-text-fill: white;" />
-            <Label  fx:id= "situacaoDeCustos" style="-fx-text-fill: white;" />
-            <Label fx:id="valorFinanceiroLabel" style="-fx-text-fill: white;"/>
-            <Label fx:id="valorPercentualLabel" style="-fx-text-fill: white;"/>
-            <Slider fx:id="sliderCustosFixos" prefWidth="120.0" min="0" max="100" value="0" />
-            <VBox spacing="10">
-               <Button text="Ver dados do Projeto" styleClass="button-style"/>
-               <Button text="Lançar Custo" onAction="#btnLancarDesconto" styleClass="button-style"/>
-            </VBox>
+            <Label fx:id="custosFixos" style="-fx-text-fill: white;" />
+            <Label fx:id="totalDeLancamentosDeCF" style="-fx-text-fill: white;" />
+            <Label fx:id="situacaoDeCustos" style="-fx-text-fill: white;" />
+            <Label fx:id="valorFinanceiroLabel" style="-fx-text-fill: white;" />
+            <Label fx:id="valorPercentualLabel" style="-fx-text-fill: white;" />
+            <Slider fx:id="sliderCustosFixos" min="0" max="100" value="0" />
+            <HBox alignment="CENTER" spacing="10">
+               <Button text="Lançar Custo" onAction="#btnLancarDesconto" styleClass="button-style" />
+            </HBox>
+            <!-- Alinhar o link "Ver dados do Projeto" à direita e estilizado como link -->
+            <HBox alignment="BASELINE_RIGHT" spacing="10">
+               <Label text="Ver dados do Projeto" styleClass="link-style" />
+            </HBox>
          </VBox>
-         <!-- Bottom Section: Two Checkboxes -->
+
+         <!-- Bottom Section -->
          <VBox spacing="10" style="-fx-padding: 10;">
             <CheckBox fx:id="iss" text="ISS" style="-fx-text-fill: white;" />
             <CheckBox fx:id="simplesNacional" text="Simples Nacional" style="-fx-text-fill: white;" />
-            <Button text="Lançar Impostos" onAction="#btnLancarImpostos" styleClass="button-style"/>
+               <HBox alignment="CENTER" spacing="10">
+               <Button text="Lançar Impostos" onAction="#btnLancarImpostos" styleClass="button-style" />
+               </HBox>
          </VBox>
 
+         <!-- Lucro Section -->
          <VBox spacing="10" style="-fx-padding: 10;">
-            <Label fx:id="valorLucro" style="-fx-text-fill: white;"/>
-            <Label fx:id="Porcentagem" style="-fx-text-fill: white;"/>
-            <Slider fx:id="lucro" prefWidth="120.0" min="0" max="100" value="0" />
-            <VBox spacing="10">
-               <Button text="Quota sobre custos" onAction="#btnLancarLucro" styleClass="button-style"/>
-            </VBox>
+            <Label fx:id="valorLucro" style="-fx-text-fill: white;" />
+            <Label fx:id="Porcentagem" style="-fx-text-fill: white;" />
+            <Slider fx:id="lucro" min="0" max="100" value="0" />
+
+            <HBox alignment="CENTER" spacing="10">
+               <Button text="Quota sobre custos" onAction="#btnLancarLucro" styleClass="button-style" />
+            </HBox>
          </VBox>
       </VBox>
    </left>
 
    <!-- Center - Main Content -->
    <center>
-      <ScrollPane fx:id="savedEtapasScrollPane" fitToWidth="true" prefHeight="250.0" VBox.vgrow="NEVER">
-      <content>
-      <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
-         <!-- Detalhes do Projeto -->
-         <VBox spacing="5">
-            <Label fx:id="nomeProjetoLabel" text="..." />
-            <Label fx:id="clienteLabel" text="..." />
-            <Label fx:id="StatusLabel" text="..." />
-         </VBox>
+      <ScrollPane fx:id="savedEtapasScrollPane" fitToWidth="true" fitToHeight="true" BorderPane.alignment="CENTER">
+         <content>
+            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 10;" VBox.vgrow="ALWAYS">
+               <!-- Detalhes do Projeto -->
+               <VBox spacing="10">
+                  <Label fx:id="nomeProjetoLabel" text="..." />
+                  <Label fx:id="clienteLabel" text="..." />
+                  <Label fx:id="StatusLabel" text="..." />
+               </VBox>
 
-         <!-- Totals Display -->
-         <VBox fx:id="savedEtapasContainer" spacing="2">
-            <!-- As etapas salvas serão adicionadas dinamicamente aqui -->
-         </VBox>
-         <Label text="Valor Total de Serviços" styleClass="header-label" />
-         <Label fx:id="totalProjetoLabel" text="R$ 0,00" styleClass="total-label" />
+               <!-- Totals Display -->
+               <VBox fx:id="savedEtapasContainer" alignment="TOP_CENTER" spacing="10">
+                  <!-- As etapas salvas serão adicionadas dinamicamente aqui -->
+               </VBox>
 
-         <Label text="Total de Custos Variáveis" styleClass="header-label" />
-         <Label fx:id="totalCustosVariaveisLabel" text="R$ 0,00" styleClass="total-label" />
+               <GridPane hgap="10" vgap="10">
+                  <!-- Definir as restrições das colunas -->
+                  <columnConstraints>
+                     <!-- Primeira coluna: rótulos -->
+                     <ColumnConstraints hgrow="ALWAYS" halignment="LEFT" />
+                     <!-- Segunda coluna: valores -->
+                     <ColumnConstraints halignment="RIGHT" />
+                  </columnConstraints>
 
-         <Label text="Custos Fixos lancados" styleClass="header-label" />
-         <Label fx:id="lancamentoCF" text="R$ 0,00" styleClass="total-label" />
+                  <!-- Linhas com rótulos e valores, com linha embaixo usando HBox para controle -->
+                  <!-- Valor Total de Serviços -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="bordered-container">
+                     <Label text="Valor Total de Serviços" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="totalProjetoLabel" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
 
-         <Label text="Total de Impostos" styleClass="header-label" />
-         <Label fx:id="totalImpostosLabel" text="R$ 0,00" styleClass="total-label" />
+                  <!-- Total de Custos Variáveis -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="bordered-container">
+                     <Label text="Total de Custos Variáveis" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="totalCustosVariaveisLabel" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
 
-         <Label text="Quota sobre serviços" styleClass="header-label" />
-         <Label fx:id="lucroLabel" text="R$ 0,00" styleClass="total-label" />
+                  <!-- Custos Fixos lançados -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="bordered-container">
+                     <Label text="Custos Fixos lançados" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="lancamentoCF" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
 
-         <Label text="Preço Total do Projeto" styleClass="header-label" />
-         <Label fx:id="precoTotalProjetoLabel" text="R$ 0,00" styleClass="total-label" />
+                  <!-- Total de Impostos -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="bordered-container">
+                     <Label text="Total de Impostos" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="totalImpostosLabel" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
 
-         <!-- Buttons at the bottom -->
-         <VBox alignment="CENTER" spacing="20">
-            <Button text="Precificar Projeto" onAction="#btnPrecificarProjeto" styleClass="button-style"/>
-            <Button text="Voltar para Detalhamento" onAction="#btnDetalhamentoProjeto" styleClass="button-style"/>
-            <Button text="Finalizar Projeto" styleClass="button-style"/>
-         </VBox>
-      </VBox>
+                  <!-- Quota sobre serviços -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="bordered-container">
+                     <Label text="Quota sobre serviços" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="lucroLabel" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
+
+                  <!-- Preço Total do Projeto -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="bordered-container">
+                     <Label text="Preço Total do Projeto" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="5" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="precoTotalProjetoLabel" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
+               </GridPane>
+
+
+
+               <!-- Buttons at the bottom -->
+               <VBox alignment="CENTER" spacing="10">
+                  <Button text="Precificar Projeto" onAction="#btnPrecificarProjeto" styleClass="button-style" />
+                  <Button text="Voltar para Detalhamento" onAction="#btnDetalhamentoProjeto" styleClass="button-style" />
+                  <Button text="Finalizar Projeto" styleClass="button-style" />
+               </VBox>
+            </VBox>
          </content>
       </ScrollPane>
    </center>
 </BorderPane>
+
