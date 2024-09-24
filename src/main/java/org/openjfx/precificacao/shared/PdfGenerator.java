@@ -4,6 +4,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.openjfx.precificacao.dtos.DetalhamentoDTO;
 
 import java.io.FileOutputStream;
 import java.util.List;
@@ -22,7 +23,7 @@ public class PdfGenerator {
 
             // Título do Documento
             Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-            Paragraph title = new Paragraph("Relatório de Custos do Projeto", titleFont);
+            Paragraph title = new Paragraph("Orçamento De Serviços", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
 
@@ -33,7 +34,7 @@ public class PdfGenerator {
             for (String etapa : agrupados.keySet()) {
                 // Adicionar título da Etapa
                 Font etapaFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
-                document.add(new Paragraph("Etapa: " + etapa, etapaFont));
+                document.add(new Paragraph(etapa, etapaFont));
 
                 // Criar tabela para atividades e valores
                 PdfPTable table = new PdfPTable(2); // Duas colunas

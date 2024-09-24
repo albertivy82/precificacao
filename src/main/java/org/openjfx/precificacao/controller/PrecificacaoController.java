@@ -19,6 +19,7 @@ import org.openjfx.precificacao.models.Lucro;
 import org.openjfx.precificacao.models.Projeto;
 import org.openjfx.precificacao.service.*;
 import org.openjfx.precificacao.shared.FormatadorMoeda;
+import org.openjfx.precificacao.shared.PdfGenerator;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
 
 import java.sql.SQLException;
@@ -134,7 +135,7 @@ public class PrecificacaoController {
 		atualizarLabelImpostos();
 		atualizarLabelLucro();
 		somaTotalProjeto();
-		somaTotalProjeto();
+		precoTotalProjetoLabel();
 		btnPrecificarProjeto();
 		precoTotalProjetoLabel();
 		listaResultados();
@@ -191,6 +192,8 @@ public class PrecificacaoController {
 		saldoAtualDeCusto();
 		siuacaoDeCustos();
 		atualizarLabelLancaentoCV();
+		somaTotalProjeto();
+		precoTotalProjetoLabel();
 
 	};
 
@@ -214,6 +217,8 @@ public class PrecificacaoController {
 		novosImposto.setSimplesNac(sipless);
 		this.impostoService.lancarImpostos(novosImposto);
 		atualizarLabelImpostos();
+		somaTotalProjeto();
+		precoTotalProjetoLabel();
 
 	};
 
@@ -236,8 +241,9 @@ public class PrecificacaoController {
 		novoLucro.setIdProjeto(projeto.getId());
 		novoLucro.setLucro(this.lucroEsperado);
 		this.lucroService.lancarLucro(novoLucro);
-
 		atualizarLabelLucro();
+		somaTotalProjeto();
+		precoTotalProjetoLabel();
 	};
 
 	private void atualizarLabelLucro(){
@@ -253,7 +259,7 @@ public class PrecificacaoController {
 	}
 
 	private void somaTotalProjeto() throws SQLException {
-		        this.valorTotal = this.custosVariaveisService.totalProjeto(projeto.getId())+
+		        this.valorTotal = this.projetoService.totalDoProjeto(projeto.getId())+
 				this.custosVariaveisService.totalProjeto(projeto.getId())+
 				this.custosFixosRaiz.lancamentoProjetos(projeto.getId()) +
 				this.impostoService.buscarImpostos(projeto.getId()) +
@@ -268,6 +274,10 @@ public class PrecificacaoController {
 	@FXML
 	private void btnPrecificarProjeto() throws SQLException {
 		projeto.setStatus("Precificado");
+		System.out.println(this.projetoService.totalDoProjeto(projeto.getId()) +","+ this.custosVariaveisService.totalProjeto(projeto.getId())+", "+
+				this.custosFixosRaiz.lancamentoProjetos(projeto.getId())+", "+
+				this.impostoService.buscarImpostos(projeto.getId()) +" ,"+
+				this.lucroService.buscarLucro(projeto.getId()));
 		projeto.setPrecificacao(this.valorTotal);
 		this.projetoService.precificarProjeto(projeto);
 	}
@@ -336,10 +346,15 @@ public class PrecificacaoController {
 			savedEtapasContainer.getChildren().add(etapaGrid);
 		});
 
-		@FXML
-		private void btnGerarPdf(ActionEvent e) throws SQLException {
+
+
+	}
+
+	@FXML
+	private void btnGerarPdf() {
+
 			// Definir o caminho de destino para o PDF
-			String caminhoDoArquivoPdf = "caminho/do/arquivo.pdf";  // Atualize com o caminho desejado
+			String caminhoDoArquivoPdf = "/pdf_template.pdf";  // Atualize com o caminho desejado
 
 			// Recuperar os dados necessários para o PDF
 			Map<String, Map<String, List<DetalhamentoDTO>>> etapasAgrupadas = projetoService.etapasSalvas(projeto.getId());
@@ -358,7 +373,6 @@ public class PrecificacaoController {
 
 			// Exibir mensagem de confirmação (opcional)
 			System.out.println("PDF gerado com sucesso em: " + caminhoDoArquivoPdf);
-		}
 
 	}
 

@@ -142,7 +142,7 @@
                <VBox alignment="CENTER" spacing="10">
                   <Button text="Precificar Projeto" onAction="#btnPrecificarProjeto" styleClass="button-style" />
                   <Button text="Voltar para Detalhamento" onAction="#btnDetalhamentoProjeto" styleClass="button-style" />
-                  <Button text="Finalizar Projeto" styleClass="button-style" />
+                  <Button text="Gerar Documento" styleClass="button-style " onAction="#btnGerarPdf"/>
                </VBox>
             </VBox>
          </content>
