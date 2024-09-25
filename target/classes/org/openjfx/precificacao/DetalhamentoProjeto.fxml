@@ -9,83 +9,89 @@
 <?import javafx.scene.control.TextField?>
 
 <?import javafx.scene.control.ScrollPane?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.DtlProjetoController">
 
-   <top>
-      <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@/images/sindomar_logo.png" />
-               </image>
-            </ImageView>
-         </children>
-      </HBox>
-   </top>
-   <left>
-      <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio"/>
-         <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
-         <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
-         <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
-          <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
-          <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis"/>
-          <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
-          <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades"/>
-      </VBox>
-   </left>
+<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0"
+            fitToHeight="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.DtlProjetoController">
+    <content>
 
-   <center>
-      <VBox spacing="10" style="-fx-padding: 5;">
-         <!-- Cabeçalho do Projeto -->
-         <Label text="Detalhes do Projeto" styleClass="header-label" />
+        <BorderPane stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" >
 
-         <!-- Detalhes do Projeto -->
-         <VBox spacing="5">
-            <Label fx:id="nomeProjetoLabel" text="..." />
-            <Label fx:id="clienteLabel" text="..." />
-            <Label fx:id="StatusLabel" text="..." />
-         </VBox>
+            <top>
 
-        <ScrollPane fx:id="activityScrollPane" fitToWidth="true" prefHeight="400.0" VBox.vgrow="NEVER" styleClass="scroll-pane">
-            <content>
-               <!-- Container Fixo para Etapa -->
-               <VBox fx:id="etapaContainer" spacing="10" styleClass="etapa-container">
-                  <!-- Exibição do Total da Etapa -->
-                 <ComboBox fx:id="etapaComboBox" promptText="Selecione a Etapa" />
+                <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;">
+                    <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@/images/sindomar_logo.png" />
+                        </image>
+                    </ImageView>
+                </HBox>
+            </top>
+           <left>
+              <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
+                 <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio"/>
+                 <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
+                 <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
+                 <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
+                  <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
+                  <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis"/>
+                  <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
+                  <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades"/>
+              </VBox>
+           </left>
 
-                  <!-- Container Dinâmico para Atividades -->
-                  <VBox fx:id="dynamicAtvivityContainer" spacing="10">
-                     <!-- As atividades serão adicionadas dinamicamente aqui -->
-                  </VBox>
-               </VBox>
+           <center>
+              <VBox spacing="10" style="-fx-padding: 5;" VBox.vgrow="ALWAYS">
+                 <!-- Cabeçalho do Projeto -->
+                 <Label text="Detalhes do Projeto" styleClass="header-label" VBox.vgrow="ALWAYS"/>
 
-            </content>
-         </ScrollPane>
+                 <!-- Detalhes do Projeto -->
+                 <VBox spacing="5" VBox.vgrow="ALWAYS">
+                    <Label fx:id="nomeProjetoLabel" text="..." />
+                    <Label fx:id="clienteLabel" text="..." />
+                    <Label fx:id="StatusLabel" text="..." />
+                 </VBox>
 
-         <HBox alignment="CENTER_RIGHT">
-            <Button mnemonicParsing="false" onAction="#adicionarAtividade" styleClass="button-style" text="+Atividade"/>
-         </HBox>
+                <ScrollPane fx:id="activityScrollPane" fitToWidth="true" prefHeight="400.0" VBox.vgrow="ALWAYS" styleClass="scroll-pane" >
+                    <content>
+                       <!-- Container Fixo para Etapa -->
+                       <VBox fx:id="etapaContainer" spacing="10" styleClass="etapa-container" VBox.vgrow="ALWAYS">
+                          <!-- Exibição do Total da Etapa -->
+                         <ComboBox fx:id="etapaComboBox" promptText="Selecione a Etapa" />
 
-         <!-- Botão para Adicionar Nova Atividade -->
-         <Button mnemonicParsing="false" onAction="#btnCadatrarEtapas" styleClass="button-style" text="Salvar Etapa"/>
+                          <!-- Container Dinâmico para Atividades -->
+                          <VBox fx:id="dynamicAtvivityContainer" spacing="10">
+                             <!-- As atividades serão adicionadas dinamicamente aqui -->
+                          </VBox>
+                       </VBox>
 
-         <!-- ScrollPane para Listar Etapas Salvas -->
+                    </content>
+                 </ScrollPane>
 
-         <ScrollPane fx:id="savedEtapasScrollPane" fitToWidth="true" prefHeight="250.0" VBox.vgrow="NEVER">
-            <content>
-               <VBox fx:id="savedEtapasContainer" spacing="2">
-                  <!-- As etapas salvas serão adicionadas dinamicamente aqui -->
-               </VBox>
-            </content>
-         </ScrollPane>
-          <HBox fx:id="precificarContainer" spacing="5">
-              <Label text="↑Clique sobre os itens para excluir↑" style="-fx-font-style: italic; -fx-text-fill: red;"/>
-              <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-              <Button fx:id="btnCustosVariaveis" text="Especificar custos variáveis ⥨" styleClass="button-precificar" onAction="#btnDetalharVariaveis"/>
-              <Button fx:id="btnPrecificar" text="Precificar ⏩" styleClass="button-precificar" onAction="#btnPrecificar"/>
-          </HBox>
+                 <HBox alignment="CENTER_RIGHT">
+                    <Button mnemonicParsing="false" onAction="#adicionarAtividade" styleClass="button-style" text="+Atividade"/>
+                 </HBox>
 
-      </VBox>
-   </center>
-</BorderPane>
+                 <!-- Botão para Adicionar Nova Atividade -->
+                 <Button mnemonicParsing="false" onAction="#btnCadatrarEtapas" styleClass="button-style" text="Salvar Etapa"/>
+
+                 <!-- ScrollPane para Listar Etapas Salvas -->
+
+                 <ScrollPane fx:id="savedEtapasScrollPane" fitToWidth="true" prefHeight="250.0" VBox.vgrow="NEVER">
+                    <content>
+                       <VBox fx:id="savedEtapasContainer" spacing="2">
+                          <!-- As etapas salvas serão adicionadas dinamicamente aqui -->
+                       </VBox>
+                    </content>
+                 </ScrollPane>
+                  <HBox fx:id="precificarContainer" spacing="5">
+                      <Label text="↑Clique sobre os itens para excluir↑" style="-fx-font-style: italic; -fx-text-fill: red;"/>
+                      <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+                      <Button fx:id="btnCustosVariaveis" text="Especificar custos variáveis ⥨" styleClass="button-precificar" onAction="#btnDetalharVariaveis"/>
+                      <Button fx:id="btnPrecificar" text="Precificar ⏩" styleClass="button-precificar" onAction="#btnPrecificar"/>
+                  </HBox>
+
+              </VBox>
+           </center>
+        </BorderPane>
+    </content>
+</ScrollPane>

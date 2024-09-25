@@ -119,8 +119,8 @@ public class ProjetoService {
     public boolean deletarAtividade( int idProjeto, int idAtividade){
         return this.detalhamentos.deletarAtividade(idProjeto, idAtividade);
     }
-    public float totalDoProjeto(int idProjeto) {
-        return this.detalhamentos.totalPorProjeto(idProjeto);
+    public float totalDeServicosDoProjeto(int idProjeto) {
+        return this.detalhamentos.totalDeServicosPorProjeto(idProjeto);
     }
 
    public float totalEtapaPeloId(int idProjeto, int idEtapa) {

@@ -39,7 +39,11 @@ public class PrecificacaoController {
 	private ImpostoService impostoService;
 	private double lucroEsperado = 0;
 	private double valorTotal = 0;
-
+	private double lucroSobreServicos = 0;
+	private double custoFixoDoProjeto = 0;
+	private double impostosProjeto = 0;
+	private double totalServicos = 0;
+	private double custoVariavelDoProjeto = 0;
 
 	@FXML
 	private Label nomeProjetoLabel;
@@ -123,7 +127,7 @@ public class PrecificacaoController {
 		this.custosVariaveisService = new CustosService();
 		this.lucroService = new LucroService();
 		this.impostoService = new ImpostoService();
-		labelvalorDoProjeto();
+		labelvalorDeServicosDoProjeto();
 		lalabelTotalCustosVariaveis();
 		this.custosFixosRaiz = new CustosFixosService();
 		identificacaoProjeto();
@@ -131,7 +135,7 @@ public class PrecificacaoController {
 		lucro();
 		saldoAtualDeCusto();
 		siuacaoDeCustos();
-		atualizarLabelLancaentoCV();
+		atualizarLabelLancamentoCFProjeto();
 		atualizarLabelImpostos();
 		atualizarLabelLucro();
 		somaTotalProjeto();
@@ -139,6 +143,36 @@ public class PrecificacaoController {
 		btnPrecificarProjeto();
 		precoTotalProjetoLabel();
 		listaResultados();
+	}
+
+	private void atualizarLabelLucro() {
+		float lucro = this.lucroService.buscarLucro(projeto.getId());
+		this.lucroSobreServicos = lucro;
+		lucroLabel.setText(String.format("R$ %.2f", this.lucroSobreServicos));
+	}
+
+	private void atualizarLabelLancamentoCFProjeto(){
+		float cf = this.custosFixosRaiz.lancamentoCFProjetos(projeto.getId());
+		this.custoFixoDoProjeto = cf;
+		lancamentoCF.setText(String.format("R$ %.2f", this.custoFixoDoProjeto));
+	}
+
+	private void atualizarLabelImpostos(){
+		float impostos = this.impostoService.buscarImpostos(projeto.getId());
+		this.impostosProjeto = impostos;
+		totalImpostosLabel.setText(String.format("R$ %.2f", this.impostosProjeto));
+	}
+
+	private void labelvalorDeServicosDoProjeto(){
+		float servicos = this.projetoService.totalDeServicosDoProjeto(projeto.getId());
+		this.totalServicos = servicos;
+		totalProjetoLabel.setText(String.format(" R$ %.2f", this.totalServicos));
+	}
+
+	private void lalabelTotalCustosVariaveis() throws SQLException {
+		float cv = this.custosVariaveisService.totalCVProjeto(projeto.getId());
+		this.custoVariavelDoProjeto = cv;
+		totalCustosVariaveisLabel.setText(String.format("R$ %.2f", this.custoVariavelDoProjeto));
 	}
 
 	private void identificacaoProjeto(){
@@ -164,14 +198,6 @@ public class PrecificacaoController {
 		});
 	}
 
-	private void labelvalorDoProjeto(){
-		totalProjetoLabel.setText(String.format(" R$ %.2f", this.projetoService.totalDoProjeto(projeto.getId())));
-	}
-	//Retirar este exception daqui e ajeitar a aclasse de erviço
-	private void lalabelTotalCustosVariaveis() throws SQLException {
-		totalCustosVariaveisLabel.setText(String.format("R$ %.2f", this.custosVariaveisService.totalProjeto(projeto.getId())));
-	}
-
 	private void saldoAtualDeCusto(){
 		double totalDeCustosLancados = this.custosFixosRaiz.TotalDeLancamentos();
 		totalDeLancamentosDeCF.setText(String.format("Total custos distribuídos: R$ %.2f", totalDeCustosLancados));
@@ -191,7 +217,7 @@ public class PrecificacaoController {
 		this.custosFixosRaiz.lancarCusto(this.lancamentoDeDesconto);
 		saldoAtualDeCusto();
 		siuacaoDeCustos();
-		atualizarLabelLancaentoCV();
+		atualizarLabelLancamentoCFProjeto();
 		somaTotalProjeto();
 		precoTotalProjetoLabel();
 
@@ -205,11 +231,11 @@ public class PrecificacaoController {
 		double sipless = 0;
 
 		if (iss.isSelected()) {
-			issBox = 0.25 * this.projetoService.totalDoProjeto(projeto.getId());
+			issBox = 0.25 * this.totalServicos;
 		}
 
 		if (simplesNacional.isSelected()) {
-			 sipless = 0.25 * this.projetoService.totalDoProjeto(projeto.getId());
+			 sipless = 0.25 * this.totalServicos;
 
 		}
 		novosImposto.setIdProjeto(projeto.getId());
@@ -224,7 +250,7 @@ public class PrecificacaoController {
 
 	private void lucro(){
 		lucro.valueProperty().addListener((observable, oldValue, newValue) -> {
-			double totalCustosFixos = custosFixosRaiz.totalCustosFixos();
+			double totalCustosFixos = this.totalServicos;
 			double margemDesejada = newValue.doubleValue() / 100; // Converte o valor do slider para percentual.
 			double LucroDesejado = totalCustosFixos * margemDesejada;
 			valorLucro.setText(String.format("Valor: R$ %.2f", LucroDesejado));
@@ -246,24 +272,8 @@ public class PrecificacaoController {
 		precoTotalProjetoLabel();
 	};
 
-	private void atualizarLabelLucro(){
-		lucroLabel.setText(String.format("R$ %.2f", this.lucroService.buscarLucro(projeto.getId())));
-
-	}
-	private void atualizarLabelImpostos(){
-		totalImpostosLabel.setText(String.format("R$ %.2f", this.impostoService.buscarImpostos(projeto.getId())));
-	}
-
-	private void atualizarLabelLancaentoCV() {
-		lancamentoCF.setText(String.format("R$ %.2f", this.custosFixosRaiz.lancamentoProjetos(projeto.getId())));
-	}
-
 	private void somaTotalProjeto() throws SQLException {
-		        this.valorTotal = this.projetoService.totalDoProjeto(projeto.getId())+
-				this.custosVariaveisService.totalProjeto(projeto.getId())+
-				this.custosFixosRaiz.lancamentoProjetos(projeto.getId()) +
-				this.impostoService.buscarImpostos(projeto.getId()) +
-				this.lucroService.buscarLucro(projeto.getId());
+		        this.valorTotal = this.totalServicos + custoVariavelDoProjeto + this.custoFixoDoProjeto + this.impostosProjeto + this.lucroSobreServicos;
 
 	}
 
@@ -274,10 +284,6 @@ public class PrecificacaoController {
 	@FXML
 	private void btnPrecificarProjeto() throws SQLException {
 		projeto.setStatus("Precificado");
-		System.out.println(this.projetoService.totalDoProjeto(projeto.getId()) +","+ this.custosVariaveisService.totalProjeto(projeto.getId())+", "+
-				this.custosFixosRaiz.lancamentoProjetos(projeto.getId())+", "+
-				this.impostoService.buscarImpostos(projeto.getId()) +" ,"+
-				this.lucroService.buscarLucro(projeto.getId()));
 		projeto.setPrecificacao(this.valorTotal);
 		this.projetoService.precificarProjeto(projeto);
 	}

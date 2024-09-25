@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 
@@ -23,6 +24,10 @@ public class App extends Application {
 	        scene = new Scene(loadFXML("DashBoard"));
 	        stage.setScene(scene);
 
+			stage.setMinHeight(600);
+			stage.setMinWidth(800);
+			stage.setMaxHeight(Screen.getPrimary().getBounds().getHeight());
+			stage.setMaxWidth(Screen.getPrimary().getBounds().getWidth());
 
 			stage.setTitle("Precificação");
 			Image image = new Image("images/ico.png");

@@ -55,8 +55,27 @@ public class LancamentoCVController {
 
 	@FXML
 	private void btnPrecificar(ActionEvent e) {
-		App.mudarTela("Precificacao");
+		try {
+			App.mudarTela("Precificacao");
+		} catch (Exception ex) {
+			exibirErro(ex);
+		}
 	}
+
+	private void exibirErro(Exception ex) {
+		// Criar uma caixa de alerta
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Erro");
+		alert.setHeaderText("Erro ao carregar a tela: Precificacao");
+		alert.setContentText("Ocorreu um erro ao tentar carregar a tela.\nDetalhes do erro: " + ex.getMessage());
+
+		// Exibir o erro no console também para fins de depuração
+		ex.printStackTrace();
+
+		// Exibir a janela de alerta
+		alert.showAndWait();
+	}
+
 
 	@FXML
 	private Button btnPrecificar;
@@ -236,7 +255,7 @@ public class LancamentoCVController {
 
 	}
 	private void atualizarTotal() throws SQLException {
-		totalLabel.setText("Total R$" +String.format("%.2f",this.custosService.totalProjeto(projeto.getId())));
+		totalLabel.setText("Total R$" +String.format("%.2f",this.custosService.totalCVProjeto(projeto.getId())));
 		totalLabel.getStyleClass().add("label-subtotal-tt");
 	}
 

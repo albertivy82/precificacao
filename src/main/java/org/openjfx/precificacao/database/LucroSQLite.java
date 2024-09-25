@@ -71,7 +71,7 @@ public class LucroSQLite {
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
         ResultSet result = null;
-        Float totalLucro = null;
+        Float totalLucro = 0.0f;
 
         try {
             pstmt = conn.prepareStatement("SELECT lucro AS total_lucro FROM quota_sobre_despesas WHERE id_projeto = ?");

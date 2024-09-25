@@ -74,7 +74,7 @@ public class ImpostosSQLite {
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
         ResultSet result = null;
-        Float totalImpostos = null;
+        Float totalImpostos = 0.0f; // Inicializa com valor 0
 
         try {
             pstmt = conn.prepareStatement("SELECT (iss + simples_nac) AS total_impostos FROM impostos_projeto WHERE id_projeto = ?");
@@ -96,6 +96,7 @@ public class ImpostosSQLite {
         }
         return totalImpostos;
     }
+
 
 
 }

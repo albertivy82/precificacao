@@ -109,12 +109,12 @@ public class DetalhamentoSQLite {
         return result;
     }
 
-    public Float totalPorProjeto(int idProjeto) {
+    public Float totalDeServicosPorProjeto(int idProjeto) {
 
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
         ResultSet result = null;
-        Float totalProjeto = null;
+        Float totalProjeto = 0.0f;
 
         try {
             pstmt = conn.prepareStatement("SELECT SUM(horas) AS total_projeto FROM detalhamento WHERE id_projeto = ?");

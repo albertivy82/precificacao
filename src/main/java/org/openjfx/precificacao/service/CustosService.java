@@ -46,9 +46,9 @@ public class CustosService {
        return this.custosvariaveisDB.custoPorNome(id);
     }
 
-    public Float totalProjeto(int id) throws SQLException {
+    public Float totalCVProjeto(int id) throws SQLException {
         this.lancamentosDB = new LancamentoCVSQLite();
-        return this.lancamentosDB.totalPorProjeto(id);
+        return this.lancamentosDB.totalCVPorProjeto(id);
     }
 
 

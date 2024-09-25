@@ -115,14 +115,33 @@ public class DtlProjetoController {
 
 	@FXML
 	private void btnPrecificar(ActionEvent e) {
-		App.mudarTela("Precificacao");
+		try {
+			App.mudarTela("Precificacao");
+		} catch (Exception ex) {
+			exibirErro(ex);
+		}
 	}
+
+	private void exibirErro(Exception ex) {
+		// Criar uma caixa de alerta
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Erro");
+		alert.setHeaderText("Erro ao carregar a tela: Precificacao");
+		alert.setContentText("Ocorreu um erro ao tentar carregar a tela.\nDetalhes do erro: " + ex.getMessage());
+
+		// Exibir o erro no console também para fins de depuração
+		ex.printStackTrace();
+
+		// Exibir a janela de alerta
+		alert.showAndWait();
+	}
+
 	@FXML
 	private Button btnPrecificar;
 
 
 	private void atualizarStatusBtnPrecificar() {
-		float ttProjeto = projetoService.totalDoProjeto(projeto.getId());
+		float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
 		btnPrecificar.setDisable(ttProjeto <= 0);
 	}
 
@@ -412,7 +431,7 @@ public class DtlProjetoController {
 			exibirEtapa(etapa, atividades);
 		});
 
-		float ttProjeto = projetoService.totalDoProjeto(projeto.getId());
+		float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
 		Label totalDoProjeto = new Label("TOTAL DO PROJETO: " + FormatadorMoeda.formatarValorComoMoeda(ttProjeto));
 		if(ttProjeto>0){
 			projeto.setStatus("Orçado");
@@ -515,7 +534,7 @@ public class DtlProjetoController {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
-					float ttProjeto = projetoService.totalDoProjeto(projeto.getId());
+					float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
 					if(ttProjeto==0){
                         try {
 							projeto.setStatus("Cadastrado");

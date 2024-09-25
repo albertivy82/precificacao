@@ -1,6 +1,5 @@
 package org.openjfx.precificacao.database;
 
-import org.openjfx.precificacao.dtos.totalProfissionalPorProjetoDTO;
 import org.openjfx.precificacao.models.LancamentoCV;
 
 import java.sql.Connection;
@@ -113,12 +112,12 @@ public class LancamentoCVSQLite {
         return result;
     }
 
-    public Float totalPorProjeto(int idProjeto) {
+    public Float totalCVPorProjeto(int idProjeto) {
 
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
         ResultSet result = null;
-        Float totalProjeto = null;
+        Float totalProjeto = 0.0f;
 
         try {
             pstmt = conn.prepareStatement("SELECT SUM(valor_unitario*quantidade) AS total_lancamentos FROM lancamento_cv WHERE id_projeto = ?");

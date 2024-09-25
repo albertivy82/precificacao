@@ -33,8 +33,8 @@ public class CustosFixosService {
 
     }
 
-    public Float lancamentoProjetos(int projetoId){
-        return this.lancamentoCF.lancamentoPorProjeto(projetoId);
+    public Float lancamentoCFProjetos(int projetoId){
+        return this.lancamentoCF.lancamentoCFPorProjeto(projetoId);
     }
 
 

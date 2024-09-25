@@ -84,8 +84,8 @@ public class LancamentoCFSQLite {
         return result;
     }
 
-    public Float lancamentoPorProjeto(int idProjeto) {
-        float lancamentoProjeto = 0;
+    public Float lancamentoCFPorProjeto(int idProjeto) {
+        float lancamentoProjeto = 0.0f;
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
