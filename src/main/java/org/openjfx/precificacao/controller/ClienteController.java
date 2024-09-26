@@ -250,9 +250,9 @@ public class ClienteController {
 			 			emailInput.setText(clienteEscolhido.getEmail());
 			 			cpfInput.setText(clienteEscolhido.getCpf());
 			 			telefoneInput.setText(clienteEscolhido.getTelefone());
-						enderecoClienteInput.setText(clienteEscolhido.getTelefone());
-						bairroClienteInput.setText(clienteEscolhido.getTelefone());
-						cepClienteInput.setText(clienteEscolhido.getTelefone());
+						enderecoClienteInput.setText(clienteEscolhido.getEndereco());
+						bairroClienteInput.setText(clienteEscolhido.getBairro());
+						cepClienteInput.setText(clienteEscolhido.getCep());
 			 			this.id = clienteEscolhido.getId();
 			 			System.out.println(this.id);
 			 		}

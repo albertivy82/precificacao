@@ -127,49 +127,50 @@ public class PrecificacaoController {
 		this.custosVariaveisService = new CustosService();
 		this.lucroService = new LucroService();
 		this.impostoService = new ImpostoService();
-		labelvalorDeServicosDoProjeto();
-		lalabelTotalCustosVariaveis();
 		this.custosFixosRaiz = new CustosFixosService();
-		identificacaoProjeto();
 		slider();
 		lucro();
+		valorServicosProjeto();
+		custosVariaveisProjeto();
 		saldoAtualDeCusto();
 		siuacaoDeCustos();
-		atualizarLabelLancamentoCFProjeto();
-		atualizarLabelImpostos();
-		atualizarLabelLucro();
+		custoFixoProjeto();
+		impostosProjeto();
+		lucroPorjeto();
 		somaTotalProjeto();
 		precoTotalProjetoLabel();
+		identificacaoProjeto();
 		btnPrecificarProjeto();
 		precoTotalProjetoLabel();
 		listaResultados();
 	}
 
-	private void atualizarLabelLucro() {
+	private void lucroPorjeto() {
 		float lucro = this.lucroService.buscarLucro(projeto.getId());
 		this.lucroSobreServicos = lucro;
 		lucroLabel.setText(String.format("R$ %.2f", this.lucroSobreServicos));
 	}
 
-	private void atualizarLabelLancamentoCFProjeto(){
+
+	private void custoFixoProjeto(){
 		float cf = this.custosFixosRaiz.lancamentoCFProjetos(projeto.getId());
 		this.custoFixoDoProjeto = cf;
 		lancamentoCF.setText(String.format("R$ %.2f", this.custoFixoDoProjeto));
 	}
 
-	private void atualizarLabelImpostos(){
+	private void impostosProjeto(){
 		float impostos = this.impostoService.buscarImpostos(projeto.getId());
 		this.impostosProjeto = impostos;
 		totalImpostosLabel.setText(String.format("R$ %.2f", this.impostosProjeto));
 	}
 
-	private void labelvalorDeServicosDoProjeto(){
+	private void valorServicosProjeto(){
 		float servicos = this.projetoService.totalDeServicosDoProjeto(projeto.getId());
 		this.totalServicos = servicos;
 		totalProjetoLabel.setText(String.format(" R$ %.2f", this.totalServicos));
 	}
 
-	private void lalabelTotalCustosVariaveis() throws SQLException {
+	private void custosVariaveisProjeto() throws SQLException {
 		float cv = this.custosVariaveisService.totalCVProjeto(projeto.getId());
 		this.custoVariavelDoProjeto = cv;
 		totalCustosVariaveisLabel.setText(String.format("R$ %.2f", this.custoVariavelDoProjeto));
@@ -181,7 +182,7 @@ public class PrecificacaoController {
 		this.clienteService = new ClienteService();
 		clienteLabel.setText("Cliente: " + this.clienteService.nomeCliente(projeto.getIdCliente()));
 		StatusLabel.setText("Status: " + projeto.getStatus());
-		custosFixos.setText("Custos Fixos Atual: " + String.format("R$ %.2f", custosFixosRaiz.totalCustosFixos()));
+		custosFixos.setText("Custos Fixos Atual: " + String.format("R$ %.2f", this.custoFixoDoProjeto));
 	}
 
 	private void slider(){
@@ -217,7 +218,7 @@ public class PrecificacaoController {
 		this.custosFixosRaiz.lancarCusto(this.lancamentoDeDesconto);
 		saldoAtualDeCusto();
 		siuacaoDeCustos();
-		atualizarLabelLancamentoCFProjeto();
+		custoFixoProjeto();
 		somaTotalProjeto();
 		precoTotalProjetoLabel();
 
@@ -242,7 +243,7 @@ public class PrecificacaoController {
 		novosImposto.setIss(issBox);
 		novosImposto.setSimplesNac(sipless);
 		this.impostoService.lancarImpostos(novosImposto);
-		atualizarLabelImpostos();
+		impostosProjeto();
 		somaTotalProjeto();
 		precoTotalProjetoLabel();
 
@@ -267,13 +268,13 @@ public class PrecificacaoController {
 		novoLucro.setIdProjeto(projeto.getId());
 		novoLucro.setLucro(this.lucroEsperado);
 		this.lucroService.lancarLucro(novoLucro);
-		atualizarLabelLucro();
+		lucroPorjeto();
 		somaTotalProjeto();
 		precoTotalProjetoLabel();
 	};
 
 	private void somaTotalProjeto() throws SQLException {
-		        this.valorTotal = this.totalServicos + custoVariavelDoProjeto + this.custoFixoDoProjeto + this.impostosProjeto + this.lucroSobreServicos;
+		this.valorTotal = this.totalServicos + custoVariavelDoProjeto + this.custoFixoDoProjeto + this.impostosProjeto + this.lucroSobreServicos;
 
 	}
 
@@ -360,7 +361,7 @@ public class PrecificacaoController {
 	private void btnGerarPdf() {
 
 			// Definir o caminho de destino para o PDF
-			String caminhoDoArquivoPdf = "/pdf_template.pdf";  // Atualize com o caminho desejado
+			String caminhoDoArquivoPdf = "/Orçamento_projeto_"+ projeto.getId() + ".pdf";  // Atualize com o caminho desejado
 
 			// Recuperar os dados necessários para o PDF
 			Map<String, Map<String, List<DetalhamentoDTO>>> etapasAgrupadas = projetoService.etapasSalvas(projeto.getId());
@@ -381,17 +382,6 @@ public class PrecificacaoController {
 			System.out.println("PDF gerado com sucesso em: " + caminhoDoArquivoPdf);
 
 	}
-
-
-
-
-
-
-
-
-
-
-
 }
 
 
