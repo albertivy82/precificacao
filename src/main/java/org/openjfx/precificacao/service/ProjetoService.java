@@ -5,6 +5,8 @@ import org.openjfx.precificacao.dtos.DetalhamentoDTO;
 import org.openjfx.precificacao.models.*;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -131,7 +133,18 @@ public class ProjetoService {
        this.projetosBnaco.editarProjeto(projeto);
 
     }
+/*
+    public void gerarCodCliente(String cpf){
 
+        int id =  this.clientes.clientePorCpf(cpf);
+        LocalDate hoje = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMyyyy");
+        String dataFormatada = hoje.format(formatter);
+        String cod = String.format("%d%s", id, dataFormatada);
+        this.clientes.gerarCodCliente(id, cod);
+
+    }
+*/
 
 
 

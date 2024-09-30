@@ -1,28 +1,39 @@
 package org.openjfx.precificacao.controller;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
 import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.database.ClienteSQLite;
+import org.openjfx.precificacao.models.Cidade;
 import org.openjfx.precificacao.models.Cliente;
+import org.openjfx.precificacao.models.Estado;
+import org.openjfx.precificacao.models.Etapa;
+import org.openjfx.precificacao.service.CidadeService;
+import org.openjfx.precificacao.service.ClienteService;
+import org.openjfx.precificacao.service.EstadoService;
 import org.openjfx.precificacao.shared.CPFMaskedTextField;
 import org.openjfx.precificacao.shared.CPFValidator;
+import org.openjfx.precificacao.shared.ClienteSingleton;
 import org.openjfx.precificacao.shared.TelefoneMaskedTextField;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 public class ClienteController {
 	 
-	private ClienteSQLite clientes; 
+	private ClienteSQLite clientes;
+	private ClienteService clienteService;
+	private EstadoService estadoService;
+	private CidadeService cidadeService;
 	
 	private int id = -1;
 	
@@ -51,10 +62,22 @@ public class ClienteController {
 	@FXML
 	private ListView<Cliente> LvClientes;
 
+
+	@FXML
+	private ComboBox<Estado> estadoClienteCB;
+
+	@FXML
+	private ComboBox<Cidade> cidadeClienteCB;
+
+
 		
 	@FXML
 	void initialize() {
 		updateList();
+		this.clienteService = new ClienteService();
+		this.estadoService = new EstadoService();
+		this.cidadeService = new CidadeService();
+		estadoClienteCB();
 	}
 	
 	private void showAlert(String title, String message) {
@@ -117,8 +140,21 @@ public class ClienteController {
 	        novoCliente.setTelefone(telefoneInput.getText());
 			novoCliente.setEndereco(enderecoClienteInput.getText());
 			novoCliente.setBairro(bairroClienteInput.getText());
-			novoCliente.setCep(cepClienteInput.getText());
+				// Verifica se um estado foi selecionado antes de atribuir
+				Estado estadoSelecionado = estadoClienteCB.getSelectionModel().getSelectedItem();
+				if (estadoSelecionado != null) {
+					novoCliente.setEstado(estadoSelecionado.getEstado());
+				} else {
+					novoCliente.setEstado(null); // Se não selecionado, o valor será nulo
+				}
 
+				// Verifica se uma cidade foi selecionada antes de atribuir
+				Cidade cidadeSelecionada = cidadeClienteCB.getSelectionModel().getSelectedItem();
+				if (cidadeSelecionada != null) {
+					novoCliente.setCidade(cidadeSelecionada.getCidade());
+				} else {
+					novoCliente.setCidade(null); // Se não selecionado, o valor será nulo
+				}			novoCliente.setCep(cepClienteInput.getText());
 	        try {
 	            this.clientes = new ClienteSQLite();
 		            if(this.id==-1) {
@@ -127,14 +163,17 @@ public class ClienteController {
 		            novoCliente.setId(this.id);	
 		           	clientes.editarCliente(novoCliente);
 		            }
+				this.clienteService.gerarCodCliente(cpfInput.getText());
 	            nomeClienteInput.clear();
 	            emailInput.clear();
 	            cpfInput.clear();
 	            telefoneInput.clear();
 				enderecoClienteInput.clear();
 				bairroClienteInput.clear();
+				estadoClienteCB.getSelectionModel().clearSelection();
+				cidadeClienteCB.getSelectionModel().clearSelection();
 				cepClienteInput.clear();
-	            updateList();
+				updateList();
 	        } catch (SQLException ex) {
 	            showAlert("Erro ao Cadastrar Cliente", "Não foi possível cadastrar o cliente: " + ex.getMessage());
 	        }
@@ -158,11 +197,11 @@ public class ClienteController {
 	        valid = false;
 	    }
 	    // Verificação para e-mail (não pode estar vazio e deve seguir o regex)
-	    if (emailInput.getText().trim().isEmpty() || !emailInput.getText().matches(emailRegex)) {
-	        showAlert("E-mail Inválido", "O campo de e-mail está vazio ou não está no formato correto.");
-	        emailInput.requestFocus();
-	        valid = false;
-	    }
+		if (!emailInput.getText().trim().isEmpty() && !emailInput.getText().matches(emailRegex)) {
+			showAlert("E-mail Inválido", "O campo de e-mail não está no formato correto.");
+			emailInput.requestFocus();
+			valid = false;
+		}
 	    // Verificação para CPF (não pode estar vazio e deve seguir o regex)
 	    if (cpfInput.getText().trim().isEmpty() || !cpfInput.getText().matches(cpfRegex) || !CPFValidator.isValidCPF(cpfInput.getText())){
 	        showAlert("CPF Inválido", "O campo CPF está vazio ou não está no formato XXX.XXX.XXX-XX.");
@@ -176,26 +215,7 @@ public class ClienteController {
 	        valid = false;
 	    }
 
-		if (enderecoClienteInput.getText().trim().isEmpty()) {
-			showAlert("Endereço Vazio", "O campo Endereço não pode estar vazio.");
-			enderecoClienteInput.requestFocus();
-			valid = false;
-		}
-
-		if (bairroClienteInput.getText().trim().isEmpty()) {
-			showAlert("Bairro Vazio", "O campo Bairro não pode estar vazio.");
-			bairroClienteInput.requestFocus();
-			valid = false;
-		}
-
-		if (cepClienteInput.getText().trim().isEmpty()) {
-			showAlert("CEP Vazio", "O campo CEP não pode estar vazio.");
-			cepClienteInput.requestFocus();
-			valid = false;
-		}
-
-
-	    return valid;
+		 return valid;
 	}
 
 	
@@ -267,6 +287,40 @@ public class ClienteController {
 		 	}
 
 	 }
+
+
+	@FXML
+	protected void btnDetalhes(ActionEvent e) {
+
+		ObservableList<Cliente> clienteClickado = LvClientes.getSelectionModel().getSelectedItems();
+
+		if(!clienteClickado.isEmpty()) {
+
+			Cliente clienteSelecionado = clienteClickado.get(0);
+
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Atenção");
+			alert.setHeaderText("Deseja ver mais detalhes do cliente selecionado?");
+			alert.setContentText(clienteSelecionado.toString());
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if(result.get()==ButtonType.OK) {
+				   ClienteSingleton clienteSingleton = ClienteSingleton.getInstance();
+				   clienteSingleton.setCliente(clienteSelecionado);
+					App.mudarTela("ClientesDetalhes");
+
+			}
+
+		}else{
+
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Atenção");
+			alert.setHeaderText("Nenhum cliente foi selecionado");
+			alert.showAndWait();
+
+		}
+
+	}
 	
 	private void updateList() {
 		this.clientes = new ClienteSQLite();
@@ -275,7 +329,53 @@ public class ClienteController {
 		listaClientes.stream().forEach(c->LvClientes.getItems().add(c));
 		
 	}
-	
+
+
+	@FXML
+	private void estadoClienteCB(){
+
+		List<Estado> estadosList = this.estadoService.buscarTodosEstados();
+		ObservableList<Estado> estados = FXCollections.observableArrayList(estadosList);
+		estadoClienteCB.setItems(estados);
+
+		// Ajustando o StringConverter para evitar problemas de null
+		estadoClienteCB.setConverter(new StringConverter<Estado>() {
+			@Override
+			public String toString(Estado object) {
+				// Verifique se o object não é nulo antes de acessá-lo
+				return (object != null && object.getEstado() != null) ? object.getEstado() : "Selecione o estado";
+			}
+
+			@Override
+			public Estado fromString(String string) {
+				// Não precisamos implementar conversão reversa no seu caso
+				return null;
+			}
+		});
+
+		estadoClienteCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				List<Cidade> cidade = this.cidadeService.buscarCidadesPorEstado(newValue.getId());
+				ObservableList<Cidade> cidades = FXCollections.observableArrayList(cidade);
+				cidadeClienteCB.setItems(cidades);
+				cidadeClienteCB.setConverter(new StringConverter<Cidade>() {
+					@Override
+					public String toString(Cidade object) {
+						return (object != null && object.getCidade() != null) ? object.getCidade() : "Selecione o cidade";
+					}
+
+					@Override
+					public Cidade fromString(String string) {
+						// Não precisamos implementar conversão reversa no seu caso
+						return null;
+					}
+				});
+
+			}
+		});
+	}
+
+
 
 
 }

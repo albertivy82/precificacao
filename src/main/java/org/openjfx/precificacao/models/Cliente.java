@@ -10,18 +10,21 @@ import lombok.ToString;
 public class Cliente {
 	
 	private int id;
+	private String codCliente;
 	private String nome;
 	private String cpf;
 	private String telefone;
 	private String email;
 	private String endereco;
 	private String bairro;
+	private String estado;
+	private String cidade;
 	private String cep;
 
 	
 	@Override
 	public String toString() {
-	return (nome + " - " + cpf).toUpperCase();
+	return ("Cliente nº " + codCliente + "-" + nome).toUpperCase();
 	}
 
 }
