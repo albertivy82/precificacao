@@ -169,7 +169,7 @@ public class EtapaSQLite {
         ResultSet result = null;
 
         try {
-            pstmt = conn.prepareStatement("SELECT SUM(horas) AS total_por_etapa FROM detalhamento WHERE id_Projeto = ? AND id_etapa = ?");
+            pstmt = conn.prepareStatement("SELECT SUM(valor_hora*horas) AS total_por_etapa FROM detalhamento WHERE id_Projeto = ? AND id_etapa = ?");
             pstmt.setInt(1, idProjeto);
             pstmt.setInt(2, idEtapa);
             result = pstmt.executeQuery();

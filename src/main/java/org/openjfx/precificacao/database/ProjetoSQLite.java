@@ -51,6 +51,49 @@ public class ProjetoSQLite{
         }
     }
 
+    public void gerarCodProjeto(int id, String codProjeto) {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("UPDATE projeto SET cod_projeto = ? WHERE id = ?");
+            pstmt.setString(1, codProjeto);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
+
+    public int clientePorNome(String nome) {
+        int idProjeto = 0;
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet result = null;
+
+        try{
+            pstmt = conn.prepareStatement("SELECT id FROM projeto WHERE nome_projeto=?");
+            pstmt.setString(1, nome);
+            result = pstmt.executeQuery();
+
+            if(result.next()){
+                idProjeto = result.getInt("id");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return idProjeto;
+    }
+
     
     public void deletarProjeto(Projeto projeto) {
         Connection conn = SQLiteConnection.connect();
@@ -73,12 +116,13 @@ public class ProjetoSQLite{
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = conn.prepareStatement("SELECT id, nome_projeto, id_cliente, status FROM projeto");
+            pstmt = conn.prepareStatement("SELECT id, cod_projeto, nome_projeto, id_cliente, status FROM projeto");
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
                 Projeto p = new Projeto();
                 p.setId(rs.getInt("id"));
+                p.setCodProjeto(rs.getString("cod_projeto"));
                 p.setNomeProjeto(rs.getString("nome_projeto"));
                 p.setIdCliente(rs.getInt("id_cliente"));
                 p.setStatus(rs.getString("status"));

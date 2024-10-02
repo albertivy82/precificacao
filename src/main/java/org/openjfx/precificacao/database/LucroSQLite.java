@@ -93,4 +93,17 @@ public class LucroSQLite {
         }
         return totalLucro;
     }
+
+    public void deletarLucroPorProjeto(int idProjeto) {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM quota_sobre_despesas WHERE id_projeto=?");
+            pstmt.setInt(1, idProjeto);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
 }

@@ -51,5 +51,11 @@ public class CustosService {
         return this.lancamentosDB.totalCVPorProjeto(id);
     }
 
+    public void deletarLacamentoCVPorProjeto(int idProjeto) throws SQLException {
+        this.lancamentosDB = new LancamentoCVSQLite();
+        this.lancamentosDB.deletarLancamentoCVPorProjeto(idProjeto);
+
+    }
+
 
 }

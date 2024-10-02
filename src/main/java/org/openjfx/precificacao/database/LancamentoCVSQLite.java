@@ -156,6 +156,19 @@ public class LancamentoCVSQLite {
         }
     }
 
+    public void deletarLancamentoCVPorProjeto(int idProjeto) {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM lancamento_cv WHERE id_projeto=?");
+            pstmt.setInt(1, idProjeto);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
+
 
 
 

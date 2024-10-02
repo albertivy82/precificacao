@@ -149,6 +149,7 @@ public class ProjetoController {
                     novoProjeto.setId(this.id);
                     projetosDB.editarProjeto(novoProjeto);
                 }
+                this.projetoService.gerarCodProjeto(nomeProjetolInput.getText());
                 clearFields();
                 updateList();
             } catch (SQLException ex) {
@@ -185,7 +186,7 @@ public class ProjetoController {
     }
 
     @FXML
-    void btnDeletarProjeto(ActionEvent event) {
+    void btnDeletarProjeto(ActionEvent event) throws SQLException {
         this.projetosDB = new ProjetoSQLite();
         ObservableList<Projeto> escolhido = LvProjetos.getSelectionModel().getSelectedItems();
 
@@ -200,6 +201,7 @@ public class ProjetoController {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 projetosDB.deletarProjeto(projetoEscolhido);
+                this.projetoService.deletaDependenciasDoProjeto(projetoEscolhido.getId());
                 updateList();
             }
         } else {

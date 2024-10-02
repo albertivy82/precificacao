@@ -8,6 +8,7 @@ import lombok.Setter;
 public class Projeto {
 
     private Integer id;
+    private String codProjeto;
     private String nomeProjeto;
     private Integer idCliente;
     private String status;
@@ -16,6 +17,6 @@ public class Projeto {
 
     @Override
     public String toString() {
-        return (nomeProjeto + " - " + id + " . Satus: " + status).toUpperCase();
+        return (nomeProjeto + " - Projeto Nº " + codProjeto + " . Satus: " + status).toUpperCase();
     }
 }

@@ -20,6 +20,9 @@ public class ProjetoService {
     private ProfissionaisSQLite profissionais;
     private DetalhamentoSQLite detalhamentos;
     private ProjetoSQLite projetosBnaco;
+    private CustosService lancamentoCVService;
+    private CustosFixosService lancamentoCFService;
+    private LucroService lucroService;
 
     public ProjetoService() {
         this.etapas = new EtapaSQLite();
@@ -133,18 +136,30 @@ public class ProjetoService {
        this.projetosBnaco.editarProjeto(projeto);
 
     }
-/*
-    public void gerarCodCliente(String cpf){
 
-        int id =  this.clientes.clientePorCpf(cpf);
+    public void gerarCodProjeto(String nomeProjeto){
+
+        int id =  this.projetosBnaco.clientePorNome(nomeProjeto);
         LocalDate hoje = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMyyyy");
         String dataFormatada = hoje.format(formatter);
         String cod = String.format("%d%s", id, dataFormatada);
-        this.clientes.gerarCodCliente(id, cod);
+        this.projetosBnaco.gerarCodProjeto(id, cod);
 
     }
-*/
+
+    public void deletaDependenciasDoProjeto(int idProjeto) throws SQLException {
+
+       this.lancamentoCVService = new CustosService();
+       this.lancamentoCFService = new CustosFixosService();
+       this.lucroService = new LucroService();
+       this.detalhamentos.deletarDetalhamentoPorProjeto(idProjeto);
+       this.lancamentoCVService.deletarLacamentoCVPorProjeto(idProjeto);
+       this.lancamentoCFService.deletarPorProjeto(idProjeto);
+       this.lucroService.deletarLucroDoProjeto(idProjeto);
+
+    }
+
 
 
 

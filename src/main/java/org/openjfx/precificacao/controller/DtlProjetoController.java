@@ -357,7 +357,7 @@ public class DtlProjetoController {
 				float valorHoraCovertido = Float.parseFloat(valorHora.getText());
 				total.setText("R$ " + (qtd * valorHoraCovertido));
 				// Atualiza o valorHoras no detalhamento correspondente
-				detalhamento.setHoras(qtd * valorHoraCovertido);
+				detalhamento.setHoras(qtd);
 				comboBoxProfissional.setDisable(true);
 			} catch (NumberFormatException e) {
 				total.setText("R$ 0,00"); // Se o valor não for numérico, define o total como 0
@@ -479,8 +479,7 @@ public class DtlProjetoController {
 		float sbtAtividade = 0;
 
 		for (DetalhamentoDTO detalhe : profissionais) {
-			// Exibe cada profissional
-			sbtAtividade += exibirProfissional(detalhe);
+			sbtAtividade += detalhe.getHoras() * detalhe.getValorHoras();  // Multiplica as horas pelo valor da hora
 		}
 
 		// Exibe o subtotal da atividade
@@ -497,7 +496,7 @@ public class DtlProjetoController {
 
 		Label labelProfissional = new Label("Profissional: " + detalheFinal.getNomeProfissional() +
 				" - Valor Hora: " + String.format("%.2f", detalheFinal.getValorHoras()) +
-				" - Valor Orçado: " + String.format("%.2f", detalheFinal.getHoras()));
+				" - Valor Orçado: " + String.format("%.2f", detalheFinal.getHoras() * detalheFinal.getValorHoras()));
 
 		labelProfissional.getStyleClass().add("label-profissionais");
 		HBox.setHgrow(labelProfissional, Priority.ALWAYS);
@@ -510,7 +509,8 @@ public class DtlProjetoController {
 		savedEtapasContainer.getChildren().add(labelProfissional);
 
 		// Retorna o valor orçado para acumular o subtotal
-		return detalheFinal.getHoras();
+		return detalheFinal.getHoras() * detalheFinal.getValorHoras();  // Multiplica as horas pelo valor da hora
+
 	}
 
 	private void adicionarLogicaExclusaoEtapa(Label labelEtapa, String etapa) {

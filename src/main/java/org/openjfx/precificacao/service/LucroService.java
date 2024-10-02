@@ -23,6 +23,12 @@ public class LucroService {
         return this.lucro.totalLucroPorProjeto(projetoId);
     }
 
+    public void deletarLucroDoProjeto(int projetoId){
+        this.lucro.deletarLucroPorProjeto(projetoId);
+    }
+
+
+
 
 
 }

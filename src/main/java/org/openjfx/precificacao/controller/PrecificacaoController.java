@@ -143,12 +143,18 @@ public class PrecificacaoController {
 		btnPrecificarProjeto();
 		precoTotalProjetoLabel();
 		listaResultados();
+		custosFixos();
 	}
 
 	private void lucroPorjeto() {
 		float lucro = this.lucroService.buscarLucro(projeto.getId());
 		this.lucroSobreServicos = lucro;
 		lucroLabel.setText(String.format("R$ %.2f", this.lucroSobreServicos));
+	}
+
+	private void custosFixos() {
+		float custosFixosTotal = this.custosFixosRaiz.totalCustosFixos();
+		custosFixos.setText("Custos Fixos Atual: " +String.format("R$ %.2f", custosFixosTotal));
 	}
 
 
@@ -177,12 +183,10 @@ public class PrecificacaoController {
 	}
 
 	private void identificacaoProjeto(){
-
 		nomeProjetoLabel.setText("Nome do Projeto: " + projeto.getNomeProjeto());
 		this.clienteService = new ClienteService();
 		clienteLabel.setText("Cliente: " + this.clienteService.nomeCliente(projeto.getIdCliente()));
 		StatusLabel.setText("Status: " + projeto.getStatus());
-		custosFixos.setText("Custos Fixos Atual: " + String.format("R$ %.2f", this.custoFixoDoProjeto));
 	}
 
 	private void slider(){
@@ -330,9 +334,9 @@ public class PrecificacaoController {
 				labelAtividade.getStyleClass().add("item");
 				labelAtividade.setMaxWidth(Double.MAX_VALUE); // Permite expandir a largura
 
-				// Calcula o subtotal da atividade
+				// Calcula o subtotal da atividade (horas * valor da hora do profissional)
 				float subtotalAtividade = atividades.get(atividade).stream()
-						.map(DetalhamentoDTO::getHoras)
+						.map(detalhamento -> detalhamento.getHoras() * detalhamento.getValorHoras())
 						.reduce(0f, Float::sum);
 
 				// Cria o label para o subtotal da atividade e aplica o alinhamento à direita

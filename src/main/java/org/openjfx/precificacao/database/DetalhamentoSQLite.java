@@ -117,7 +117,7 @@ public class DetalhamentoSQLite {
         Float totalProjeto = 0.0f;
 
         try {
-            pstmt = conn.prepareStatement("SELECT SUM(horas) AS total_projeto FROM detalhamento WHERE id_projeto = ?");
+            pstmt = conn.prepareStatement("SELECT SUM(valor_hora*horas) AS total_projeto FROM detalhamento WHERE id_projeto = ?");
             pstmt.setInt(1, idProjeto);
             result = pstmt.executeQuery();
            if (result.next()) {
@@ -208,6 +208,19 @@ public class DetalhamentoSQLite {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+        }
+    }
+
+    public void deletarDetalhamentoPorProjeto(int idProjeto) {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE id_projeto=?");
+            pstmt.setInt(1, idProjeto);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
         }
     }
 

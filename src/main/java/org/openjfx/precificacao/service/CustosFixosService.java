@@ -37,6 +37,10 @@ public class CustosFixosService {
         return this.lancamentoCF.lancamentoCFPorProjeto(projetoId);
     }
 
+    public void deletarPorProjeto(int projetoId){
+        this.lancamentoCF.deletarLancamentoCFPorProjeto(projetoId);
+    }
+
 
 
 }

@@ -47,6 +47,21 @@ public class LancamentoCFSQLite {
         }
     }
 
+    public void deletarLancamentoCFPorProjeto(int idProjeto) {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM lancamento_cf WHERE id_projeto=?");
+            pstmt.setInt(1, idProjeto);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
+
+
+
 
     public List<LancamentoCF> all() {
         List<LancamentoCF> result = new ArrayList<>();
