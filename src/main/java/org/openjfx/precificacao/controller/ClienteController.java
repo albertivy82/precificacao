@@ -12,7 +12,6 @@ import org.openjfx.precificacao.database.ClienteSQLite;
 import org.openjfx.precificacao.models.Cidade;
 import org.openjfx.precificacao.models.Cliente;
 import org.openjfx.precificacao.models.Estado;
-import org.openjfx.precificacao.models.Etapa;
 import org.openjfx.precificacao.service.CidadeService;
 import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.EstadoService;
@@ -22,10 +21,8 @@ import org.openjfx.precificacao.shared.ClienteSingleton;
 import org.openjfx.precificacao.shared.TelefoneMaskedTextField;
 
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 
 public class ClienteController {
@@ -234,8 +231,7 @@ public class ClienteController {
 
 	        Optional<ButtonType> result = alert.showAndWait();
 	        if (result.isPresent() && result.get() == ButtonType.OK) {
-	            System.out.println("Deletando cliente com ID: " + clienteEscolhido.getId());
-	            clientes.deletarCliente(clienteEscolhido);
+	           this.clienteService.deletarCliente(clienteEscolhido);
 	            updateList();
 	        } else {
 	            System.out.println("Deleção cancelada ou janela fechada");

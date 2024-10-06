@@ -1,7 +1,9 @@
 package org.openjfx.precificacao.service;
 
 import org.openjfx.precificacao.database.ClienteSQLite;
+import org.openjfx.precificacao.models.Cliente;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -43,6 +45,19 @@ public class ClienteService {
             String dataFormatada = hoje.format(formatter);
             String cod = String.format("%d%s", id, dataFormatada);
             this.clientes.gerarCodCliente(id, cod);
+
+    }
+
+    public void deletarCliente(Cliente clienteEscolhido){
+        this.clientes.deletarCliente(clienteEscolhido);
+    }
+
+    private void apagarProjetosAssociados(int idCliemte) throws SQLException {
+        ProjetoService projetoService = new ProjetoService();
+        List<Integer> idsProjetos = projetoService.idsProejoPorCliente(idCliemte);
+        for (int projetoId : idsProjetos) {
+            projetoService.deletaProjetoEDependencias(projetoId);
+        }
 
     }
 

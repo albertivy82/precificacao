@@ -4,9 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -92,6 +90,9 @@ public class PrecificacaoController {
 	private Label totalProjetoLabel;
 
 	@FXML
+	private Label graficosPojeto;
+
+	@FXML
 	private Label totalCustosVariaveisLabel;
 
 	@FXML
@@ -144,6 +145,7 @@ public class PrecificacaoController {
 		precoTotalProjetoLabel();
 		listaResultados();
 		custosFixos();
+		irParaProjetos();
 	}
 
 	private void lucroPorjeto() {
@@ -385,6 +387,12 @@ public class PrecificacaoController {
 			// Exibir mensagem de confirmação (opcional)
 			System.out.println("PDF gerado com sucesso em: " + caminhoDoArquivoPdf);
 
+	}
+
+	private void irParaProjetos() {
+		graficosPojeto.setOnMouseClicked(event -> {
+			App.mudarTela("GraficosProjeto");
+		});
 	}
 }
 

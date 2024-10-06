@@ -148,22 +148,51 @@ public class ProjetoService {
 
     }
 
-    public void deletaDependenciasDoProjeto(int idProjeto) throws SQLException {
-
+    public void deletaProjetoEDependencias(int projetoId) throws SQLException {
+       this.projetosBnaco.deletarProjeto(projetoId);
        this.lancamentoCVService = new CustosService();
        this.lancamentoCFService = new CustosFixosService();
        this.lucroService = new LucroService();
-       this.detalhamentos.deletarDetalhamentoPorProjeto(idProjeto);
-       this.lancamentoCVService.deletarLacamentoCVPorProjeto(idProjeto);
-       this.lancamentoCFService.deletarPorProjeto(idProjeto);
-       this.lucroService.deletarLucroDoProjeto(idProjeto);
+       this.detalhamentos.deletarDetalhamentoPorProjeto(projetoId);
+       this.lancamentoCVService.deletarLacamentoCVPorProjeto(projetoId);
+       this.lancamentoCFService.deletarPorProjeto(projetoId);
+       this.lucroService.deletarLucroDoProjeto(projetoId);
 
     }
 
+    public List<Integer> idsProejoPorCliente(int idCliente){
+        return this.projetosBnaco.buscarProjetosPorCliente(idCliente);
+    }
+
+    public Map<String, Integer> buscarStatusDeProjeto() {
+        return this.projetosBnaco.contarProjetosPorStatus();
+    }
+
+    public Map<String, Double> listarProjetosComValores() {
+        return this.detalhamentos.listarProjetosComValores();
+    }
 
 
+    public Map<String, Double> listarhorasPorProfissional() {
+        return this.detalhamentos.buscarHorasPorTodosProfissional();
+    }
+
+    public Map<String, Double> listarValorPorProfissional() {
+        return this.detalhamentos.buscarValorEHorasPorProfissional();
+    }
+
+    public Map<String, Double> listarTotalPorCliente() {
+        return this.detalhamentos.buscarTotalPorCliente();
+    }
 
 
+    public Map<String, Double> listarhorasPorProfissionalPorProjeto(int ProjetoId) {
+        return this.detalhamentos.buscarHorasPorProfissionalProjeto(ProjetoId);
+    }
+
+    public Map<String, Double> listarValorPorProfissionalPorProjeto(int ProjetoId) {
+        return this.detalhamentos.buscarValorEHorasPorProfissionalProjeto(ProjetoId);
+    }
 
 
 

@@ -200,8 +200,7 @@ public class ProjetoController {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                projetosDB.deletarProjeto(projetoEscolhido);
-                this.projetoService.deletaDependenciasDoProjeto(projetoEscolhido.getId());
+                this.projetoService.deletaProjetoEDependencias(projetoEscolhido.getId());
                 updateList();
             }
         } else {

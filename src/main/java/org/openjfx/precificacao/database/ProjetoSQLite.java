@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjetoSQLite{
     
@@ -95,17 +97,37 @@ public class ProjetoSQLite{
     }
 
     
-    public void deletarProjeto(Projeto projeto) {
+    public void deletarProjeto(int projetoId) {
         Connection conn = SQLiteConnection.connect();
         try {
             PreparedStatement pstmt = conn.prepareStatement("DELETE FROM projeto WHERE ID=?");
-            pstmt.setInt(1, projeto.getId());
+            pstmt.setInt(1, projetoId);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
             SQLiteConnection.closeConnection(conn);
         }
+    }
+
+
+    public List<Integer> buscarProjetosPorCliente(int idCliente) {
+        List<Integer> projetosIds = new ArrayList<>();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT id FROM projeto WHERE id_cliente=?");
+            pstmt.setInt(1, idCliente);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                projetosIds.add(rs.getInt("id"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return projetosIds;
     }
     
     
@@ -219,6 +241,60 @@ public class ProjetoSQLite{
 
         return nomeCliente;
     }
+
+    public Map<String, Integer> contarProjetosPorStatus() {
+        Map<String, Integer> statusCount = new HashMap<>();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT status, COUNT(*) AS total FROM projeto GROUP BY status");
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String status = rs.getString("status");
+                int count = rs.getInt("total");
+                statusCount.put(status, count);  // Adiciona ao mapa
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return statusCount;
+    }
+
+
+    public List<String> buscarTotalPorCliente() {
+        List<String> totalPorCliente = new ArrayList<>();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT c.nome AS nome_cliente, SUM(p.precificacao) AS total_precificacao " +
+                            "FROM projeto p " +
+                            "JOIN cliente c ON p.id_cliente = c.id " +
+                            "GROUP BY c.nome " +
+                            "ORDER BY total_precificacao DESC"
+            );
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String nomeCliente = rs.getString("nome_cliente");
+                double totalPrecificacao = rs.getDouble("total_precificacao");
+
+                // Montar a string com as informações que precisamos (cliente e valor total)
+                String info = "Cliente: " + nomeCliente + ", Valor Total: " + totalPrecificacao;
+                totalPorCliente.add(info);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return totalPorCliente;
+    }
+
+
+
+
 
 
 }

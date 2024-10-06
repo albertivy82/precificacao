@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0"
+            fitToHeight="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.GraficosProjetoController">
+   <content>
+
+      <BorderPane stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" >
+         <top>
+            <HBox prefHeight="90" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@/images/sindomar_logo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+         </top>
+        <center>
+            <VBox spacing="20" alignment="CENTER">
+               <children>
+                  <!-- Gráfico de barras para mostrar profissionais com mais horas -->
+                  <BarChart fx:id="profissionaisPorHorasNoProjetoChart" title="Quantidade de Horas Previstas para cada Profissional">
+                     <xAxis>
+                        <CategoryAxis label="Profissionais"/>
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis label="Horas"/>
+                     </yAxis>
+                  </BarChart>
+
+                  <!-- Gráfico de barras para mostrar profissionais com maior valor de recebimento -->
+                  <BarChart fx:id="profissionaisPorValorRecebidoNoProjetoChart" title="Profissionais Por Valor de Serviço">
+                     <xAxis>
+                        <CategoryAxis label="Profissionais"/>
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis label="Valor (R$)"/>
+                     </yAxis>
+                  </BarChart>
+
+               </children>
+               <!-- Buttons at the bottom -->
+               <VBox alignment="CENTER" spacing="10">
+                  <Button text="VOLTAR" onAction="#btnVoltar" styleClass="button-style" />
+               </VBox>
+            </VBox>
+         </center>
+      </BorderPane>
+
+   </content>
+</ScrollPane>

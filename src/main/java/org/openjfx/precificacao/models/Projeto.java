@@ -11,6 +11,8 @@ public class Projeto {
     private String codProjeto;
     private String nomeProjeto;
     private Integer idCliente;
+    //novo/reforma
+    private String tipo;
     private String status;
     private double precificacao;
 

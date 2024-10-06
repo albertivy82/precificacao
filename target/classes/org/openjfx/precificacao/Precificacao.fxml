@@ -38,7 +38,7 @@
             </HBox>
             <!-- Alinhar o link "Ver dados do Projeto" à direita e estilizado como link -->
             <HBox alignment="BASELINE_RIGHT" spacing="10">
-               <Label text="Ver dados do Projeto" styleClass="link-style" />
+               <Label fx:id="graficosPojeto" text="Ver dados do Projeto" styleClass="link-style" />
             </HBox>
          </VBox>
 

@@ -1,43 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
 
 <ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0"
             fitToHeight="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.MainController">
    <content>
+      <BorderPane stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+         <top>
+            <HBox prefHeight="90" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@/images/sindomar_logo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+         </top>
+         <left>
+            <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
+               <Button mnemonicParsing="false" styleClass="transparent-button" text="Inicio" disable="true"/>
+               <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
+               <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
+               <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
+               <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
+               <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis"/>
+               <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
+               <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades"/>
+            </VBox>
+         </left>
+         <center>
+            <GridPane alignment="CENTER" hgap="20" vgap="20" style="-fx-padding: 20px;">
+               <!-- Primeiro par de gráficos -->
+               <children>
+                  <PieChart fx:id="projetosPorStatusChart" title="Projetos por status" GridPane.columnIndex="0" GridPane.rowIndex="0" maxWidth="400" maxHeight="300"/>
+                  <BarChart fx:id="projetosComValoresChart" title="Projetos por Valor" GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="400" maxHeight="300">
+                     <xAxis>
+                        <CategoryAxis label="Projetos"/>
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis label="Valor (R$)"/>
+                     </yAxis>
+                  </BarChart>
 
-      <BorderPane stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" >
-   <top>
-      <HBox prefHeight="90" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
-              <image>
-				  <Image url="@/images/sindomar_logo.png" />
-			  </image>
-				
-            </ImageView>
-         </children>
-      </HBox>
-   </top>
-   <left>
-      <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Inicio" disable="true"/>
-         <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
-         <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
-         <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
-         <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
-         <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis"/>
-         <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
-         <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades"/>
-      </VBox>
-   </left>
-</BorderPane>
+                  <!-- Segundo par de gráficos -->
+                  <BarChart fx:id="profissionaisPorHorasChart" title="Profissionais com Mais Horas" GridPane.columnIndex="0" GridPane.rowIndex="1" maxWidth="400" maxHeight="300">
+                     <xAxis>
+                        <CategoryAxis label="Profissionais"/>
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis label="Horas"/>
+                     </yAxis>
+                  </BarChart>
+                  <BarChart fx:id="profissionaisPorValorRecebidoChart" title="Profissionais por Valor de Serviço" GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="400" maxHeight="300">
+                     <xAxis>
+                        <CategoryAxis label="Profissionais"/>
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis label="Valor (R$)"/>
+                     </yAxis>
+                  </BarChart>
 
+                  <!-- Gráfico adicional para valores de clientes -->
+                  <BarChart fx:id="clienteValoresChart" title="Valor de Projeto por Cliente" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" maxWidth="800" maxHeight="300">
+                     <xAxis>
+                        <CategoryAxis label="Cliente"/>
+                     </xAxis>
+                     <yAxis>
+                        <NumberAxis label="Valor (R$)"/>
+                     </yAxis>
+                  </BarChart>
+               </children>
+            </GridPane>
+         </center>
+      </BorderPane>
    </content>
 </ScrollPane>

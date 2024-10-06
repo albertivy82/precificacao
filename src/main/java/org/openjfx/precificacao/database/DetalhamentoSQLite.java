@@ -7,9 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DetalhamentoSQLite {
 
@@ -293,6 +291,197 @@ public class DetalhamentoSQLite {
 
         return success;
     }
+
+
+    ///PÁGINA INICIAL - GRÁFICO 3
+    public Map<String, Double> buscarHorasPorTodosProfissional() {
+        Map<String, Double> profissCount = new HashMap<>();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT p.nome AS nome_profissional, SUM(d.horas) AS total_horas\n" +
+                            "FROM detalhamento d\n" +
+                            "JOIN profissionais p ON d.id_profissional = p.id\n" +
+                            "GROUP BY p.nome\n" +
+                            "ORDER BY p.nome DESC"
+            );
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String status = rs.getString("nome_profissional");
+                double count = rs.getDouble("total_horas");
+                double x = count;
+               status = status + "\n"+formatHours(x);
+                profissCount.put(status, count);  // Adiciona ao mapa
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return profissCount;
+    }
+
+
+    ///PÁGINA INICIAL - GRÁFICO 4
+    public Map<String, Double> buscarValorEHorasPorProfissional() {
+        Map<String, Double> valorEHorasPorProfissional = new HashMap<>();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT p.nome AS nome_profissional, SUM(d.valor_hora * d.horas) AS valor_total " +
+                            "FROM detalhamento d " +
+                            "JOIN profissionais p ON d.id_profissional = p.id " +
+                            "GROUP BY p.nome " +
+                            "ORDER BY p.nome DESC"
+            );
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String status = rs.getString("nome_profissional");
+                double count = rs.getDouble("valor_total");
+                valorEHorasPorProfissional.put(status, count);  // Adiciona ao mapa
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return valorEHorasPorProfissional;
+    }
+
+
+    ///PÁGINA INICIAL - GRÁFICO 5
+    public Map<String, Double> buscarTotalPorCliente() {
+        Map<String, Double> totalPorCliente = new HashMap<>();
+        Connection conn = SQLiteConnection.connect();
+         try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT c.nome AS nome_cliente, SUM(p.precificacao) AS total_precificacao " +
+                            "FROM projeto p " +
+                            "JOIN cliente c ON p.id_cliente = c.id " +
+                            "GROUP BY c.nome " +
+                            "ORDER BY total_precificacao DESC"
+            );
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String status = rs.getString("nome_cliente");
+                double count = rs.getDouble("total_precificacao");
+                totalPorCliente.put(status, count);  // Adiciona ao mapa
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return totalPorCliente;
+    }
+
+    ///PÁGINA INICIAL - GRÁFICO 2
+    public Map<String, Double> listarProjetosComValores() {
+        Map<String, Double> projetosComValores = new HashMap<>();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT p.nome_projeto, p.precificacao " +
+                            "FROM projeto p " +
+                            "ORDER BY p.nome_projeto ASC"
+            );
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String nomeProjeto = rs.getString("nome_projeto");
+                double valorTotal = rs.getDouble("precificacao");
+                if(valorTotal<=0) {
+                    nomeProjeto = nomeProjeto + "\n" + "Projeto Não Precificado";
+                }
+                // Adiciona o projeto e seu valor ao mapa
+                projetosComValores.put(nomeProjeto, valorTotal);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return projetosComValores;
+    }
+
+    ///PÁGINA GRÁFICOS DO PROJETO - G1
+    public Map<String, Double> buscarHorasPorProfissionalProjeto(int idProjeto){
+        Map<String, Double> profissCount = new HashMap<>();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT p.nome AS nome_profissional, SUM(d.horas) AS total_horas\n" +
+                            "FROM detalhamento d\n" +
+                            "JOIN profissionais p ON d.id_profissional = p.id\n" +
+                            "WHERE d.id_projeto = ?\n" +
+                            "GROUP BY p.nome\n" +
+                            "ORDER BY p.nome DESC"
+            );
+            pstmt.setInt(1, idProjeto);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                String status = rs.getString("nome_profissional");
+                double count = rs.getDouble("total_horas");
+                profissCount.put(status, count);  // Adiciona ao mapa
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return profissCount;
+    }
+
+
+    ///PÁGINA GRÁFICOS DO PROJETO - G2
+    public Map<String, Double> buscarValorEHorasPorProfissionalProjeto(int idProjeto) {
+        Map<String, Double> valorEHorasPorProfissional = new HashMap<>();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT p.nome AS nome_profissional, SUM(d.valor_hora * d.horas) AS valor_total " +
+                            "FROM detalhamento d " +
+                            "JOIN profissionais p ON d.id_profissional = p.id " +
+                            "WHERE d.id_projeto = ?" +
+                            "GROUP BY p.nome " +
+                            "ORDER BY p.nome DESC"
+            );
+            pstmt.setInt(1, idProjeto);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String status = rs.getString("nome_profissional");
+                double count = rs.getDouble("valor_total");
+                valorEHorasPorProfissional.put(status, count);  // Adiciona ao mapa
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return valorEHorasPorProfissional;
+    }
+
+    public String formatHours(double x) {
+        int hours = (int) x;  // Integer part is hours
+        int minutes = (int) ((x - hours) * 60);  // Fractional part converted to minutes
+
+        return hours + "h" + minutes + "min";
+    }
+
+
+
 
 
 
