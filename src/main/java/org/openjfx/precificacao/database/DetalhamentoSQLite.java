@@ -292,6 +292,38 @@ public class DetalhamentoSQLite {
         return success;
     }
 
+    ///PÁGINA INICIAL - GRÁFICO 2
+    public Map<String, Double> listarProjetosComValores() {
+        Map<String, Double> projetosComValores = new HashMap<>();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "SELECT p.nome_projeto, p.precificacao " +
+                            "FROM projeto p " +
+                            "ORDER BY p.nome_projeto ASC"
+            );
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                String nomeProjeto = rs.getString("nome_projeto").toUpperCase();
+                double valorTotal = rs.getDouble("precificacao");
+                if(valorTotal<=0) {
+                    nomeProjeto = nomeProjeto + "\n" + "Projeto Não Precificado";
+                }else{
+                    nomeProjeto = nomeProjeto + String.format("R$ %.2f", valorTotal);
+                }
+                // Adiciona o projeto e seu valor ao mapa
+                projetosComValores.put(nomeProjeto, valorTotal);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+        return projetosComValores;
+    }
+
 
     ///PÁGINA INICIAL - GRÁFICO 3
     public Map<String, Double> buscarHorasPorTodosProfissional() {
@@ -308,10 +340,10 @@ public class DetalhamentoSQLite {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                String status = rs.getString("nome_profissional");
+                String status = rs.getString("nome_profissional").toUpperCase();
                 double count = rs.getDouble("total_horas");
                 double x = count;
-               status = status + "\n"+formatHours(x);
+                status = status + "\n"+formatHours(x);
                 profissCount.put(status, count);  // Adiciona ao mapa
             }
         } catch (SQLException e) {
@@ -339,8 +371,9 @@ public class DetalhamentoSQLite {
 
             while (rs.next()) {
 
-                String status = rs.getString("nome_profissional");
+                String status = rs.getString("nome_profissional").toUpperCase();
                 double count = rs.getDouble("valor_total");
+                status = status+ "\n" + String.format("R$ %.2f", count);
                 valorEHorasPorProfissional.put(status, count);  // Adiciona ao mapa
 
             }
@@ -369,8 +402,9 @@ public class DetalhamentoSQLite {
 
             while (rs.next()) {
 
-                String status = rs.getString("nome_cliente");
                 double count = rs.getDouble("total_precificacao");
+                String status = rs.getString("nome_cliente").toUpperCase();
+                status = status+ "\n" + String.format("R$ %.2f", count);
                 totalPorCliente.put(status, count);  // Adiciona ao mapa
 
             }
@@ -382,35 +416,6 @@ public class DetalhamentoSQLite {
         return totalPorCliente;
     }
 
-    ///PÁGINA INICIAL - GRÁFICO 2
-    public Map<String, Double> listarProjetosComValores() {
-        Map<String, Double> projetosComValores = new HashMap<>();
-        Connection conn = SQLiteConnection.connect();
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(
-                    "SELECT p.nome_projeto, p.precificacao " +
-                            "FROM projeto p " +
-                            "ORDER BY p.nome_projeto ASC"
-            );
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-
-                String nomeProjeto = rs.getString("nome_projeto");
-                double valorTotal = rs.getDouble("precificacao");
-                if(valorTotal<=0) {
-                    nomeProjeto = nomeProjeto + "\n" + "Projeto Não Precificado";
-                }
-                // Adiciona o projeto e seu valor ao mapa
-                projetosComValores.put(nomeProjeto, valorTotal);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            SQLiteConnection.closeConnection(conn);
-        }
-        return projetosComValores;
-    }
 
     ///PÁGINA GRÁFICOS DO PROJETO - G1
     public Map<String, Double> buscarHorasPorProfissionalProjeto(int idProjeto){
@@ -431,6 +436,8 @@ public class DetalhamentoSQLite {
             while (rs.next()) {
                 String status = rs.getString("nome_profissional");
                 double count = rs.getDouble("total_horas");
+                double x = count;
+                status = status + "\n"+formatHours(x);
                 profissCount.put(status, count);  // Adiciona ao mapa
             }
         } catch (SQLException e) {
@@ -459,9 +466,9 @@ public class DetalhamentoSQLite {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-
-                String status = rs.getString("nome_profissional");
                 double count = rs.getDouble("valor_total");
+                String status = rs.getString("nome_profissional");
+                status = status+ "\n" + String.format("R$ %.2f", count);
                 valorEHorasPorProfissional.put(status, count);  // Adiciona ao mapa
 
             }

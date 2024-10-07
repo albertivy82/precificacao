@@ -243,6 +243,16 @@
 }
 
 
+/* Estiliza o título do gráfico */
+.chart-title {
+    -fx-background-color: #dcdcdc;  /* Fundo cinza */
+    -fx-padding: 5px;  /* Espaçamento interno */
+    -fx-font-family: "Arial";  /* Fonte */
+    -fx-font-size: 18px;  /* Tamanho da fonte */
+    -fx-font-weight: bold;  /* Negrito */
+    -fx-text-fill: #333333;  /* Cor do texto */
+    -fx-alignment: center;  /* Centralizar o título */
+}
 
 
 

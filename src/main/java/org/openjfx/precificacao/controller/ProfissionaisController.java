@@ -104,6 +104,7 @@ public class ProfissionaisController {
                     profissionaisDB.novoProfissional(novoProfissional);
                 } else {
                     novoProfissional.setId(this.id);
+                    System.out.println("O id do profissional"+this.id);
                     profissionaisDB.editarProfissionais(novoProfissional);
                 }
                 clearFields();

@@ -32,6 +32,7 @@ public class App extends Application {
 			stage.setTitle("Precificação");
 			Image image = new Image("images/ico.png");
 			stage.getIcons().add(image);
+			stage.setMaximized(true);
 	        stage.show();
 	    }
 

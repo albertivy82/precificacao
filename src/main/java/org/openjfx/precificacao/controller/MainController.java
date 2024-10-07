@@ -15,7 +15,7 @@ import org.openjfx.precificacao.service.ProjetoService;
 import java.util.Map;
 
 public class MainController {
-	
+
 	@FXML
 	protected void btnClientes(ActionEvent e) {
 		App.mudarTela("Clientes");
@@ -125,7 +125,7 @@ public class MainController {
 
 	private void carregarGraficoDeHoras() {
 
-	Map<String, Double> horasPorProfissional = projetoService.listarhorasPorProfissional();
+		Map<String, Double> horasPorProfissional = projetoService.listarhorasPorProfissional();
 
 
 		profissionaisPorHorasChart.getData().clear();
@@ -182,6 +182,8 @@ public class MainController {
 
 
 
+
+
 	}
 
 
@@ -194,7 +196,6 @@ public class MainController {
 
 
 }
-
 
 
 

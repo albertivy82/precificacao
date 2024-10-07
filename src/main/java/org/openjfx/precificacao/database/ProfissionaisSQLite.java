@@ -42,8 +42,8 @@ public class ProfissionaisSQLite {
             pstmt.setString(1, profissional.getNome());
             pstmt.setString(2, profissional.getProfissional());
             pstmt.setFloat(3, profissional.getValorHora());
-            pstmt.setInt(3, profissional.getId());
-
+            pstmt.setInt(4, profissional.getId());
+            System.out.println(pstmt.toString());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

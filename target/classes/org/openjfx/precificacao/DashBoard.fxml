@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0"
-            fitToHeight="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.MainController">
+
+<ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
+            fitToWidth="true"
+            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.openjfx.precificacao.controller.MainController">
+
    <content>
-      <BorderPane stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+      <BorderPane stylesheets="@/org/openjfx/styles/styles.css">
          <top>
-            <HBox prefHeight="90" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
+            <HBox style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
                <children>
                   <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -25,61 +32,65 @@
             </HBox>
          </top>
          <left>
-            <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-               <Button mnemonicParsing="false" styleClass="transparent-button" text="Inicio" disable="true"/>
+            <VBox prefHeight="-1" prefWidth="125.0" style="-fx-background-color: #444444;">
+               <Button disable="true" mnemonicParsing="false" styleClass="transparent-button" text="Inicio" />
                <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
                <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
                <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
                <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
-               <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis"/>
+               <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis" />
                <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
-               <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades"/>
+               <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades" />
             </VBox>
          </left>
          <center>
-            <GridPane alignment="CENTER" hgap="20" vgap="20" style="-fx-padding: 20px;">
-               <!-- Primeiro par de gráficos -->
-               <children>
-                  <PieChart fx:id="projetosPorStatusChart" title="Projetos por status" GridPane.columnIndex="0" GridPane.rowIndex="0" maxWidth="400" maxHeight="300"/>
-                  <BarChart fx:id="projetosComValoresChart" title="Projetos por Valor" GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="400" maxHeight="300">
+            <VBox  prefHeight="-1" VBox.vgrow="ALWAYS">
+               <VBox fillWidth="true" prefHeight="-1"  VBox.vgrow="ALWAYS">
+                  <PieChart fx:id="projetosPorStatusChart" title="Projetos por status"  prefHeight="-1" VBox.vgrow="ALWAYS"/>
+               </VBox>
+               <VBox fillWidth="true" VBox.vgrow="ALWAYS">
+                  <BarChart fx:id="projetosComValoresChart" title="Projetos por Valor" prefHeight="-1" VBox.vgrow="ALWAYS">
                      <xAxis>
-                        <CategoryAxis label="Projetos"/>
+                        <CategoryAxis label="Projetos" />
                      </xAxis>
                      <yAxis>
-                        <NumberAxis label="Valor (R$)"/>
+                        <NumberAxis label="Valor (R$)" />
                      </yAxis>
                   </BarChart>
-
-                  <!-- Segundo par de gráficos -->
-                  <BarChart fx:id="profissionaisPorHorasChart" title="Profissionais com Mais Horas" GridPane.columnIndex="0" GridPane.rowIndex="1" maxWidth="400" maxHeight="300">
+               </VBox>
+               <VBox fillWidth="true" VBox.vgrow="ALWAYS">
+                  <BarChart fx:id="profissionaisPorHorasChart" title="Profissionais com Mais Horas"  prefHeight="-1" VBox.vgrow="ALWAYS">
                      <xAxis>
-                        <CategoryAxis label="Profissionais"/>
+                        <CategoryAxis label="Profissionais" />
                      </xAxis>
                      <yAxis>
-                        <NumberAxis label="Horas"/>
+                        <NumberAxis label="Horas" />
                      </yAxis>
                   </BarChart>
-                  <BarChart fx:id="profissionaisPorValorRecebidoChart" title="Profissionais por Valor de Serviço" GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="400" maxHeight="300">
+               </VBox>
+               <VBox fillWidth="true" VBox.vgrow="ALWAYS">
+                  <BarChart fx:id="profissionaisPorValorRecebidoChart" title="Profissionais por Valor de Serviço" prefHeight="-1" VBox.vgrow="ALWAYS">
                      <xAxis>
-                        <CategoryAxis label="Profissionais"/>
+                        <CategoryAxis label="Profissionais" />
                      </xAxis>
                      <yAxis>
-                        <NumberAxis label="Valor (R$)"/>
+                        <NumberAxis label="Valor (R$)" />
                      </yAxis>
                   </BarChart>
-
-                  <!-- Gráfico adicional para valores de clientes -->
-                  <BarChart fx:id="clienteValoresChart" title="Valor de Projeto por Cliente" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" maxWidth="800" maxHeight="300">
+               </VBox>
+               <VBox fillWidth="true" VBox.vgrow="ALWAYS">
+                  <BarChart fx:id="clienteValoresChart" title="Valor de Projeto por Cliente" prefHeight="-1" VBox.vgrow="ALWAYS">
                      <xAxis>
-                        <CategoryAxis label="Cliente"/>
+                        <CategoryAxis label="Cliente" />
                      </xAxis>
                      <yAxis>
-                        <NumberAxis label="Valor (R$)"/>
+                        <NumberAxis label="Valor (R$)" />
                      </yAxis>
                   </BarChart>
-               </children>
-            </GridPane>
+               </VBox>
+            </VBox>
          </center>
       </BorderPane>
    </content>
 </ScrollPane>
+
