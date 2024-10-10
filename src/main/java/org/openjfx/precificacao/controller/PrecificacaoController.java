@@ -141,7 +141,6 @@ public class PrecificacaoController {
 		somaTotalProjeto();
 		precoTotalProjetoLabel();
 		identificacaoProjeto();
-		btnPrecificarProjeto();
 		precoTotalProjetoLabel();
 		listaResultados();
 		custosFixos();
@@ -290,7 +289,7 @@ public class PrecificacaoController {
 
 	@FXML
 	private void btnPrecificarProjeto() throws SQLException {
-		projeto.setStatus("Precificado");
+		projeto.setStatus("PRECIFICADO");
 		projeto.setPrecificacao(this.valorTotal);
 		this.projetoService.precificarProjeto(projeto);
 	}

@@ -32,7 +32,7 @@ public class ClienteService {
     public String nomeCliente(int id){
 
 
-       String nomeCleinte =  this.clientes.buscarClientePorId(id);
+       String nomeCleinte =  this.clientes.buscarNomeClientePorId(id);
 
         return nomeCleinte;
     }
@@ -59,6 +59,15 @@ public class ClienteService {
             projetoService.deletaProjetoEDependencias(projetoId);
         }
 
+    }
+
+    public List<Cliente> listarClientes(){
+       return this.clientes.all();
+    }
+
+
+    public Cliente clientePorId(int id){
+        return this.clientes.buscarClientePorId(id);
     }
 
 

@@ -2,13 +2,9 @@ package org.openjfx.precificacao.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Tooltip;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
 import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.service.ProjetoService;
 

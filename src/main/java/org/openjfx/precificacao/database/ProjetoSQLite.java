@@ -18,13 +18,12 @@ public class ProjetoSQLite{
     	
            Connection conn = SQLiteConnection.connect();
 	        try {
-	        	
-	        	
 		            PreparedStatement pstmt = conn.prepareStatement(
-		                    "INSERT INTO projeto (nome_projeto, id_cliente, status) VALUES (?, ?, ?)");
+		                    "INSERT INTO projeto (nome_projeto, id_cliente, tipo, status) VALUES (?, ?, ?, ?)");
 		            pstmt.setString(1, projeto.getNomeProjeto());
 		            pstmt.setInt(2, projeto.getIdCliente());
-		            pstmt.setString(3, projeto.getStatus());
+                    pstmt.setString(3, projeto.getTipo());
+		            pstmt.setString(4, projeto.getStatus());
 		            pstmt.executeUpdate();
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
@@ -38,13 +37,14 @@ public class ProjetoSQLite{
         Connection conn = SQLiteConnection.connect();
         try {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE projeto SET nome_projeto=?, id_cliente=?, status=?, precificacao=? WHERE ID=?");
-            System.out.println("testanto precificacao 2");
+                    "UPDATE projeto SET nome_projeto=?, id_cliente=?, tipo=?, status=?, precificacao=? WHERE ID=?");
+            System.out.println(projeto.getId());
             pstmt.setString(1, projeto.getNomeProjeto());
 		    pstmt.setInt(2, projeto.getIdCliente());
-		    pstmt.setString(3, projeto.getStatus());
-            pstmt.setDouble(4, projeto.getPrecificacao());
-            pstmt.setInt(5, projeto.getId());
+            pstmt.setString(3, projeto.getTipo());
+		    pstmt.setString(4, projeto.getStatus());
+            pstmt.setDouble(5, projeto.getPrecificacao());
+            pstmt.setInt(6, projeto.getId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -138,7 +138,7 @@ public class ProjetoSQLite{
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = conn.prepareStatement("SELECT id, cod_projeto, nome_projeto, id_cliente, status FROM projeto");
+            pstmt = conn.prepareStatement("SELECT id, cod_projeto, nome_projeto, id_cliente, tipo, status, precificacao FROM projeto");
             rs = pstmt.executeQuery();
             
             while (rs.next()) {
@@ -147,7 +147,9 @@ public class ProjetoSQLite{
                 p.setCodProjeto(rs.getString("cod_projeto"));
                 p.setNomeProjeto(rs.getString("nome_projeto"));
                 p.setIdCliente(rs.getInt("id_cliente"));
+                p.setTipo(rs.getString("tipo"));
                 p.setStatus(rs.getString("status"));
+                p.setPrecificacao(rs.getDouble("precificacao"));
                 result.add(p);
             }
         } catch (SQLException e) {

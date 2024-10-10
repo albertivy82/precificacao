@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClienteSQLite{
     
@@ -100,7 +102,7 @@ public class ClienteSQLite{
         }
     }
 
-    public String buscarClientePorId(int id) {
+    public String buscarNomeClientePorId(int id) {
 
         String nomeCliente = "";
         Connection conn = SQLiteConnection.connect();
@@ -119,6 +121,36 @@ public class ClienteSQLite{
         }
 
         return nomeCliente;
+    }
+
+    public Cliente buscarClientePorId(int id) {
+        Cliente cliente = new Cliente();
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("SELECT id, cod_cliente, nome, cpf, telefone, email, endereco, bairro, estado, cidade, cep FROM cliente WHERE ID=?");
+            pstmt.setInt(1, id);
+            ResultSet result = pstmt.executeQuery();
+
+            if(result.next()){
+                cliente.setId(result.getInt("id"));
+                cliente.setCodCliente(result.getString("cod_cliente"));
+                cliente.setNome(result.getString("nome"));
+                cliente.setCpf(result.getString("cpf"));
+                cliente.setTelefone(result.getString("telefone"));
+                cliente.setEmail(result.getString("email"));
+                cliente.setEndereco(result.getString("endereco"));
+                cliente.setBairro(result.getString("bairro"));
+                cliente.setEstado(result.getString("estado"));
+                cliente.setCidade(result.getString("cidade"));
+                cliente.setCep(result.getString("cep"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+
+        return cliente;
     }
     
     

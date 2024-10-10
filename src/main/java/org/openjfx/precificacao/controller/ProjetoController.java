@@ -6,8 +6,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.util.StringConverter;
 import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.database.ProjetoSQLite;
+import org.openjfx.precificacao.models.Cliente;
+import org.openjfx.precificacao.models.Profissionais;
 import org.openjfx.precificacao.models.Projeto;
 import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.ProjetoService;
@@ -16,6 +19,7 @@ import org.openjfx.precificacao.shared.ProjetoSingleton;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ProjetoController {
 
@@ -29,20 +33,41 @@ public class ProjetoController {
 
     private ProjetoService projetoService;
 
+    private String statusProjeto;
+
+    private String tipoProjeto;
+
+    private Projeto projetoEdicao;
+
+
     @FXML
     private TextField nomeProjetolInput;
 
     @FXML
-    private ComboBox<String> listaClientes;
+    private ComboBox<Cliente> listaClientes;
 
     @FXML
     private ListView<Projeto> LvProjetos;
 
     @FXML
+    private CheckBox cbNovo;
+    @FXML
+    private CheckBox cbReforma;
+    @FXML
+    private CheckBox cbExecutado;
+    @FXML
+    private CheckBox cbContratados;
+
+    @FXML
     void initialize() {
+        this.cliente = new ClienteService();
+        this.projetoService = new ProjetoService();
+        cbContratados.setDisable(true);
+        cbExecutado.setDisable(true);
         updateList();
         populaLista();
-        this.projetoService = new ProjetoService();
+        tipoCBs();
+        statusCBs();
     }
 
     private void showAlert(String title, String message) {
@@ -139,17 +164,27 @@ public class ProjetoController {
             Projeto novoProjeto = new Projeto();
             novoProjeto.setNomeProjeto(nomeProjetolInput.getText());
             novoProjeto.setIdCliente(idCliente);
-            novoProjeto.setStatus("Cadastrado");
-
+            novoProjeto.setTipo(this.tipoProjeto);
             try {
                 this.projetosDB = new ProjetoSQLite();
                 if (this.id == -1) {
+                    novoProjeto.setStatus("CADASTRADO");
                     projetosDB.NovoProjeto(novoProjeto);
+                    this.projetoService.gerarCodProjeto(nomeProjetolInput.getText());
                 } else {
                     novoProjeto.setId(this.id);
+                    novoProjeto.setCodProjeto(this.projetoEdicao.getCodProjeto());
+                    novoProjeto.setStatus(this.projetoEdicao.getStatus());
+
+                    if(this.statusProjeto != null){
+                        System.out.println(this.statusProjeto);
+                            novoProjeto.setStatus(this.statusProjeto);
+                    }
+                    novoProjeto.setPrecificacao(projetoEdicao.getPrecificacao());
+                    System.out.println("OQUE HÁ AQUI?"+novoProjeto.getPrecificacao());
                     projetosDB.editarProjeto(novoProjeto);
                 }
-                this.projetoService.gerarCodProjeto(nomeProjetolInput.getText());
+
                 clearFields();
                 updateList();
             } catch (SQLException ex) {
@@ -162,27 +197,38 @@ public class ProjetoController {
 
     private boolean camposEstaoValidos() {
         boolean valid = true;
-        this.cliente = new ClienteService();
+
+        // Verificar se o campo de nome do projeto está vazio
         if (nomeProjetolInput.getText().trim().isEmpty()) {
             showAlert("Nome do Projeto Vazio", "O campo nome do projeto não pode estar vazio.");
             nomeProjetolInput.requestFocus();
             valid = false;
         }
-        String nome = listaClientes.getSelectionModel().getSelectedItem();
-        this.idCliente = this.cliente.idCliente(nome);
-        if(idCliente == -1) {
-            showAlert("Cliente não encontrado", "Consulte o suporte: o cliente da lista não foi encontrado no banco de dados.");
-            nomeProjetolInput.requestFocus();
+
+        // Verificar se algum cliente foi selecionado na lista
+        Cliente clienteSelecionado = listaClientes.getSelectionModel().getSelectedItem();
+
+        if (clienteSelecionado == null) {
+            showAlert("Cliente não selecionado", "Você deve selecionar um cliente da lista.");
+            listaClientes.requestFocus();  // Focar na lista de clientes
             valid = false;
+        } else {
+            // Se um cliente foi selecionado, obter o ID do cliente
+            this.idCliente = clienteSelecionado.getId();
         }
 
         return valid;
     }
 
+
     private void clearFields() {
         nomeProjetolInput.clear();
-        listaClientes.getSelectionModel().clearSelection();
+        cbReforma.setSelected(false);
+        cbNovo.setSelected(false);
+        cbContratados.setSelected(false);
+        cbExecutado.setSelected(false);
         this.id = -1;
+        populaLista();
     }
 
     @FXML
@@ -230,10 +276,21 @@ public class ProjetoController {
 
 
             if(result.isPresent() && result.get()==ButtonType.OK) {
-                nomeProjetolInput.setText(projetoEscolhido.getNomeProjeto());
-                listaClientes.getSelectionModel().clearSelection();
+                this.projetoEdicao = new Projeto();
+                this.projetoEdicao.setCodProjeto(projetoEscolhido.getCodProjeto());
+                this.projetoEdicao.setStatus(projetoEscolhido.getStatus());
+                this.projetoEdicao.setPrecificacao(projetoEscolhido.getPrecificacao());
+                System.out.println("PQ ESTÁ ZERANDO?"+projetoEscolhido.getPrecificacao());
                 this.id = projetoEscolhido.getId();
+                nomeProjetolInput.setText(projetoEscolhido.getNomeProjeto());
 
+                if(projetoEscolhido.getStatus().equals("Precificado")) {
+                            cbContratados.setDisable(false);
+                            cbExecutado.setDisable(false);
+                        }
+                       Cliente clienteDoProjeto = new Cliente();
+                       clienteDoProjeto = this.cliente.clientePorId(projetoEscolhido.getIdCliente());
+                       listaClientes.getSelectionModel().select(clienteDoProjeto);
             }
 
         }else{
@@ -247,14 +304,38 @@ public class ProjetoController {
     }
 
 
-    private void populaLista(){
-        this.cliente  = new ClienteService();
-        List<String> nomes = cliente.clientesPorNome();
+    private void populaLista() {
+        // Limpar a lista antes de adicionar novos itens
+        listaClientes.getItems().clear();
 
-        ObservableList<String> observableList = FXCollections.observableArrayList(nomes);
-        listaClientes.setItems(observableList);
+        // Obter lista de clientes
+        List<Cliente> clientes = this.cliente.listarClientes();
 
+        // Filtrar a lista para remover objetos nulos, caso existam
+        List<Cliente> clientesFiltrados = clientes.stream()
+                .filter(cliente -> cliente != null)
+                .collect(Collectors.toList());
+
+        // Adicionar clientes filtrados ao ObservableList
+        ObservableList<Cliente> clientesListados = FXCollections.observableArrayList(clientesFiltrados);
+        listaClientes.setItems(clientesListados);
+
+        // Definir o StringConverter para a ComboBox
+        listaClientes.setConverter(new StringConverter<Cliente>() {
+            @Override
+            public String toString(Cliente object) {
+                // Verificar se o objeto não é nulo
+                return object != null ? object.toString() : "";
+            }
+
+            @Override
+            public Cliente fromString(String string) {
+                return null; // Não é necessário implementar para ComboBox
+            }
+        });
     }
+
+
 
     private void updateList() {
         this.projetosDB = new ProjetoSQLite();
@@ -263,5 +344,47 @@ public class ProjetoController {
         listaProjetos.stream().forEach(projeto->LvProjetos.getItems().add(projeto));
 
     }
+
+
+    private void statusCBs() {
+
+        cbContratados.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                cbExecutado.setSelected(false);
+                this.statusProjeto = "CADASTRADO";
+
+            }
+        });
+
+      cbExecutado.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                // Se "Executado" for selecionado, desmarcar "Contratados"
+                cbContratados.setSelected(false);
+                this.statusProjeto = "EXECUTADO";
+
+            }
+        });
+    }
+
+
+    private void tipoCBs() {
+
+        cbNovo.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                cbReforma.setSelected(false);
+                this.tipoProjeto = "NOVO";
+            }
+        });
+
+        cbReforma.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                // Se "Executado" for selecionado, desmarcar "Contratados"
+                cbNovo.setSelected(false);
+                this.tipoProjeto = "REFORMA";
+
+            }
+        });
+    }
+
 
 }

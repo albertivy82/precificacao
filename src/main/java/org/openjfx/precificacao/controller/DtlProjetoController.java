@@ -411,10 +411,22 @@ public class DtlProjetoController {
 
 
 	private void salvarEtapas() throws SQLException {
+
+		float totalProjetoAnterior = projetoService.totalDeServicosDoProjeto(projeto.getId());
+		String statusAnterior = projeto.getStatus();
+
 		projetoService.cadastroDeEtapas(this.listaDeItens);
-		//verificar se esta é uma boa medida
+
+		float totalProjetoAtual = projetoService.totalDeServicosDoProjeto(projeto.getId());
+
+		if (totalProjetoAnterior == 0 && totalProjetoAtual > 0 && statusAnterior.equalsIgnoreCase("CADASTRADO")) {
+			// Se o total anterior era 0 e o novo total é maior que 0 e o status era "CADASTRADO"
+			projeto.setStatus("ORÇADO");
+			projetoService.statusProjeto(projeto); // Atualizar o status no banco
+		}
+
 		listaDeItens.clear();
-		//depois que tudo der certo e limpar o combobbox:
+
 		dynamicAtvivityContainer.getChildren().clear();
 	}
 
@@ -433,14 +445,14 @@ public class DtlProjetoController {
 
 		float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
 		Label totalDoProjeto = new Label("TOTAL DO PROJETO: " + FormatadorMoeda.formatarValorComoMoeda(ttProjeto));
-		if(ttProjeto>0){
-			projeto.setStatus("Orçado");
+		/*if(ttProjeto>0){
+			projeto.setStatus("ORÇADO");
 			projetoService.statusProjeto(projeto);
 		}else{
-			projeto.setStatus("Cadastrado");
+			projeto.setStatus("CADASTRADO");
 			projetoService.statusProjeto(projeto);
 
-		}
+		}*/
 		totalDoProjeto.getStyleClass().add("label-subtotal-tt");
 		savedEtapasContainer.getChildren().add(totalDoProjeto);
 	}
@@ -537,7 +549,7 @@ public class DtlProjetoController {
 					float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
 					if(ttProjeto==0){
                         try {
-							projeto.setStatus("Cadastrado");
+							projeto.setStatus("CADASTRADO");
                             projetoService.statusProjeto(projeto);
 							atualizarStatusBtnPrecificar();
                         } catch (SQLException e) {
@@ -620,6 +632,8 @@ public class DtlProjetoController {
 
 		this.projetoService.deletarRegistroDetalhamento(idProjeto, idEtapa, idAtividade, idProfissional, totalHoras, horas);
 
+		verificarStatusProjeto();
+
 		listaResultados();
 
 	}
@@ -628,6 +642,7 @@ public class DtlProjetoController {
 
 		int idEtapa = this.projetoService.buscarIdEtapaPorNome(nomeEtapa);
 		this.projetoService.deletarEtapa(idProjeto, idEtapa);
+		verificarStatusProjeto();
 		listaResultados();
 
 	}
@@ -636,6 +651,7 @@ public class DtlProjetoController {
 
 		int idAtividade = this.projetoService.buscarIdAtividadePorNome(nomeAtividade);
 		this.projetoService.deletarAtividade(idProjeto, idAtividade);
+		verificarStatusProjeto();
 		listaResultados();
 
 	}
@@ -647,6 +663,17 @@ public class DtlProjetoController {
 		confirmacao.setContentText("Item excluído com sucesso.");
 		confirmacao.showAndWait();
 	}
+
+	private void verificarStatusProjeto() throws SQLException {
+		float totalProjetoAtual = projetoService.totalDeServicosDoProjeto(projeto.getId());
+
+		if (totalProjetoAtual == 0 && projeto.getStatus().equalsIgnoreCase("ORÇADO")) {
+			// Se o total de serviços caiu para zero e o status é "ORÇADO", mudar para "CADASTRADO"
+			projeto.setStatus("CADASTRADO");
+			projetoService.statusProjeto(projeto); // Atualizar o status no banco
+		}
+	}
+
 
 
 

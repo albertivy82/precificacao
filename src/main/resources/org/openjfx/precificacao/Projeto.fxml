@@ -1,103 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.Region?>
-
-<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0"
-            fitToHeight="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.ProjetoController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.ProjetoController">
    <content>
 
-      <BorderPane stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" >
+      <BorderPane stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
 
          <top>
 
-         <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;">
-         <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@/images/sindomar_logo.png" />
-            </image>
-         </ImageView>
-      </HBox>
-   </top>
-   <left>
-      <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio"/>
-         <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
-         <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
-         <Button mnemonicParsing="false" styleClass="transparent-button" text="Projetos" disable="true"/>
-         <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
-         <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis"/>
-         <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
-         <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades"/>
-      </VBox>
-   </left>
-   <center>
-      <VBox alignment="CENTER" spacing="10">
-         <GridPane alignment="CENTER" hgap="10" vgap="15">
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="534.0" minWidth="10.0" prefWidth="531.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="458.0" minWidth="10.0" prefWidth="202.0" />
-            </columnConstraints>
-            <children>
-               <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <HBox prefHeight="109.0" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;">
+               <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@/images/sindomar_logo.png" />
+                  </image>
+               </ImageView>
+            </HBox>
+         </top>
+         <left>
+            <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
+               <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio" />
+               <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
+               <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
+               <Button disable="true" mnemonicParsing="false" styleClass="transparent-button" text="Projetos" />
+               <Button mnemonicParsing="false" onAction="#btnCustos" styleClass="transparent-button" text="Custos Fixos" />
+               <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis" />
+               <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
+               <Button mnemonicParsing="false" onAction="#btnAtividade" styleClass="transparent-button" text="Atividades" />
+            </VBox>
+         </left>
+         <center>
+            <VBox alignment="CENTER" spacing="10">
+               <GridPane alignment="CENTER" hgap="10" vgap="15">
+                  <columnConstraints>
+                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="534.0" minWidth="10.0" prefWidth="121.0" />
+                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="466.0" minWidth="10.0" prefWidth="466.0" />
+                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="458.0" minWidth="10.0" prefWidth="149.0" />
+                  </columnConstraints>
                   <children>
-                     <Label styleClass="label-style" text="Nome do Projeto:" />
-                     <TextField fx:id="nomeProjetolInput" promptText="Digite o nome do profissional" styleClass="text-field-style" />
-                  </children>
-               </VBox>
-                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
-                  <children>
-                     <Label styleClass="label-style" text="Selecione o Cliente:" />
-                  </children>
-               </VBox>
 
-               <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="5">
-                  <children>
-                     <Button mnemonicParsing="false" onAction="#btnCadastrarProjeto" styleClass="button-style" text="Cadastrar" />
-                  </children>
-               </HBox>
-               <ComboBox fx:id="listaClientes" prefHeight="25.0" prefWidth="547.0" GridPane.rowIndex="2" />
-            </children>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
+                     <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <children>
+                           <Label styleClass="label-style" text="Nome do Projeto:" />
+                           <TextField fx:id="nomeProjetolInput" promptText="Digite o nome do profissional" styleClass="text-field-style" />
+                        </children>
+                     </VBox>
 
-         </GridPane>
-         <Label style="-fx-font-size: 16px; -fx-text-fill: #333;" text="LISTA DE PROJETOS" />
-         <ListView fx:id="LvProjetos" prefHeight="314.0" prefWidth="200.0" />
-               <HBox spacing="10" alignment="CENTER">
+                     <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <children>
+                           <Label styleClass="label-style" text="Selecione o Cliente:" />
+                        </children>
+                     </VBox>
+
+                     <ComboBox fx:id="listaClientes" prefHeight="25.0" prefWidth="547.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                     <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <Label text="Tipo de Projeto"  styleClass="label-style" />
+                     </HBox>
+                     <!-- Primeira linha de CheckBoxes, centralizada -->
+                     <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <CheckBox fx:id="cbNovo" alignment="CENTER" text="Novo" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                        <CheckBox fx:id="cbReforma" alignment="CENTER_RIGHT" text="Reforma" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                     </HBox>
+                     <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                     <Label text="Alterar Status do Projeto" styleClass="label-style" />
+                     </HBox>
+                     <!-- Segunda linha de CheckBoxes, centralizada -->
+                     <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                        <CheckBox fx:id="cbContratados" text="Contratados" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
+                        <CheckBox fx:id="cbExecutado" text="Executado" style="-fx-font-size: 14px; -fx-text-fill: #333;" />
+                     </HBox>
+
+                     <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                        <children>
+                           <Button mnemonicParsing="false" onAction="#btnCadastrarProjeto" styleClass="button-style" text="Cadastrar" />
+                        </children>
+                     </HBox>
+                  </children>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+               </GridPane>
+               <Label style="-fx-font-size: 16px; -fx-text-fill: #333;" text="LISTA DE PROJETOS" />
+               <ListView fx:id="LvProjetos" prefHeight="314.0" prefWidth="200.0" />
+               <HBox alignment="CENTER" spacing="10">
                   <HBox spacing="10">
                      <Button mnemonicParsing="false" onAction="#btnEditarProjeto" styleClass="button-style" text="Editar" />
                      <Button mnemonicParsing="false" onAction="#btnDeletarProjeto" styleClass="button-style" text="Apagar" />
                   </HBox>
-
-                 <Region HBox.hgrow="ALWAYS" />
-                   <Button mnemonicParsing="false" onAction="#btnDtlProjeto" styleClass="button-style" text="Detalhar Projeto" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#btnDtlProjeto" styleClass="button-style" text="Detalhar Projeto" />
                </HBox>
-
-         <opaqueInsets>
-            <Insets right="15.0" />
-         </opaqueInsets>
-         <padding>
-            <Insets left="10.0" right="15.0" />
-         </padding>
-      </VBox>
-   </center>
-</BorderPane>
+               <opaqueInsets>
+                  <Insets right="15.0" />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="10.0" right="15.0" />
+               </padding>
+            </VBox>
+         </center>
+      </BorderPane>
    </content>
 </ScrollPane>
