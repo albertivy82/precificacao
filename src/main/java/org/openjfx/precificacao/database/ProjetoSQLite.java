@@ -254,6 +254,7 @@ public class ProjetoSQLite{
             while (rs.next()) {
                 String status = rs.getString("status");
                 int count = rs.getInt("total");
+                status = status +": " + count;
                 statusCount.put(status, count);  // Adiciona ao mapa
             }
         } catch (SQLException e) {

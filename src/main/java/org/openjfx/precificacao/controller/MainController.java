@@ -47,6 +47,10 @@ public class MainController {
 		App.mudarTela("Etapas");
 	}
 
+	@FXML
+	protected void btnImpostos(ActionEvent e) {
+		App.mudarTela("Impostos");
+	}
 
 
 	@FXML

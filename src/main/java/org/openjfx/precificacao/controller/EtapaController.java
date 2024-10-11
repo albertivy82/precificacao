@@ -83,6 +83,11 @@ public class EtapaController {
     }
 
     @FXML
+    protected void btnImpostos(ActionEvent e) {
+        App.mudarTela("Impostos");
+    }
+
+    @FXML
     protected void btnCadastrarEtapa(ActionEvent e) {
         if (camposEstaoValidos()) {
             Etapa novaEtapa = new Etapa();

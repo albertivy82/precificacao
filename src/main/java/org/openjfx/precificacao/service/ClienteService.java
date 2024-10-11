@@ -48,8 +48,13 @@ public class ClienteService {
 
     }
 
-    public void deletarCliente(Cliente clienteEscolhido){
+    public void deletarCliente(Cliente clienteEscolhido) throws SQLException {
+        ProjetoService projetosRelaciodados = new ProjetoService();
+        List<Integer> idProjetosRelacaionados = projetosRelaciodados.idsProejoPorCliente(clienteEscolhido.getId());
         this.clientes.deletarCliente(clienteEscolhido);
+        for(Integer item: idProjetosRelacaionados){
+            projetosRelaciodados.deletaProjetoEDependencias(item);
+        }
     }
 
     private void apagarProjetosAssociados(int idCliemte) throws SQLException {

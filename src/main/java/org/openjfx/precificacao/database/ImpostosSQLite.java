@@ -97,6 +97,19 @@ public class ImpostosSQLite {
         return totalImpostos;
     }
 
+    public void limparImpostoProjeto(int idProjeto) {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement("DELETE FROM impostos_projeto WHERE id_projeto=?");
+            pstmt.setInt(1, idProjeto);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
+
 
 
 }

@@ -71,6 +71,11 @@ public class BaseImpostosController {
 	}
 
 	@FXML
+	protected void btnMain(ActionEvent e){
+		App.mudarTela("DashBoard");
+	};
+
+	@FXML
 	private Slider sliderIss;
 
 	@FXML
@@ -105,7 +110,7 @@ public class BaseImpostosController {
 			impostos.setIss(percentual);
 
 			// Atualiza a label para exibir o percentual formatado
-			valorIssLabel.setText(String.format("Proporção: %.1f%%", percentual));
+			valorIssLabel.setText(String.format("Proporção: %.2f%%", percentual));
 		});
 	}
 
@@ -121,7 +126,7 @@ public class BaseImpostosController {
 			impostos.setSimplesNac(percentual);
 
 			// Atualiza a label para exibir o percentual formatado
-			valorSimplesLabel.setText(String.format("Proporção: %.1f%%", percentual));
+			valorSimplesLabel.setText(String.format("Proporção: %.2f%%", percentual));
 		});
 	}
 

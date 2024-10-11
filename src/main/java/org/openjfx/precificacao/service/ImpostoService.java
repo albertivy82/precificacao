@@ -22,4 +22,8 @@ public Float buscarImpostos(int projetoId){
     return this.impostos.totalImpostosPorProjeto(projetoId);
 }
 
+    public void limparImpostos(int projetoId){
+        this.impostos.limparImpostoProjeto(projetoId);
+    }
+
 }

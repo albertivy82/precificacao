@@ -52,6 +52,11 @@ public class DtlClienteController {
     }
 
     @FXML
+    protected void btnImpostos(ActionEvent e) {
+        App.mudarTela("Impostos");
+    }
+
+    @FXML
     protected void btnClientes(ActionEvent e) {
 
         ClienteSingleton.getInstance().clearCliente();

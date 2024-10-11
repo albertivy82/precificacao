@@ -15,6 +15,8 @@ import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.dtos.DetalhamentoDTO;
 import org.openjfx.precificacao.models.*;
 import org.openjfx.precificacao.service.ClienteService;
+import org.openjfx.precificacao.service.CustosFixosService;
+import org.openjfx.precificacao.service.ImpostoService;
 import org.openjfx.precificacao.service.ProjetoService;
 import org.openjfx.precificacao.shared.FormatadorMoeda;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
@@ -36,6 +38,7 @@ public class DtlProjetoController {
 	private Set<Detalhamento> listaDeItens = new HashSet<>();
 	private int idAtividadeSelecionada;
 	private float totalAtividade;
+
 
 
 
@@ -97,6 +100,11 @@ public class DtlProjetoController {
 	}
 
 	@FXML
+	protected void btnImpostos(ActionEvent e) {
+		App.mudarTela("Impostos");
+	}
+
+	@FXML
 	protected VBox savedEtapasContainer;
 
 
@@ -122,6 +130,15 @@ public class DtlProjetoController {
 		}
 	}
 
+	@FXML
+	private Button btnPrecificar;
+
+
+	private void atualizarStatusBtnPrecificar() {
+		float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
+		btnPrecificar.setDisable(ttProjeto <= 0);
+	}
+
 	private void exibirErro(Exception ex) {
 		// Criar uma caixa de alerta
 		Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -135,17 +152,6 @@ public class DtlProjetoController {
 		// Exibir a janela de alerta
 		alert.showAndWait();
 	}
-
-	@FXML
-	private Button btnPrecificar;
-
-
-	private void atualizarStatusBtnPrecificar() {
-		float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
-		btnPrecificar.setDisable(ttProjeto <= 0);
-	}
-
-
 
 
 	private void populaLista(){
@@ -667,14 +673,24 @@ public class DtlProjetoController {
 	private void verificarStatusProjeto() throws SQLException {
 		float totalProjetoAtual = projetoService.totalDeServicosDoProjeto(projeto.getId());
 
-		if (totalProjetoAtual == 0 && projeto.getStatus().equalsIgnoreCase("ORÇADO")) {
+		if (totalProjetoAtual == 0) {
 			// Se o total de serviços caiu para zero e o status é "ORÇADO", mudar para "CADASTRADO"
 			projeto.setStatus("CADASTRADO");
-			projetoService.statusProjeto(projeto); // Atualizar o status no banco
+			zerarProjeto();
+			projetoService.statusProjeto(projeto);
+			identificacaoProjeto();
+			atualizarStatusBtnPrecificar();
 		}
 	}
 
+private void zerarProjeto(){
+	CustosFixosService custosRepassados = new CustosFixosService();
+	ImpostoService impostosProjeto = new ImpostoService();
+	projeto.setPrecificacao(0);
+	custosRepassados.deletarPorProjeto(projeto.getId());
+	impostosProjeto.limparImpostos(projeto.getId());
 
+}
 
 
 

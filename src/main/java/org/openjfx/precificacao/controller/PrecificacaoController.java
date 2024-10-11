@@ -35,6 +35,7 @@ public class PrecificacaoController {
 	private LancamentoCF lancamentoDeDesconto;
 	private LucroService lucroService;
 	private ImpostoService impostoService;
+	private BaseImpostosService baseImposto;
 	private double lucroEsperado = 0;
 	private double valorTotal = 0;
 	private double lucroSobreServicos = 0;
@@ -129,6 +130,7 @@ public class PrecificacaoController {
 		this.lucroService = new LucroService();
 		this.impostoService = new ImpostoService();
 		this.custosFixosRaiz = new CustosFixosService();
+		this.baseImposto = new BaseImpostosService();
 		slider();
 		lucro();
 		valorServicosProjeto();
@@ -237,11 +239,11 @@ public class PrecificacaoController {
 		double sipless = 0;
 
 		if (iss.isSelected()) {
-			issBox = 0.25 * this.totalServicos;
+			issBox = this.baseImposto.buscarBaseImpostos().getIss() * this.totalServicos;
 		}
 
 		if (simplesNacional.isSelected()) {
-			 sipless = 0.25 * this.totalServicos;
+			 sipless = this.baseImposto.buscarBaseImpostos().getSimplesNac() * this.totalServicos;
 
 		}
 		novosImposto.setIdProjeto(projeto.getId());

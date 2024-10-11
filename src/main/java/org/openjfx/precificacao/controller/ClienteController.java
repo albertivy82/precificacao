@@ -66,7 +66,10 @@ public class ClienteController {
 	@FXML
 	private ComboBox<Cidade> cidadeClienteCB;
 
-
+	@FXML
+	protected void btnImpostos(ActionEvent e) {
+		App.mudarTela("Impostos");
+	}
 		
 	@FXML
 	void initialize() {
@@ -217,7 +220,7 @@ public class ClienteController {
 
 	
 	@FXML
-	void btnDeletarCliente(ActionEvent event) {
+	void btnDeletarCliente(ActionEvent event) throws SQLException {
 	    this.clientes = new ClienteSQLite();
 	    ObservableList<Cliente> escolhido = LvClientes.getSelectionModel().getSelectedItems();
 
@@ -226,7 +229,7 @@ public class ClienteController {
 
 	        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 	        alert.setTitle("ATENÇÃO");
-	        alert.setHeaderText("Deseja realmente excluir o cliente selecionado?");
+	        alert.setHeaderText("Deseja realmente excluir o cliente selecionado?\nTodos os projetos do cliente serão apagados também.");
 	        alert.setContentText(clienteEscolhido.toString());
 
 	        Optional<ButtonType> result = alert.showAndWait();

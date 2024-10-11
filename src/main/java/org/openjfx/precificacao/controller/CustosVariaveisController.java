@@ -84,6 +84,11 @@ public class CustosVariaveisController {
     }
 
     @FXML
+    protected void btnImpostos(ActionEvent e) {
+        App.mudarTela("Impostos");
+    }
+
+    @FXML
     protected void btnCadastrarCusto(ActionEvent e) {
         if (camposEstaoValidos()) {
             CustosVariaveis novoCusto = new CustosVariaveis();

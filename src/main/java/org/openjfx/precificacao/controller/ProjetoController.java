@@ -113,6 +113,11 @@ public class ProjetoController {
         App.mudarTela("Etapas");
     }
 
+    @FXML
+    protected void btnImpostos(ActionEvent e) {
+        App.mudarTela("Impostos");
+    }
+
 
 
 
@@ -284,7 +289,7 @@ public class ProjetoController {
                 this.id = projetoEscolhido.getId();
                 nomeProjetolInput.setText(projetoEscolhido.getNomeProjeto());
 
-                if(projetoEscolhido.getStatus().equals("Precificado")) {
+                if(projetoEscolhido.getStatus().equals("PRECIFICADO")) {
                             cbContratados.setDisable(false);
                             cbExecutado.setDisable(false);
                         }

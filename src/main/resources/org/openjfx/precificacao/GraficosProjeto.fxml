@@ -8,13 +8,16 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0"
-            fitToHeight="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.precificacao.controller.GraficosProjetoController">
-   <content>
+<ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
+            fitToWidth="true"
+            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.openjfx.precificacao.controller.GraficosProjetoController">
 
-      <BorderPane stylesheets="@/org/openjfx/styles/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" >
+   <content>
+      <BorderPane stylesheets="@/org/openjfx/styles/styles.css">
          <top>
-            <HBox prefHeight="90" prefWidth="900.0" style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
+            <HBox style="-fx-padding: 10px; -fx-background-color: #dcdcdc;" BorderPane.alignment="CENTER">
                <children>
                   <ImageView fitHeight="74.0" fitWidth="294.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -25,9 +28,8 @@
             </HBox>
          </top>
         <center>
-            <VBox spacing="20" alignment="CENTER">
-               <children>
-                  <!-- Gráfico de barras para mostrar profissionais com mais horas -->
+           <VBox  prefHeight="-1" VBox.vgrow="ALWAYS">
+              <VBox fillWidth="true" VBox.vgrow="ALWAYS">
                   <BarChart fx:id="profissionaisPorHorasNoProjetoChart" title="Quantidade de Horas Previstas para cada Profissional">
                      <xAxis>
                         <CategoryAxis label="Profissionais"/>
@@ -36,8 +38,9 @@
                         <NumberAxis label="Horas"/>
                      </yAxis>
                   </BarChart>
+              </VBox>
 
-                  <!-- Gráfico de barras para mostrar profissionais com maior valor de recebimento -->
+           <VBox fillWidth="true" VBox.vgrow="ALWAYS">
                   <BarChart fx:id="profissionaisPorValorRecebidoNoProjetoChart" title="Profissionais Por Valor de Serviço">
                      <xAxis>
                         <CategoryAxis label="Profissionais"/>
@@ -46,10 +49,8 @@
                         <NumberAxis label="Valor (R$)"/>
                      </yAxis>
                   </BarChart>
-
-               </children>
-               <!-- Buttons at the bottom -->
-               <VBox alignment="CENTER" spacing="10">
+           </VBox>
+              <VBox alignment="CENTER" spacing="10">
                   <Button text="VOLTAR" onAction="#btnVoltar" styleClass="button-style" />
                </VBox>
             </VBox>

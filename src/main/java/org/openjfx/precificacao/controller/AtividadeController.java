@@ -97,6 +97,11 @@ public class AtividadeController {
     }
 
     @FXML
+    protected void btnImpostos(ActionEvent e) {
+        App.mudarTela("Impostos");
+    }
+
+    @FXML
     protected void btnCadastrarAtividade(ActionEvent e) {
 
             if (camposEstaoValidos()) {

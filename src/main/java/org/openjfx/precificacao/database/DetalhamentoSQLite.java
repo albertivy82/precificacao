@@ -263,7 +263,7 @@ public class DetalhamentoSQLite {
 
         try {
 
-            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE idProjeto = ? AND id_atividade = ?");
+            pstmt = conn.prepareStatement("DELETE FROM detalhamento WHERE id_Projeto = ? AND id_atividade = ?");
 
             pstmt.setInt(1, idProjeto);
             pstmt.setInt(2, idAtividade);

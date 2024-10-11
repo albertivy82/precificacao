@@ -84,6 +84,11 @@ public class CustosFixosController {
     }
 
     @FXML
+    protected void btnImpostos(ActionEvent e) {
+        App.mudarTela("Impostos");
+    }
+
+    @FXML
     protected void btnCadastrarCusto(ActionEvent e) {
         if (camposEstaoValidos()) {
             CustosFixos novoCusto = new CustosFixos();

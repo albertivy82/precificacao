@@ -37,6 +37,7 @@
          <Button mnemonicParsing="false" styleClass="transparent-button" text="Custos Variáveis" disable="true"/>
          <Button mnemonicParsing="false" styleClass="transparent-button" text="Etapas" disable="true"/>
          <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" disable="true"/>
+         <Button mnemonicParsing="false" styleClass="transparent-button" text="Impostos" disable="true"/>
       </VBox>
    </left>
 
@@ -75,7 +76,7 @@
          <HBox alignment="CENTER" spacing="20" style="-fx-padding: 10;">
             <Button text="Voltar" onAction="#btnVoltar" styleClass="button-style"/>
             <Button text="Salvar" fx:id="btnCadatrarLancamento" onAction="#btnCadatrarLancamento" styleClass="button-style"/>
-            <Button text="Precificar" onAction="#btnPrecificar" styleClass="button-style"/>
+            <Button text="Precificar" fx:id="btnPrecificar" styleClass="button-style"/>
          </HBox>
       </VBox>
    </center>

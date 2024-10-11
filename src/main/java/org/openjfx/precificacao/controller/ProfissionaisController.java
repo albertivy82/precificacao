@@ -91,6 +91,11 @@ public class ProfissionaisController {
     }
 
     @FXML
+    protected void btnImpostos(ActionEvent e) {
+        App.mudarTela("Impostos");
+    }
+
+    @FXML
     protected void btnCadastrarProfissional(ActionEvent e) {
         if (camposEstaoValidos()) {
             Profissionais novoProfissional = new Profissionais();

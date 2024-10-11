@@ -62,6 +62,16 @@ public class LancamentoCVController {
 		}
 	}
 
+	@FXML
+	private Button btnPrecificar;
+
+
+	private void atualizarStatusBtnPrecificar() {
+		float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
+		btnPrecificar.setDisable(ttProjeto <= 0);
+	}
+
+
 	private void exibirErro(Exception ex) {
 		// Criar uma caixa de alerta
 		Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -76,9 +86,6 @@ public class LancamentoCVController {
 		alert.showAndWait();
 	}
 
-
-	@FXML
-	private Button btnPrecificar;
 
 	@FXML
 	private VBox dynamicCustosContainer;
@@ -99,6 +106,7 @@ public class LancamentoCVController {
 		atualizarTotal();
 
 		atualizarStatusBtnLancamento();
+		atualizarStatusBtnPrecificar();
 
 
 	}

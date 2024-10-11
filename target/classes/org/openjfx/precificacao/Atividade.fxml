@@ -31,6 +31,7 @@
          <Button mnemonicParsing="false" onAction="#btnCustosVariaveis" styleClass="transparent-button" text="Custos Variáveis" />
          <Button mnemonicParsing="false" onAction="#btnEtapas" styleClass="transparent-button" text="Etapas" />
          <Button mnemonicParsing="false" styleClass="transparent-button" text="Atividades" disable="true"/>
+         <Button mnemonicParsing="false" onAction="#btnImpostos" styleClass="transparent-button" text="Impostos" />
       </VBox>
    </left>
    <center>
