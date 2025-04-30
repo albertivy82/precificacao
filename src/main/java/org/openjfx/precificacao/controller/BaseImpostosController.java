@@ -92,6 +92,7 @@ public class BaseImpostosController {
 	void initialize() throws SQLException {
 		this.base = new BaseImpostosService();
 		this.impostos = new BaseImpostos();
+		this.impostos = this.base.buscarBaseImpostos();
 		iss();
 		simples();
 	}
@@ -103,6 +104,9 @@ public class BaseImpostosController {
 		sliderIss.setMin(0);
 		sliderIss.setMax(100);
 		sliderIss.setValue(0); // Define o valor inicial como 0
+		double valorAtual = this.impostos.getIss()*100;
+		sliderIss.setValue(valorAtual);
+		valorIssLabel.setText(String.format("Valor Atual: %.2f%%", valorAtual));
 
 		sliderIss.valueProperty().addListener((observable, oldValue, newValue) -> {
 
@@ -120,6 +124,10 @@ public class BaseImpostosController {
 		sliderSimples.setMax(100);
 		sliderSimples.setValue(0); // Define o valor inicial como 0
 
+		double valorAtual = this.impostos.getSimplesNac()*100;
+		sliderSimples.setValue(valorAtual);
+		valorSimplesLabel.setText(String.format("Valor Atual: %.2f%%", valorAtual));
+
 		sliderSimples.valueProperty().addListener((observable, oldValue, newValue) -> {
 
 			double percentual = newValue.doubleValue();
@@ -135,6 +143,8 @@ public class BaseImpostosController {
 
 	@FXML
 	private void btnLancarImpostos() throws SQLException {
+		impostos.setIss(impostos.getIss()/100);
+		impostos.setSimplesNac(impostos.getSimplesNac()/100);
 		this.base.cadImpostos(this.impostos);
 	};
 

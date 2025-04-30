@@ -113,7 +113,8 @@
                      <Button mnemonicParsing="false" onAction="#btnDeletarProjeto" styleClass="button-style" text="Apagar" />
                   </HBox>
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" onAction="#btnDtlProjeto" styleClass="button-style" text="Detalhar Projeto" />
+                  <Button mnemonicParsing="false" onAction="#btnInicarProjeto" styleClass="button-style" text="Iniciar Execução>>>" />
+                  <Button mnemonicParsing="false" onAction="#btnDtlProjeto" styleClass="button-style" text="Detalhar Projeto>>>" />
                </HBox>
                <opaqueInsets>
                   <Insets right="15.0" />

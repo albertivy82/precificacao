@@ -3,14 +3,12 @@ package org.openjfx.precificacao.service;
 import org.openjfx.precificacao.database.*;
 import org.openjfx.precificacao.dtos.DetalhamentoDTO;
 import org.openjfx.precificacao.models.*;
-
+import org.openjfx.precificacao.shared.GeradorData;
+import java.time.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjetoService {
@@ -23,6 +21,7 @@ public class ProjetoService {
     private CustosService lancamentoCVService;
     private CustosFixosService lancamentoCFService;
     private LucroService lucroService;
+    private ConsolidaProjetoSQLite consolidacoes;
 
     public ProjetoService() {
         this.etapas = new EtapaSQLite();
@@ -30,6 +29,7 @@ public class ProjetoService {
         this.atividades = new AtividadeSQLite();
         this.profissionais = new ProfissionaisSQLite();
         this.projetosBnaco = new ProjetoSQLite();
+        this.consolidacoes = new ConsolidaProjetoSQLite();
     }
 
     public List<Etapa> listaEtapas(){
@@ -139,12 +139,24 @@ public class ProjetoService {
 
     public void gerarCodProjeto(String nomeProjeto){
 
-        int id =  this.projetosBnaco.clientePorNome(nomeProjeto);
+        int id =  this.projetosBnaco.projetoPorNome(nomeProjeto);
         LocalDate hoje = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMyyyy");
         String dataFormatada = hoje.format(formatter);
         String cod = String.format("%d%s", id, dataFormatada);
+        System.out.println(cod);
         this.projetosBnaco.gerarCodProjeto(id, cod);
+
+    }
+
+    public boolean projetoNomeRepetido(String nomeProjeto){
+        int id =this.projetosBnaco.projetoPorNome(nomeProjeto);
+
+        if(id==0){
+            return false;
+        }else{
+            return true;
+        }
 
     }
 
@@ -193,6 +205,39 @@ public class ProjetoService {
     public Map<String, Double> listarValorPorProfissionalPorProjeto(int ProjetoId) {
         return this.detalhamentos.buscarValorEHorasPorProfissionalProjeto(ProjetoId);
     }
+
+    public void inicioProjeto(Projeto projeto) throws SQLException {
+        ConsolidaProjeto novaConsolidacao = new ConsolidaProjeto();
+
+        novaConsolidacao.setIdProjeto(projeto.getId());
+        novaConsolidacao.setIdCliente(projeto.getIdCliente());
+        novaConsolidacao.setAnoInicio(Year.now().getValue());
+
+        String mesAtual = LocalDate.now()
+                .format(DateTimeFormatter.ofPattern("MMMM", new Locale("pt", "BR")));
+        novaConsolidacao.setMesInicio(mesAtual);
+
+        novaConsolidacao.setMesInicio(mesAtual.toLowerCase());
+
+        novaConsolidacao.setValorInicial(projeto.getPrecificacao() * 0.5);
+
+        novaConsolidacao.setAnoFim(-1); // Indefinido por enquanto
+        novaConsolidacao.setMesFinal("sem previsão");
+        novaConsolidacao.setValorFinal(0); // Ou outro valor padrão
+
+        this.consolidacoes.novaConsolida(novaConsolidacao);
+    }
+
+    public Boolean verificaProjetoexitente(int idProjeto) throws SQLException {
+              return this.consolidacoes.buscarRegistroExistente(idProjeto);
+    }
+
+    public List<ConsolidaProjeto> listaConsolidacao() throws SQLException {
+
+        return this.consolidacoes.all();
+
+    }
+
 
 
 

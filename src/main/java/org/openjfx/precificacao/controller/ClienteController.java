@@ -156,14 +156,60 @@ public class ClienteController {
 					novoCliente.setCidade(null); // Se não selecionado, o valor será nulo
 				}			novoCliente.setCep(cepClienteInput.getText());
 	        try {
+
+				if (novoCliente.getCpf() != null && !novoCliente.getCpf().trim().isEmpty()) {
+					int idExistente = this.clienteService.cpfRepetido(novoCliente.getCpf());
+
+					// Se for um novo cliente ou outro cliente com mesmo CPF
+					if (idExistente != 0 && idExistente != this.id) {
+						throw new SQLException("Já existe um cliente com o CPF informado.");
+					}
+				}
+
+
 	            this.clientes = new ClienteSQLite();
 		            if(this.id==-1) {
-		            clientes.novoCliente(novoCliente);
-		            }else {
-		            novoCliente.setId(this.id);	
-		           	clientes.editarCliente(novoCliente);
-		            }
-				this.clienteService.gerarCodCliente(cpfInput.getText());
+						System.out.println("fluxo 1?");
+
+						if (novoCliente.getCpf() != null && !novoCliente.getCpf().trim().isEmpty()) {
+							novoCliente.setPerfil("COM_CPF");
+							// UUID não é necessário
+						} else {
+							novoCliente.setPerfil("SEM_CPF");
+							String uuidGerado = this.clienteService.gerarUuid();
+							novoCliente.setUuid(uuidGerado);
+						}
+						clientes.novoCliente(novoCliente);
+						this.clienteService.gerarCodCliente(novoCliente);
+					} else {
+
+						System.out.println("fluxo 2?");
+						novoCliente.setId(this.id);
+						String cpf = novoCliente.getCpf();
+
+						if (cpf != null && !cpf.trim().isEmpty()) {
+							System.out.println("fluxo 2.1?");
+							novoCliente.setPerfil("COM_CPF");
+							novoCliente.setUuid(null); // descarta o UUID
+						} else {
+
+							System.out.println("fluxo 2.2?");
+							novoCliente.setPerfil("SEM_CPF");
+							String uuid = this.clienteService.possuiUuid(this.id);
+
+							if (uuid == null || uuid.trim().isEmpty()) {
+								String uuidGerado = this.clienteService.gerarUuid();
+								novoCliente.setUuid(uuidGerado);
+							}else{
+								novoCliente.setUuid(uuid);
+							}
+
+						}
+
+						clientes.editarCliente(novoCliente);
+					}
+
+
 	            nomeClienteInput.clear();
 	            emailInput.clear();
 	            cpfInput.clear();
@@ -202,12 +248,15 @@ public class ClienteController {
 			emailInput.requestFocus();
 			valid = false;
 		}
-	    // Verificação para CPF (não pode estar vazio e deve seguir o regex)
-	    if (cpfInput.getText().trim().isEmpty() || !cpfInput.getText().matches(cpfRegex) || !CPFValidator.isValidCPF(cpfInput.getText())){
-	        showAlert("CPF Inválido", "O campo CPF está vazio ou não está no formato XXX.XXX.XXX-XX.");
-	        cpfInput.requestFocus();
-	        valid = false;
-	    }
+	    // Verificação para CPF (pode estar vazio e deve seguir o regex)
+		if(!cpfInput.getText().trim().isEmpty()){
+			if (!cpfInput.getText().matches(cpfRegex) || !CPFValidator.isValidCPF(cpfInput.getText())){
+				showAlert("CPF Inválido", "O campo CPF está vazio ou não está no formato XXX.XXX.XXX-XX.");
+				cpfInput.requestFocus();
+				valid = false;
+			}
+		}
+
 	    // Verificação para telefone (não pode estar vazio e deve seguir o regex)
 	    if (telefoneInput.getText().trim().isEmpty() || !telefoneInput.getText().matches(telefoneRegex)) {
 	        showAlert("Telefone Inválido", "O campo de telefone está vazio ou não está no formato (XX) XXXXX-XXXX.");

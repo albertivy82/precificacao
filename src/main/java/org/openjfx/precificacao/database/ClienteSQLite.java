@@ -18,18 +18,25 @@ public class ClienteSQLite{
     	
            Connection conn = SQLiteConnection.connect();
 	        try {
-	        	
-	        	
-		            PreparedStatement pstmtCpf = conn.prepareStatement("SELECT * FROM cliente WHERE cpf = ?");
-		            pstmtCpf.setString(1, cliente.getCpf());
-		            ResultSet rs = pstmtCpf.executeQuery();
+                PreparedStatement checkStmt;
 
-                if (rs.next()) {
-                    throw new SQLException("Já existe cliente cadastrado com o CPF informado");
+                if (cliente.getCpf() != null && !cliente.getCpf().trim().isEmpty()) {
+                    checkStmt = conn.prepareStatement("SELECT id FROM cliente WHERE cpf = ?");
+                    checkStmt.setString(1, cliente.getCpf());
+                } else {
+                    checkStmt = conn.prepareStatement("SELECT id FROM cliente WHERE uuid = ?");
+                    checkStmt.setString(1, cliente.getUuid());
                 }
 
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next()) {
+                    throw new SQLException("Já existe cliente cadastrado com o mesmo CPF ou UUID.");
+                }
+
+
                 PreparedStatement pstmt = conn.prepareStatement(
-                        "INSERT INTO cliente (nome, telefone, email, cpf, endereco, bairro, cep, estado, cidade) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        "INSERT INTO cliente (nome, telefone, email, cpf, endereco, bairro, cep, estado, cidade, uuid, perfil) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 pstmt.setString(1, cliente.getNome());
                 pstmt.setString(2, cliente.getTelefone());
                 pstmt.setString(3, cliente.getEmail());
@@ -37,8 +44,10 @@ public class ClienteSQLite{
                 pstmt.setString(5, cliente.getEndereco());
                 pstmt.setString(6, cliente.getBairro());
                 pstmt.setString(7, cliente.getCep());
-                pstmt.setString(8, cliente.getEstado()); // Adiciona o estado
-                pstmt.setString(9, cliente.getCidade()); // Adiciona a cidade
+                pstmt.setString(8, cliente.getEstado());
+                pstmt.setString(9, cliente.getCidade());
+                pstmt.setString(10, cliente.getUuid());     // novo campo
+                pstmt.setString(11, cliente.getPerfil());   // novo campo
                 pstmt.executeUpdate();
 
             } catch (SQLException e) {
@@ -51,10 +60,13 @@ public class ClienteSQLite{
     
     
     public void editarCliente(Cliente cliente) {
+        System.out.println("editarCliente é chamado?" +  cliente.getId());
         Connection conn = SQLiteConnection.connect();
         try {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE cliente SET nome=?, telefone=?, email=?, cpf=?, endereco=?, bairro=?, cep=?, estado=?, cidade=? WHERE ID=?");
+                    "UPDATE cliente SET nome=?, telefone=?, email=?, cpf=?, endereco=?, bairro=?, cep=?, estado=?, cidade=?, uuid=?, perfil=? WHERE ID=?");
+            System.out.println("editarCliente é chamado?" + " " + cliente.getNome() + " " + cliente.getTelefone()+ " " + cliente.getEmail()+ " " +cliente.getCpf()+cliente.getEndereco()+
+                    cliente.getBairro()+cliente.getCep()+ " " + cliente.getEstado()+ " " +cliente.getCidade()+ " " + cliente.getUuid()+ " " +cliente.getPerfil()+ " " +cliente.getId());
             pstmt.setString(1, cliente.getNome());
             pstmt.setString(2, cliente.getTelefone());
             pstmt.setString(3, cliente.getEmail());
@@ -62,9 +74,11 @@ public class ClienteSQLite{
             pstmt.setString(5, cliente.getEndereco());
             pstmt.setString(6, cliente.getBairro());
             pstmt.setString(7, cliente.getCep());
-            pstmt.setString(8, cliente.getEstado()); // Adiciona o estado
-            pstmt.setString(9, cliente.getCidade()); // Adiciona a cidade
-            pstmt.setInt(10, cliente.getId()); // Atualiza o ID para a cláusula WHERE
+            pstmt.setString(8, cliente.getEstado());
+            pstmt.setString(9, cliente.getCidade());
+            pstmt.setString(10, cliente.getUuid());
+            pstmt.setString(11, cliente.getPerfil());
+            pstmt.setInt(12, cliente.getId());
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -127,7 +141,8 @@ public class ClienteSQLite{
         Cliente cliente = new Cliente();
         Connection conn = SQLiteConnection.connect();
         try {
-            PreparedStatement pstmt = conn.prepareStatement("SELECT id, cod_cliente, nome, cpf, telefone, email, endereco, bairro, estado, cidade, cep FROM cliente WHERE ID=?");
+            PreparedStatement pstmt = conn.prepareStatement("SELECT id, cod_cliente, nome, cpf, telefone, email, endereco, bairro, estado, cidade, cep, uuid, perfil FROM cliente WHERE ID=?"
+            );
             pstmt.setInt(1, id);
             ResultSet result = pstmt.executeQuery();
 
@@ -143,6 +158,9 @@ public class ClienteSQLite{
                 cliente.setEstado(result.getString("estado"));
                 cliente.setCidade(result.getString("cidade"));
                 cliente.setCep(result.getString("cep"));
+                cliente.setUuid(result.getString("uuid"));
+                cliente.setPerfil(result.getString("perfil"));
+
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -161,7 +179,7 @@ public class ClienteSQLite{
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            pstmt = conn.prepareStatement("SELECT id, cod_cliente, nome, telefone, email, cpf, endereco, bairro, cep, estado, cidade FROM cliente");
+            pstmt = conn.prepareStatement("SELECT id, cod_cliente, nome, telefone, email, cpf, endereco, bairro, cep, estado, cidade, uuid, perfil FROM cliente");
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -177,6 +195,8 @@ public class ClienteSQLite{
                 c.setCep(rs.getString("cep"));
                 c.setEstado(rs.getString("estado")); // Adiciona o estado
                 c.setCidade(rs.getString("cidade")); // Adiciona a cidade
+                c.setUuid(rs.getString("uuid"));
+                c.setPerfil(rs.getString("perfil"));
                 result.add(c);
             }
 
@@ -281,5 +301,35 @@ public class ClienteSQLite{
         }
         return idCliente;
     }
+
+    public int clientePorUuid(String uuid) {
+        int idCliente = 0;
+        Connection conn = SQLiteConnection.connect();
+        PreparedStatement pstmt = null;
+        ResultSet result = null;
+
+        try {
+            pstmt = conn.prepareStatement("SELECT id FROM cliente WHERE uuid = ?");
+            pstmt.setString(1, uuid);
+            result = pstmt.executeQuery();
+
+            if (result.next()) {
+                idCliente = result.getInt("id");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (result != null) result.close();
+                if (pstmt != null) pstmt.close();
+                SQLiteConnection.closeConnection(conn);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return idCliente;
+    }
+
 
 }

@@ -19,12 +19,12 @@ public class ProjetoSQLite{
            Connection conn = SQLiteConnection.connect();
 	        try {
 		            PreparedStatement pstmt = conn.prepareStatement(
-		                    "INSERT INTO projeto (nome_projeto, id_cliente, tipo, status) VALUES (?, ?, ?, ?)");
+		                    "INSERT INTO projeto (nome_projeto, id_cliente, tipo, status ) VALUES (?, ?, ?, ?, ?)");
 		            pstmt.setString(1, projeto.getNomeProjeto());
 		            pstmt.setInt(2, projeto.getIdCliente());
                     pstmt.setString(3, projeto.getTipo());
 		            pstmt.setString(4, projeto.getStatus());
-		            pstmt.executeUpdate();
+                    pstmt.executeUpdate();
 	        } catch (SQLException e) {
 	            System.out.println(e.getMessage());
 	        } finally {
@@ -56,6 +56,7 @@ public class ProjetoSQLite{
     public void gerarCodProjeto(int id, String codProjeto) {
         Connection conn = SQLiteConnection.connect();
         try {
+            System.out.println(id + " " + codProjeto);
             PreparedStatement pstmt = conn.prepareStatement("UPDATE projeto SET cod_projeto = ? WHERE id = ?");
             pstmt.setString(1, codProjeto);
             pstmt.setInt(2, id);
@@ -67,7 +68,7 @@ public class ProjetoSQLite{
         }
     }
 
-    public int clientePorNome(String nome) {
+    public int projetoPorNome(String nome) {
         int idProjeto = 0;
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;

@@ -37,9 +37,21 @@ public class ClienteService {
         return nomeCleinte;
     }
 
-    public void gerarCodCliente(String cpf){
+    public void gerarCodCliente(Cliente cliente){
 
-             int id =  this.clientes.clientePorCpf(cpf);
+        int id;
+
+            if (cliente.getCpf() != null && !cliente.getCpf().trim().isEmpty()) {
+                id = this.clientes.clientePorCpf(cliente.getCpf());
+            } else {
+                id = this.clientes.clientePorUuid(cliente.getUuid()); // <- precisamos criar esse método
+            }
+
+            if (id == 0) {
+                System.out.println("Erro: Não foi possível localizar o cliente para gerar código.");
+                return;
+            }
+
             LocalDate hoje = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMyyyy");
             String dataFormatada = hoje.format(formatter);
@@ -47,6 +59,11 @@ public class ClienteService {
             this.clientes.gerarCodCliente(id, cod);
 
     }
+
+    public String gerarUuid() {
+        return java.util.UUID.randomUUID().toString();
+    }
+
 
     public void deletarCliente(Cliente clienteEscolhido) throws SQLException {
         ProjetoService projetosRelaciodados = new ProjetoService();
@@ -74,6 +91,19 @@ public class ClienteService {
     public Cliente clientePorId(int id){
         return this.clientes.buscarClientePorId(id);
     }
+
+    public String possuiUuid(int id) {
+        Cliente cliente = clientePorId(id);
+        return cliente.getUuid();
+    }
+
+
+    public int cpfRepetido(String cpf) {
+        return this.clientes.clientePorCpf(cpf);
+
+    }
+
+
 
 
 

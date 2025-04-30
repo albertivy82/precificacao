@@ -20,6 +20,8 @@ public class Cliente {
 	private String estado;
 	private String cidade;
 	private String cep;
+	private String uuid;
+	private String perfil;
 
 	
 	@Override

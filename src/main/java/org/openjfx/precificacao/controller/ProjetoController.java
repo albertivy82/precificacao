@@ -14,6 +14,7 @@ import org.openjfx.precificacao.models.Profissionais;
 import org.openjfx.precificacao.models.Projeto;
 import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.ProjetoService;
+import org.openjfx.precificacao.shared.GeradorData;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
 
 import java.sql.SQLException;
@@ -155,11 +156,48 @@ public class ProjetoController {
 
         }
 
-
-
-
-
     }
+
+    @FXML
+    protected void btnInicarProjeto(ActionEvent e) throws SQLException {
+        ObservableList<Projeto> projetoIniciar = LvProjetos.getSelectionModel().getSelectedItems();
+
+        if (projetoIniciar.isEmpty()) {
+            mostrarAlerta("Atenção", "Nenhum projeto foi selecionado");
+            return;
+        }
+
+        Projeto projetoEscolhido = projetoIniciar.get(0);
+
+        if (!"PRECIFICADO".equals(projetoEscolhido.getStatus()) || projetoEscolhido.getPrecificacao() <= 0) {
+            mostrarAlerta("Atenção", "O projeto não foi precificado");
+            return;
+        }
+
+        Alert confirmacao = new Alert(AlertType.CONFIRMATION);
+        confirmacao.setTitle("Atenção");
+        confirmacao.setHeaderText("Deseja Iniciar o projeto selecionado?\n" +
+                "50% DO VALOR TOTAL DO PROJETO SERÁ REGISTRADO COMO RECEBIDO.");
+        confirmacao.setContentText(projetoEscolhido.toString());
+
+        Optional<ButtonType> result = confirmacao.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            if (!this.projetoService.verificaProjetoexitente(projetoEscolhido.getId())) {
+                this.projetoService.inicioProjeto(projetoEscolhido);
+            } else {
+                mostrarAlerta("Atenção", "O projeto já foi iniciado");
+            }
+        }
+    }
+
+    private void mostrarAlerta(String titulo, String mensagem) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(mensagem);
+        alert.showAndWait();
+    }
+
 
 
     @FXML
@@ -186,7 +224,7 @@ public class ProjetoController {
                             novoProjeto.setStatus(this.statusProjeto);
                     }
                     novoProjeto.setPrecificacao(projetoEdicao.getPrecificacao());
-                    System.out.println("OQUE HÁ AQUI?"+novoProjeto.getPrecificacao());
+                    System.out.println("O QUE HÁ AQUI?"+novoProjeto.getPrecificacao());
                     projetosDB.editarProjeto(novoProjeto);
                 }
 
@@ -221,6 +259,7 @@ public class ProjetoController {
             // Se um cliente foi selecionado, obter o ID do cliente
             this.idCliente = clienteSelecionado.getId();
         }
+
 
         return valid;
     }

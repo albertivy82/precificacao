@@ -71,6 +71,7 @@
                      </yAxis>
                   </BarChart>
                </VBox>
+
                <VBox fillWidth="true" VBox.vgrow="ALWAYS">
                   <BarChart fx:id="profissionaisPorValorRecebidoChart" title="Profissionais por Valor de Serviço" prefHeight="-1" VBox.vgrow="ALWAYS">
                      <xAxis>
@@ -91,6 +92,17 @@
                      </yAxis>
                   </BarChart>
                </VBox>
+
+                  <VBox fillWidth="true" VBox.vgrow="ALWAYS">
+                     <BarChart fx:id="consolidacaoProjetos" title="Consolidação" prefHeight="-1" VBox.vgrow="ALWAYS">
+                        <xAxis>
+                           <CategoryAxis label="Meses" />
+                        </xAxis>
+                        <yAxis>
+                           <NumberAxis label="Valor (R$)" />
+                        </yAxis>
+                     </BarChart>
+                  </VBox>
             </VBox>
          </center>
       </BorderPane>

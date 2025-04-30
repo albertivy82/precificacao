@@ -17,6 +17,7 @@ public class Projeto {
     private double precificacao;
 
 
+
     @Override
     public String toString() {
         return (nomeProjeto + " - Projeto Nº " + codProjeto + " . Satus: " + status).toUpperCase();
