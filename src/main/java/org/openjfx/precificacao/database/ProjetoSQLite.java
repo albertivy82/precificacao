@@ -298,6 +298,23 @@ public class ProjetoSQLite{
 
 
 
+    public void editarSatusProjeto(String status, int id) throws SQLException {
+        Connection conn = SQLiteConnection.connect();
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(
+                    "UPDATE projeto SET status=? WHERE ID=?");
+            pstmt.setString(1, status);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            SQLiteConnection.closeConnection(conn);
+        }
+    }
+
+
+
 
 
 

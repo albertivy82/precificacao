@@ -12,11 +12,13 @@
 <?import javafx.scene.layout.VBox?>
 
 
+<?import javafx.scene.control.Pagination?>
 <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
             fitToWidth="true"
             maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.openjfx.precificacao.controller.MainController">
+            fx:controller="org.openjfx.precificacao.controller.MainController"
+            fitToHeight="true">
 
    <content>
       <BorderPane stylesheets="@/org/openjfx/styles/styles.css">
@@ -32,7 +34,7 @@
             </HBox>
          </top>
          <left>
-            <VBox prefHeight="-1" prefWidth="125.0" style="-fx-background-color: #444444;">
+            <VBox prefHeight="-1" prefWidth="125.0" style="-fx-background-color: #444444;" >
                <Button disable="true" mnemonicParsing="false" styleClass="transparent-button" text="Inicio" />
                <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
                <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
@@ -45,67 +47,65 @@
             </VBox>
          </left>
          <center>
-               <VBox  prefHeight="-1" VBox.vgrow="ALWAYS">
-               <VBox fillWidth="true" prefHeight="-1"  VBox.vgrow="ALWAYS">
-                  <PieChart fx:id="projetosPorStatusChart" title="Projetos por status"  prefHeight="-1" VBox.vgrow="ALWAYS"/>
-               </VBox>
+            <Pagination fx:id="dashboardPagination" BorderPane.alignment="CENTER" prefHeight="-1" VBox.vgrow="ALWAYS" />
 
-               <VBox fillWidth="true" VBox.vgrow="ALWAYS">
-                  <BarChart fx:id="projetosComValoresChart" title="Projetos por Valor" prefHeight="-1" VBox.vgrow="ALWAYS">
-                     <xAxis>
-                        <CategoryAxis label="Projetos" />
-                     </xAxis>
-                     <yAxis>
-                        <NumberAxis label="Valor (R$)" />
-                     </yAxis>
-                  </BarChart>
-               </VBox>
-
-               <VBox fillWidth="true" VBox.vgrow="ALWAYS">
-                  <BarChart fx:id="profissionaisPorHorasChart" title="Profissionais com Mais Horas"  prefHeight="-1" VBox.vgrow="ALWAYS">
-                     <xAxis>
-                        <CategoryAxis label="Profissionais" />
-                     </xAxis>
-                     <yAxis>
-                        <NumberAxis label="Horas" />
-                     </yAxis>
-                  </BarChart>
-               </VBox>
-
-               <VBox fillWidth="true" VBox.vgrow="ALWAYS">
-                  <BarChart fx:id="profissionaisPorValorRecebidoChart" title="Profissionais por Valor de Serviço" prefHeight="-1" VBox.vgrow="ALWAYS">
-                     <xAxis>
-                        <CategoryAxis label="Profissionais" />
-                     </xAxis>
-                     <yAxis>
-                        <NumberAxis label="Valor (R$)" />
-                     </yAxis>
-                  </BarChart>
-               </VBox>
-               <VBox fillWidth="true" VBox.vgrow="ALWAYS">
-                  <BarChart fx:id="clienteValoresChart" title="Valor de Projeto por Cliente" prefHeight="-1" VBox.vgrow="ALWAYS">
-                     <xAxis>
-                        <CategoryAxis label="Cliente" />
-                     </xAxis>
-                     <yAxis>
-                        <NumberAxis label="Valor (R$)" />
-                     </yAxis>
-                  </BarChart>
-               </VBox>
-
-                  <VBox fillWidth="true" VBox.vgrow="ALWAYS">
-                     <BarChart fx:id="consolidacaoProjetos" title="Consolidação" prefHeight="-1" VBox.vgrow="ALWAYS">
-                        <xAxis>
-                           <CategoryAxis label="Meses" />
-                        </xAxis>
-                        <yAxis>
-                           <NumberAxis label="Valor (R$)" />
-                        </yAxis>
-                     </BarChart>
-                  </VBox>
-            </VBox>
          </center>
-      </BorderPane>
+     </BorderPane>
    </content>
+
+   <fx:define>
+
+      <VBox fillWidth="true" prefHeight="-1"  VBox.vgrow="ALWAYS">
+         <PieChart fx:id="projetosPorStatusChart" title="Projetos por status"  prefHeight="-1" VBox.vgrow="ALWAYS"/>
+      </VBox>
+
+      <VBox fillWidth="true" VBox.vgrow="ALWAYS">
+         <BarChart fx:id="projetosComValoresChart" title="Projetos por Valor" prefHeight="-1" VBox.vgrow="ALWAYS">
+            <xAxis>
+               <CategoryAxis label="Projetos" />
+            </xAxis>
+            <yAxis>
+               <NumberAxis label="Valor (R$)" />
+            </yAxis>
+         </BarChart>
+      </VBox>
+
+      <VBox fillWidth="true" VBox.vgrow="ALWAYS">
+         <BarChart fx:id="profissionaisPorHorasChart" title="Profissionais com Mais Horas"  prefHeight="-1" VBox.vgrow="ALWAYS">
+            <xAxis>
+               <CategoryAxis label="Profissionais" />
+            </xAxis>
+            <yAxis>
+               <NumberAxis label="Horas" />
+            </yAxis>
+         </BarChart>
+      </VBox>
+
+      <VBox fillWidth="true" VBox.vgrow="ALWAYS">
+         <BarChart fx:id="profissionaisPorValorRecebidoChart" title="Profissionais por Valor de Serviço" prefHeight="-1" VBox.vgrow="ALWAYS">
+            <xAxis>
+               <CategoryAxis label="Profissionais" />
+            </xAxis>
+            <yAxis>
+               <NumberAxis label="Valor (R$)" />
+            </yAxis>
+         </BarChart>
+      </VBox>
+      <VBox fillWidth="true" VBox.vgrow="ALWAYS">
+         <BarChart fx:id="clienteValoresChart" title="Valor de Projeto por Cliente" prefHeight="-1" VBox.vgrow="ALWAYS">
+            <xAxis>
+               <CategoryAxis label="Cliente" />
+            </xAxis>
+            <yAxis>
+               <NumberAxis label="Valor (R$)" />
+            </yAxis>
+         </BarChart>
+      </VBox>
+
+      <VBox fx:id="painelConsolidacoes" fillWidth="true" VBox.vgrow="ALWAYS"/>
+
+
+
+   </fx:define>
 </ScrollPane>
 

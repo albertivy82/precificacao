@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ConsolidaProjetoSQLite {
 
@@ -35,20 +36,18 @@ public class ConsolidaProjetoSQLite {
     }
 
 
-    public void editarConsolida(ConsolidaProjeto consolidaProjeto) throws SQLException {
+    public void editarConsolida(ConsolidaProjeto consolidaProjeto, int idProjeto) throws SQLException {
         Connection conn = SQLiteConnection.connect();
-
+        System.out.println(idProjeto);
         try {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE consolida_projetos SET id_projeto=?, id_cliente=?, ano_inicio=?, mes_inicio=?, valor_inicial=?, ano_fim=?, mes_final=?, valor_final=? WHERE id=?");
-            pstmt.setInt(1, consolidaProjeto.getIdProjeto());
-            pstmt.setInt(2, consolidaProjeto.getIdCliente());
-            pstmt.setInt(3, consolidaProjeto.getAnoInicio());
-            pstmt.setString(4, consolidaProjeto.getMesInicio());
-            pstmt.setDouble(5, consolidaProjeto.getValorInicial());
-            pstmt.setInt(6, consolidaProjeto.getAnoFim());
-            pstmt.setString(7, consolidaProjeto.getMesFinal());
-            pstmt.setDouble(8, consolidaProjeto.getValorFinal());
+                    "UPDATE consolida_projetos SET ano_fim=?, mes_final=?, valor_final=? WHERE id=?"
+            );
+            pstmt.setInt(1, consolidaProjeto.getAnoFim());
+            pstmt.setString(2, consolidaProjeto.getMesFinal());
+            pstmt.setDouble(3, consolidaProjeto.getValorFinal());
+            pstmt.setInt(4, idProjeto);
+
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -110,24 +109,37 @@ public class ConsolidaProjetoSQLite {
         }
     }
 
-    public Boolean buscarRegistroExistente(int idProjeto) {
+    public Optional<ConsolidaProjeto> buscarRegistroExistente(int idProjeto) throws SQLException {
         Connection conn = SQLiteConnection.connect();
         try {
-            PreparedStatement pstmt = conn.prepareStatement(
-                    "SELECT id FROM consolida_projetos WHERE id_projeto=? LIMIT 1"
-            );
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM consolida_projetos WHERE id_projeto = ?");
             pstmt.setInt(1, idProjeto);
-            ResultSet result = pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
 
-            return result.next(); // já retorna true ou false
+            if (rs.next()) {
+                ConsolidaProjeto projeto = new ConsolidaProjeto();
+                projeto.setId(rs.getInt("id"));
+                projeto.setIdProjeto(rs.getInt("id_projeto"));
+                projeto.setIdCliente(rs.getInt("id_cliente"));
+                projeto.setAnoInicio(rs.getInt("ano_inicio"));
+                projeto.setMesInicio(rs.getString("mes_inicio"));
+                projeto.setValorInicial(rs.getDouble("valor_inicial"));
+                projeto.setAnoFim(rs.getInt("ano_fim"));
+                projeto.setMesFinal(rs.getString("mes_final"));
+                projeto.setValorFinal(rs.getDouble("valor_final"));
+
+                return Optional.of(projeto);
+            }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         } finally {
             SQLiteConnection.closeConnection(conn);
         }
-
-        return false;
+        return Optional.empty();
     }
+
+
+
 
 
 

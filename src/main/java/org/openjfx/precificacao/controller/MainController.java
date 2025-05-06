@@ -2,9 +2,9 @@ package org.openjfx.precificacao.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
+import javafx.scene.control.Pagination;
+import javafx.scene.layout.VBox;
 import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.models.ConsolidaProjeto;
 import org.openjfx.precificacao.service.ProjetoService;
@@ -61,6 +61,9 @@ public class MainController {
 	}
 
 	@FXML
+	private Pagination dashboardPagination;
+
+	@FXML
 	private PieChart projetosPorStatusChart;
 
 	@FXML
@@ -76,21 +79,42 @@ public class MainController {
 	private BarChart<String, Double> clienteValoresChart;
 
 	@FXML
-	private BarChart<String, Number> consolidacaoProjetos;
+	private VBox painelConsolidacoes;
 
-
-
+	private final List<BarChart<String, Number>> graficosConsolidacaoPorAno = new ArrayList<>();
 	private ProjetoService projetoService = new ProjetoService();
 
 
 	@FXML
 	public void initialize() throws SQLException {
+		pginacaoDashBorad();
 		carregarProjetosPorStatus();
 		carregarGraficoProjetosComValores();
 		carregarGraficoDeHoras();
 		carregarGraficoDeValor();
 		carregarGraficoDeValorPorCliente();
 		carregaConsolidacaoProjetos();
+	}
+
+	private void pginacaoDashBorad() {
+		dashboardPagination.setPageCount(6);
+		dashboardPagination.setPageFactory(pageIndex -> {
+			switch (pageIndex) {
+				case 0:
+					return new VBox(projetosPorStatusChart);
+				case 1:
+					return new VBox(projetosComValoresChart);
+				case 2:
+					return new VBox(profissionaisPorHorasChart);
+				case 3:
+					return new VBox(profissionaisPorValorRecebidoChart);
+				case 4:
+					return new VBox(clienteValoresChart);
+				case 5: return painelConsolidacoes;
+				default:
+					return new VBox(); // fallback vazio
+			}
+		});
 	}
 
 	private void carregarProjetosPorStatus() {
@@ -197,23 +221,18 @@ public class MainController {
 
 	private void carregaConsolidacaoProjetos() throws SQLException {
 		List<ConsolidaProjeto> projetos = projetoService.listaConsolidacao();
-		System.out.println(projetos.toString());
-		consolidacaoProjetos.getData().clear();
+		graficosConsolidacaoPorAno.clear(); // limpa gráficos anteriores
 
 		// Obter todos os anos distintos
 		Set<Integer> anos = new HashSet<>();
 		for (ConsolidaProjeto projeto : projetos) {
-			if (projeto.getAnoInicio() > 0) {
-			 anos.add(projeto.getAnoInicio());
-			}
-			if (projeto.getAnoFim() > 0) {
-				anos.add(projeto.getAnoFim());
-			}
+			if (projeto.getAnoInicio() > 0) anos.add(projeto.getAnoInicio());
+			if (projeto.getAnoFim() > 0) anos.add(projeto.getAnoFim());
 		}
 
 		List<Integer> anosOrdenados = new ArrayList<>(anos);
 		Collections.sort(anosOrdenados);
-         System.out.println(anosOrdenados);
+
 		for (Integer ano : anosOrdenados) {
 			Map<String, Double> valoresIniciais = new HashMap<>();
 			Map<String, Double> valoresFinais = new HashMap<>();
@@ -221,42 +240,50 @@ public class MainController {
 			for (ConsolidaProjeto projeto : projetos) {
 				if (projeto.getAnoInicio() == ano) {
 					valoresIniciais.merge(projeto.getMesInicio(), projeto.getValorInicial(), Double::sum);
-					System.out.println(valoresIniciais);
 				}
 				if (projeto.getAnoFim() == ano) {
 					valoresFinais.merge(projeto.getMesFinal(), projeto.getValorFinal(), Double::sum);
-					System.out.println(valoresFinais);
 				}
 			}
 
 			XYChart.Series<String, Number> serieInicial = new XYChart.Series<>();
 			serieInicial.setName("Valor Inicial " + ano);
-			System.out.println(serieInicial);
+
 			XYChart.Series<String, Number> serieFinal = new XYChart.Series<>();
 			serieFinal.setName("Valor Final " + ano);
-			System.out.println(serieFinal);
-					List<String> mesesDoAno = List.of(
-							"janeiro", "fevereiro", "março", "abril", "maio", "junho",
-							"julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
-					);
 
-					for (String mes : mesesDoAno) {
-						double valorInicial = valoresIniciais.getOrDefault(mes, 0.0);
-						double valorFinal = valoresFinais.getOrDefault(mes, 0.0);
+			List<String> mesesDoAno = List.of(
+					"janeiro", "fevereiro", "março", "abril", "maio", "junho",
+					"julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+			);
 
-						serieInicial.getData().add(new XYChart.Data<>(mes, valorInicial));
-						serieFinal.getData().add(new XYChart.Data<>(mes, valorFinal));
-					}
+			for (String mes : mesesDoAno) {
+				double valorInicial = valoresIniciais.getOrDefault(mes, 0.0);
+				double valorFinal = valoresFinais.getOrDefault(mes, 0.0);
 
+				serieInicial.getData().add(new XYChart.Data<>(mes, valorInicial));
+				serieFinal.getData().add(new XYChart.Data<>(mes, valorFinal));
+			}
 
-			System.out.println(serieInicial);
-			System.out.println(serieFinal);
+			BarChart<String, Number> graficoAno = new BarChart<>(new CategoryAxis(), new NumberAxis());
+			graficoAno.setTitle("Consolidação - " + ano);
+			graficoAno.getXAxis().setLabel("Mês");
+			graficoAno.getYAxis().setLabel("Valor (R$)");
+			graficoAno.getData().addAll(serieInicial, serieFinal);
 
-			consolidacaoProjetos.getData().add(serieInicial);
-			consolidacaoProjetos.getData().add(serieFinal);
+			graficosConsolidacaoPorAno.add(graficoAno); // ✅ adiciona na lista
+		}
 
+		// ✅ Agora sim, limpa e exibe todos os gráficos na tela
+		painelConsolidacoes.getChildren().clear();
+		for (BarChart<String, Number> grafico : graficosConsolidacaoPorAno) {
+			painelConsolidacoes.getChildren().add(grafico);
 		}
 	}
+
+
+
+
 
 
 

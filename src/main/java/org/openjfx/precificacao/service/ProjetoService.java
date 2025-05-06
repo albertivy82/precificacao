@@ -2,8 +2,10 @@ package org.openjfx.precificacao.service;
 
 import org.openjfx.precificacao.database.*;
 import org.openjfx.precificacao.dtos.DetalhamentoDTO;
+import org.openjfx.precificacao.enums.StatusProjeto;
 import org.openjfx.precificacao.models.*;
-import org.openjfx.precificacao.shared.GeradorData;
+import org.openjfx.precificacao.validator.StatusRules;
+
 import java.time.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -22,6 +24,8 @@ public class ProjetoService {
     private CustosFixosService lancamentoCFService;
     private LucroService lucroService;
     private ConsolidaProjetoSQLite consolidacoes;
+    private final StatusRules statusRules;
+
 
     public ProjetoService() {
         this.etapas = new EtapaSQLite();
@@ -30,6 +34,7 @@ public class ProjetoService {
         this.profissionais = new ProfissionaisSQLite();
         this.projetosBnaco = new ProjetoSQLite();
         this.consolidacoes = new ConsolidaProjetoSQLite();
+        this.statusRules = new StatusRules();
     }
 
     public List<Etapa> listaEtapas(){
@@ -215,8 +220,6 @@ public class ProjetoService {
 
         String mesAtual = LocalDate.now()
                 .format(DateTimeFormatter.ofPattern("MMMM", new Locale("pt", "BR")));
-        novaConsolidacao.setMesInicio(mesAtual);
-
         novaConsolidacao.setMesInicio(mesAtual.toLowerCase());
 
         novaConsolidacao.setValorInicial(projeto.getPrecificacao() * 0.5);
@@ -228,8 +231,36 @@ public class ProjetoService {
         this.consolidacoes.novaConsolida(novaConsolidacao);
     }
 
-    public Boolean verificaProjetoexitente(int idProjeto) throws SQLException {
-              return this.consolidacoes.buscarRegistroExistente(idProjeto);
+    public Boolean verificaProjetoExitente(int idProjeto) throws SQLException {
+             return this.consolidacoes.buscarRegistroExistente(idProjeto).isPresent();
+   }
+
+
+    public Boolean verificaExecucaoProjeto(int idProjeto) throws SQLException {
+         ConsolidaProjeto projeto = this.consolidacoes.buscarRegistroExistente(idProjeto).
+                 orElseThrow(() -> new NoSuchElementException("Nenhum projeto consolidado encontrado para o ID: " + idProjeto));
+         if(projeto.getAnoFim()== -1 && projeto.getMesFinal().equals("sem previsão") && projeto.getValorFinal()==0){
+             return true;
+         }else{
+             return false;
+         }
+    }
+
+    public void finalizaProjeto(Projeto projeto) throws SQLException {
+
+        ConsolidaProjeto consolidado = this.consolidacoes
+                .buscarRegistroExistente(projeto.getId())
+                .orElseThrow(() -> new NoSuchElementException("Consolidação não encontrada"));
+
+        ConsolidaProjeto finalizaConsolidacao = new ConsolidaProjeto();
+        finalizaConsolidacao.setAnoFim(Year.now().getValue());
+
+        String mesAtual = LocalDate.now()
+                .format(DateTimeFormatter.ofPattern("MMMM", new Locale("pt", "BR")));
+        finalizaConsolidacao.setMesFinal(mesAtual.toLowerCase());
+        finalizaConsolidacao.setValorFinal(projeto.getPrecificacao() * 0.5);
+
+        this.consolidacoes.editarConsolida(finalizaConsolidacao, consolidado.getId());
     }
 
     public List<ConsolidaProjeto> listaConsolidacao() throws SQLException {
@@ -237,6 +268,12 @@ public class ProjetoService {
         return this.consolidacoes.all();
 
     }
+
+    public void alterarStatusProjeto(int idProjeto, StatusProjeto novoStatus) throws SQLException {
+        this.statusRules.alterarStatus(idProjeto, novoStatus);
+    }
+
+
 
 
 

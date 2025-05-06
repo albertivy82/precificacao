@@ -79,15 +79,6 @@
                         <CheckBox fx:id="cbNovo" alignment="CENTER" text="Novo" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
                         <CheckBox fx:id="cbReforma" alignment="CENTER_RIGHT" text="Reforma" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
                      </HBox>
-                     <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                     <Label text="Alterar Status do Projeto" styleClass="label-style" />
-                     </HBox>
-                     <!-- Segunda linha de CheckBoxes, centralizada -->
-                     <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                        <CheckBox fx:id="cbContratados" text="Contratados" style="-fx-font-size: 14px; -fx-text-fill: #333;"/>
-                        <CheckBox fx:id="cbExecutado" text="Executado" style="-fx-font-size: 14px; -fx-text-fill: #333;" />
-                     </HBox>
-
                      <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="7">
                         <children>
                            <Button mnemonicParsing="false" onAction="#btnCadastrarProjeto" styleClass="button-style" text="Cadastrar" />
@@ -113,6 +104,7 @@
                      <Button mnemonicParsing="false" onAction="#btnDeletarProjeto" styleClass="button-style" text="Apagar" />
                   </HBox>
                   <Region HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#btnFinalizarProjeto" styleClass="button-style" text="Finalizar Execução---" />
                   <Button mnemonicParsing="false" onAction="#btnInicarProjeto" styleClass="button-style" text="Iniciar Execução>>>" />
                   <Button mnemonicParsing="false" onAction="#btnDtlProjeto" styleClass="button-style" text="Detalhar Projeto>>>" />
                </HBox>

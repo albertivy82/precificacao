@@ -9,12 +9,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.util.StringConverter;
 import org.openjfx.precificacao.App;
 import org.openjfx.precificacao.database.ProjetoSQLite;
+import org.openjfx.precificacao.enums.StatusProjeto;
 import org.openjfx.precificacao.models.Cliente;
-import org.openjfx.precificacao.models.Profissionais;
 import org.openjfx.precificacao.models.Projeto;
 import org.openjfx.precificacao.service.ClienteService;
 import org.openjfx.precificacao.service.ProjetoService;
-import org.openjfx.precificacao.shared.GeradorData;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
 
 import java.sql.SQLException;
@@ -54,30 +53,19 @@ public class ProjetoController {
     private CheckBox cbNovo;
     @FXML
     private CheckBox cbReforma;
-    @FXML
-    private CheckBox cbExecutado;
-    @FXML
-    private CheckBox cbContratados;
+
 
     @FXML
     void initialize() {
         this.cliente = new ClienteService();
         this.projetoService = new ProjetoService();
-        cbContratados.setDisable(true);
-        cbExecutado.setDisable(true);
         updateList();
         populaLista();
         tipoCBs();
-        statusCBs();
+
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+
 
     @FXML
     protected void btnMain(ActionEvent e){
@@ -129,74 +117,94 @@ public class ProjetoController {
 
       ObservableList<Projeto> projetoPEditar = LvProjetos.getSelectionModel().getSelectedItems();
 
+
         if(!projetoPEditar.isEmpty()) {
 
             Projeto projetoEscolhido = projetoPEditar.get(0);
 
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Atenção");
-            alert.setHeaderText("Deseja detalhar o projeto selecionado?");
-            alert.setContentText(projetoEscolhido.toString());
+            boolean result = confirmarAcao("Atenção", "Deseja detalhar o projeto selecionado?", projetoEscolhido.toString());
 
-            Optional<ButtonType> result = alert.showAndWait();
-
-
-            if(result.isPresent() && result.get()==ButtonType.OK) {
+            if(result) {
                 ProjetoSingleton.getInstance().setProjeto(projetoEscolhido);
                 App.mudarTela("DetalhamentoProjeto");
 
             }
 
         }else{
-
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Atenção");
-            alert.setHeaderText("Nenhum projeto foi selecionado");
-            alert.showAndWait();
-
+            mostrarAviso("Atenção", "Nenhum projeto foi selecionado");
         }
 
     }
+
+
 
     @FXML
     protected void btnInicarProjeto(ActionEvent e) throws SQLException {
         ObservableList<Projeto> projetoIniciar = LvProjetos.getSelectionModel().getSelectedItems();
 
         if (projetoIniciar.isEmpty()) {
-            mostrarAlerta("Atenção", "Nenhum projeto foi selecionado");
+            mostrarAviso("Atenção", "Nenhum projeto foi selecionado");
             return;
         }
 
         Projeto projetoEscolhido = projetoIniciar.get(0);
 
         if (!"PRECIFICADO".equals(projetoEscolhido.getStatus()) || projetoEscolhido.getPrecificacao() <= 0) {
-            mostrarAlerta("Atenção", "O projeto não foi precificado");
+            mostrarAviso("Atenção", "Somente projeto com status 'PRECIFICADO' podem ser iniciados");
             return;
         }
 
         Alert confirmacao = new Alert(AlertType.CONFIRMATION);
         confirmacao.setTitle("Atenção");
         confirmacao.setHeaderText("Deseja Iniciar o projeto selecionado?\n" +
-                "50% DO VALOR TOTAL DO PROJETO SERÁ REGISTRADO COMO RECEBIDO.");
+                "50% DO VALOR TOTAL DO PROJETO SERÁ REGISTRADO COMO RECEBIDO e o Porjeto não poderá mais ser editado ou ter seu orçamento alterado.");
         confirmacao.setContentText(projetoEscolhido.toString());
 
         Optional<ButtonType> result = confirmacao.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            if (!this.projetoService.verificaProjetoexitente(projetoEscolhido.getId())) {
+            if (!this.projetoService.verificaProjetoExitente(projetoEscolhido.getId())) {
                 this.projetoService.inicioProjeto(projetoEscolhido);
+                this.projetoService.alterarStatusProjeto(projetoEscolhido.getId(), StatusProjeto.INICIADO);
+
             } else {
-                mostrarAlerta("Atenção", "O projeto já foi iniciado");
+                mostrarAviso("Atenção", "O projeto já foi iniciado");
             }
         }
     }
 
-    private void mostrarAlerta(String titulo, String mensagem) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(mensagem);
-        alert.showAndWait();
+    @FXML
+    protected void btnFinalizarProjeto(ActionEvent e) throws SQLException {
+
+        ObservableList<Projeto> projetoFinalizar = LvProjetos.getSelectionModel().getSelectedItems();
+
+        if (projetoFinalizar.isEmpty()) {
+            mostrarAviso("Atenção", "Nenhum projeto foi selecionado");
+            return;
+        }
+
+        Projeto projetoEscolhido = projetoFinalizar.get(0);
+
+        if (!"INICIADO".equals(projetoEscolhido.getStatus()) || projetoEscolhido.getPrecificacao() <= 0) {
+            mostrarAviso("Atenção", "Somente projetos com status 'INICIADO' podem ser encerrados");
+            return;
+        }
+
+        boolean result = confirmarAcao("Atenção", "Deseja finalizar a execução do projeto selecionado?\n" +
+                "50% FINAL DO VALOR TOTAL DO PROJETO SERÁ REGISTRADO COMO RECEBIDO.", projetoEscolhido.toString());
+
+        if (result) {
+            if (this.projetoService.verificaExecucaoProjeto(projetoEscolhido.getId())) {
+               this.projetoService.finalizaProjeto(projetoEscolhido);
+                this.projetoService.alterarStatusProjeto(projetoEscolhido.getId(), StatusProjeto.EXECUTADO);
+
+            } else {
+                mostrarAviso("Atenção", "O projeto já foi FINALIZADO");
+            }
+        }
     }
+
+
 
 
 
@@ -231,10 +239,10 @@ public class ProjetoController {
                 clearFields();
                 updateList();
             } catch (SQLException ex) {
-                showAlert("Erro ao Cadastrar Projeto", "Não foi possível cadastrar o projeto: " + ex.getMessage());
+                mostrarErro("Erro ao Cadastrar Projeto", "Não foi possível cadastrar o projeto: " + ex.getMessage());
             }
         } else {
-            showAlert("Erro de Validação", "Por favor, corrija os campos destacados antes de enviar.");
+                mostrarAviso("Erro de Validação", "Por favor, corrija os campos destacados antes de enviar.");
         }
     }
 
@@ -243,7 +251,7 @@ public class ProjetoController {
 
         // Verificar se o campo de nome do projeto está vazio
         if (nomeProjetolInput.getText().trim().isEmpty()) {
-            showAlert("Nome do Projeto Vazio", "O campo nome do projeto não pode estar vazio.");
+            mostrarAviso("Nome do Projeto Vazio", "O campo nome do projeto não pode estar vazio.");
             nomeProjetolInput.requestFocus();
             valid = false;
         }
@@ -252,7 +260,7 @@ public class ProjetoController {
         Cliente clienteSelecionado = listaClientes.getSelectionModel().getSelectedItem();
 
         if (clienteSelecionado == null) {
-            showAlert("Cliente não selecionado", "Você deve selecionar um cliente da lista.");
+            mostrarAviso("Cliente não selecionado", "Você deve selecionar um cliente da lista.");
             listaClientes.requestFocus();  // Focar na lista de clientes
             valid = false;
         } else {
@@ -269,8 +277,6 @@ public class ProjetoController {
         nomeProjetolInput.clear();
         cbReforma.setSelected(false);
         cbNovo.setSelected(false);
-        cbContratados.setSelected(false);
-        cbExecutado.setSelected(false);
         this.id = -1;
         populaLista();
     }
@@ -282,68 +288,43 @@ public class ProjetoController {
 
         if (!escolhido.isEmpty()) {
             Projeto projetoEscolhido = escolhido.get(0);
-
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("ATENÇÃO");
-            alert.setHeaderText("Deseja realmente excluir o projeto selecionado?");
-            alert.setContentText(projetoEscolhido.toString());
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
+            boolean result = confirmarAcao("ATENÇÃO", "Deseja realmente excluir o projeto selecionado?" , projetoEscolhido.toString() );
+            if (result) {
                 this.projetoService.deletaProjetoEDependencias(projetoEscolhido.getId());
                 updateList();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("ATENÇÃO");
-            alert.setHeaderText("Nenhum projeto foi selecionado");
-            alert.showAndWait();
+           mostrarAviso("ATENÇÃO", "Nenhum projeto foi selecionado");
         }
     }
 
     @FXML
     void btnEditarProjeto(ActionEvent event) {
 
-        //setar "projeto alterado" em status
+
         ObservableList<Projeto> editar = LvProjetos.getSelectionModel().getSelectedItems();
 
         if(!editar.isEmpty()) {
 
             Projeto projetoEscolhido = editar.get(0);
-
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Atenção");
-            alert.setHeaderText("Deseja realmente editar o projeto selecionado?");
-            alert.setContentText(projetoEscolhido.toString());
-
-            Optional<ButtonType> result = alert.showAndWait();
-
-
-            if(result.isPresent() && result.get()==ButtonType.OK) {
-                this.projetoEdicao = new Projeto();
-                this.projetoEdicao.setCodProjeto(projetoEscolhido.getCodProjeto());
-                this.projetoEdicao.setStatus(projetoEscolhido.getStatus());
-                this.projetoEdicao.setPrecificacao(projetoEscolhido.getPrecificacao());
-                System.out.println("PQ ESTÁ ZERANDO?"+projetoEscolhido.getPrecificacao());
-                this.id = projetoEscolhido.getId();
-                nomeProjetolInput.setText(projetoEscolhido.getNomeProjeto());
-
-                if(projetoEscolhido.getStatus().equals("PRECIFICADO")) {
-                            cbContratados.setDisable(false);
-                            cbExecutado.setDisable(false);
-                        }
-                       Cliente clienteDoProjeto = new Cliente();
-                       clienteDoProjeto = this.cliente.clientePorId(projetoEscolhido.getIdCliente());
-                       listaClientes.getSelectionModel().select(clienteDoProjeto);
+            if(projetoEscolhido.getStatus().equals("INICIADO") || projetoEscolhido.getStatus().equals("EXECUTADO")){
+                mostrarAviso("Operção Impossível", "O projeto já foi inicciado ou finalizado. Se precisar, crie um projeto complementar");
+            }else{
+                boolean result = confirmarAcao("Atenção", "Deseja realmente editar o projeto selecionado?", projetoEscolhido.toString());
+                if(result) {
+                    this.projetoEdicao = new Projeto();
+                    this.projetoEdicao.setCodProjeto(projetoEscolhido.getCodProjeto());
+                    this.projetoEdicao.setStatus(projetoEscolhido.getStatus());
+                    this.projetoEdicao.setPrecificacao(projetoEscolhido.getPrecificacao());
+                    this.id = projetoEscolhido.getId();
+                    nomeProjetolInput.setText(projetoEscolhido.getNomeProjeto());
+                    Cliente clienteDoProjeto = new Cliente();
+                    clienteDoProjeto = this.cliente.clientePorId(projetoEscolhido.getIdCliente());
+                    listaClientes.getSelectionModel().select(clienteDoProjeto);
+                }
             }
-
         }else{
-
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Atenção");
-            alert.setHeaderText("Nenhum ccusto foi selecionado");
-            alert.showAndWait();
-
+            mostrarAviso("Atenção","Nenhum custo foi selecionado");
         }
     }
 
@@ -390,25 +371,7 @@ public class ProjetoController {
     }
 
 
-    private void statusCBs() {
 
-        cbContratados.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                cbExecutado.setSelected(false);
-                this.statusProjeto = "CADASTRADO";
-
-            }
-        });
-
-      cbExecutado.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                // Se "Executado" for selecionado, desmarcar "Contratados"
-                cbContratados.setSelected(false);
-                this.statusProjeto = "EXECUTADO";
-
-            }
-        });
-    }
 
 
     private void tipoCBs() {
@@ -429,6 +392,34 @@ public class ProjetoController {
             }
         });
     }
+
+
+    private void mostrarErro(String titulo, String mensagem) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensagem);
+        alert.showAndWait();
+    }
+
+    private void mostrarAviso(String titulo, String mensagem) {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle(titulo);
+        alert.setHeaderText(mensagem);
+        alert.setContentText(null);
+        alert.showAndWait();
+    }
+
+    private boolean confirmarAcao(String titulo, String mensagem, String conteudo) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(mensagem);
+        alert.setContentText(conteudo);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+
 
 
 }
