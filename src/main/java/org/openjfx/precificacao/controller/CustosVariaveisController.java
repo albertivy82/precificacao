@@ -39,13 +39,7 @@ public class CustosVariaveisController {
         updateList();
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+
 
     @FXML
     protected void btnMain(ActionEvent e) {
@@ -106,22 +100,22 @@ public class CustosVariaveisController {
                 clearFields();
                 updateList();
             } catch (SQLException ex) {
-                showAlert("Erro ao Cadastrar Custo Fixo", "Não foi possível cadastrar o custo fixo: " + ex.getMessage());
+                mostrarErro("Erro ao Cadastrar Custo Fixo", "Não foi possível cadastrar o custo fixo: " + ex.getMessage());
             }
         } else {
-            showAlert("Erro de Validação", "Por favor, corrija os campos destacados antes de enviar.");
+            mostrarErro("Erro de Validação", "Por favor, corrija os campos destacados antes de enviar.");
         }
     }
 
     private boolean camposEstaoValidos() {
         boolean valid = true;
         if (itemCustoInput.getText().trim().isEmpty()) {
-            showAlert("Item Vazio", "O campo item não pode estar vazio.");
+            mostrarAviso("Item Vazio", "O campo item não pode estar vazio.");
             itemCustoInput.requestFocus();
             valid = false;
         }
         if (valorCustoInput.getText().trim().isEmpty()) {
-            showAlert("Valor do custo vazio", "O campo valor não pode estar vazio.");
+            mostrarAviso("Valor do custo vazio", "O campo valor não pode estar vazio.");
             valorCustoInput.requestFocus();
             valid = false;
         } else {
@@ -130,7 +124,7 @@ public class CustosVariaveisController {
                 String valorHoraTexto = valorCustoInput.getText();
                 this.valorCusto = this.limpaMoeda.LimpaMoeda(valorHoraTexto);
             } catch (NumberFormatException e) {
-                showAlert("Valor Inválido", "O campo valor deve ser um número válido.");
+                mostrarErro("Valor Inválido", "O campo valor deve ser um número válido.");
                 valorCustoInput.requestFocus();
                 valid = false;
             }
@@ -153,22 +147,16 @@ public class CustosVariaveisController {
         if (!escolhido.isEmpty()) {
             CustosVariaveis custoEscolhido = escolhido.get(0);
 
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("ATENÇÃO");
-            alert.setHeaderText("Deseja realmente excluir o custo fixo selecionado?");
-            alert.setContentText(custoEscolhido.toString());
+            boolean result = confirmarAcao("ATENÇÃO", "Deseja realmente excluir o custo fixo selecionado?", custoEscolhido.toString());
 
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
+
+            if (result) {
                 custosVariaveisDB.deletarCustosVariaveis(custoEscolhido);
                 updateList();
             }
         } else {
-            Alert alert = new Alert(AlertType.WARNING);
-            alert.setTitle("ATENÇÃO");
-            alert.setHeaderText("Nenhum custo fixo foi selecionado");
-            alert.showAndWait();
-        }
+           mostrarAviso("ATENÇÃO", "Nenhum custo fixo foi selecionado");
+       }
     }
 
     @FXML
@@ -181,15 +169,9 @@ public class CustosVariaveisController {
 
             CustosVariaveis custoEscolhido = editar.get(0);
 
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Atenção");
-            alert.setHeaderText("Deseja realmente editar o custo selecionado?");
-            alert.setContentText(custoEscolhido.toString());
+            boolean result = confirmarAcao("Atenção", "Deseja realmente editar o custo selecionado?", custoEscolhido.toString());
 
-            Optional<ButtonType> result = alert.showAndWait();
-
-
-            if(result.isPresent() && result.get()==ButtonType.OK) {
+           if(result) {
                 itemCustoInput.setText(custoEscolhido.getItem());
                 valorCustoInput.setText(custoEscolhido.getItem());
                 this.id = custoEscolhido.getId();
@@ -198,11 +180,7 @@ public class CustosVariaveisController {
 
         }else{
 
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Atenção");
-            alert.setHeaderText("Nenhum ccusto foi selecionado");
-            alert.showAndWait();
-
+            mostrarErro("Atenção", "Nenhum ccusto foi selecionado");
         }
     }
 
@@ -214,4 +192,37 @@ public class CustosVariaveisController {
 
     }
 
+
+
+ // ===================================================
+// MÉTODOS CENTRALIZADOS PARA EXIBIÇÃO DE ALERTAS
+// ===================================================
+
+    private void mostrarErro(String titulo, String mensagem) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensagem);
+        alert.showAndWait();
+    }
+
+    private void mostrarAviso(String titulo, String mensagem) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(titulo);
+        alert.setHeaderText(mensagem);
+        alert.setContentText(null);
+        alert.showAndWait();
+    }
+
+    private boolean confirmarAcao(String titulo, String mensagem, String conteudo) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(mensagem);
+        alert.setContentText(conteudo);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+
 }
+

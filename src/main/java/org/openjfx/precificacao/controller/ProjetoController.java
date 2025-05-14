@@ -115,25 +115,26 @@ public class ProjetoController {
     @FXML
     protected void btnDtlProjeto(ActionEvent e) {
 
-      ObservableList<Projeto> projetoPEditar = LvProjetos.getSelectionModel().getSelectedItems();
+        ObservableList<Projeto> projetoPEditar = LvProjetos.getSelectionModel().getSelectedItems();
 
-
-        if(!projetoPEditar.isEmpty()) {
+        if (!projetoPEditar.isEmpty()) {
 
             Projeto projetoEscolhido = projetoPEditar.get(0);
 
-            boolean result = confirmarAcao("Atenção", "Deseja detalhar o projeto selecionado?", projetoEscolhido.toString());
-
-            if(result) {
-                ProjetoSingleton.getInstance().setProjeto(projetoEscolhido);
-                App.mudarTela("DetalhamentoProjeto");
-
+            if ("INICIADO".equals(projetoEscolhido.getStatus()) || "EXECUTADO".equals(projetoEscolhido.getStatus())) {
+                mostrarAviso("Atenção", "Você poderá visualizar os dados deste projeto, mas não poderá alterá-lo.\nSe precisar fazer ajustes, crie um projeto complementar.");
             }
 
-        }else{
+            boolean result = confirmarAcao("Atenção", "Deseja detalhar o projeto selecionado?", projetoEscolhido.toString());
+
+            if (result) {
+                ProjetoSingleton.getInstance().setProjeto(projetoEscolhido);
+                App.mudarTela("DetalhamentoProjeto");
+            }
+
+        } else {
             mostrarAviso("Atenção", "Nenhum projeto foi selecionado");
         }
-
     }
 
 

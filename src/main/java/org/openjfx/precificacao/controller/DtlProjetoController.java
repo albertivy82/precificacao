@@ -22,10 +22,7 @@ import org.openjfx.precificacao.shared.FormatadorMoeda;
 import org.openjfx.precificacao.shared.ProjetoSingleton;
 
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DtlProjetoController {
 
@@ -111,6 +108,9 @@ public class DtlProjetoController {
 	@FXML
 	void initialize() throws SQLException {
 		this.projetoService = new ProjetoService();
+		if (projeto.getStatus().equals("INICIADO") || projeto.getStatus().equals("EXECUTADO")) {
+			desabilitarEdicao();
+		}
 		populaLista();
 		identificacaoProjeto();
 		listaResultados();
@@ -120,14 +120,22 @@ public class DtlProjetoController {
 
 	@FXML
 	private VBox dynamicAtvivityContainer;
-
 	@FXML
 	private void btnPrecificar(ActionEvent e) {
 		try {
 			App.mudarTela("Precificacao");
 		} catch (Exception ex) {
-			exibirErro(ex);
+			ex.printStackTrace(); // mantém a depuração no console
+			mostrarErro("Erro ao carregar tela", "Não foi possível abrir a tela de precificação.\nDetalhes: " + ex.getMessage());
 		}
+	}
+
+
+
+	private void desabilitarEdicao() {
+		etapaComboBox.setDisable(true);
+		dynamicAtvivityContainer.setDisable(true);
+
 	}
 
 	@FXML
@@ -139,19 +147,7 @@ public class DtlProjetoController {
 		btnPrecificar.setDisable(ttProjeto <= 0);
 	}
 
-	private void exibirErro(Exception ex) {
-		// Criar uma caixa de alerta
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Erro");
-		alert.setHeaderText("Erro ao carregar a tela: Precificacao");
-		alert.setContentText("Ocorreu um erro ao tentar carregar a tela.\nDetalhes do erro: " + ex.getMessage());
 
-		// Exibir o erro no console também para fins de depuração
-		ex.printStackTrace();
-
-		// Exibir a janela de alerta
-		alert.showAndWait();
-	}
 
 
 	private void populaLista(){
@@ -186,13 +182,10 @@ public class DtlProjetoController {
 		if (etapaSelecionada != null) {
 			carregarAtividadesParaEtapa(etapaSelecionada);
 		} else {
-			// Tratar o caso em que nenhuma etapa foi selecionada
-			Alert alert = new Alert(Alert.AlertType.WARNING);
-			alert.setTitle("Atenção");
-			alert.setHeaderText("Selecione uma etapa antes de adicionar atividades.");
-			alert.showAndWait();
+			mostrarAviso("Atenção", "Selecione uma etapa antes de adicionar atividades.");
 		}
 	}
+
 
 
 
@@ -242,15 +235,9 @@ public class DtlProjetoController {
 						.anyMatch(d -> d.getIdAtividade() == idAtividadeSelecionada);
 
 				if (atividadeJaOrcada) {
-					Alert alert = new Alert(Alert.AlertType.WARNING);
-					alert.setTitle("Atividade já orçada");
-					alert.setHeaderText("Esta atividade já possui profissionais orçados.");
-					alert.showAndWait();
-
+					mostrarAviso("Atividade já orçada", "Esta atividade já possui profissionais orçados.");
 					Platform.runLater(() -> comboBoxAtividade.getSelectionModel().clearSelection());
-
-
-				} else {
+				}else {
 					// Permitir a seleção da atividade
 					this.idAtividadeSelecionada = idAtividadeSelecionada;
 				}
@@ -321,13 +308,10 @@ public class DtlProjetoController {
 							.anyMatch(d -> d.getIdAtividade() == this.idAtividadeSelecionada && d.getIdProfissional() == newValue.getId());
 
 					if (profissionalJaAdicionado) {
-						// Se já existir, exibe um alerta
-						Alert alert = new Alert(Alert.AlertType.WARNING);
-						alert.setTitle("Duplicação de Dados");
-						alert.setHeaderText("Este profissional já foi adicionado para esta etapa e atividade.");
-						alert.showAndWait();
+						mostrarAviso("Duplicação de Dados", "Este profissional já foi adicionado para esta etapa e atividade.");
 						Platform.runLater(() -> comboBoxProfissional.getSelectionModel().clearSelection());
-					} else {
+					}
+					else {
 						// Adiciona o novo detalhamento à lista usando o objeto principal
 						detalhamento.setIdProjeto(this.projeto.getId());
 						detalhamento.setIdEtapa(this.etapaSelecionada.getId());
@@ -339,12 +323,10 @@ public class DtlProjetoController {
 
 					}
 				} else {
-					Alert alert = new Alert(Alert.AlertType.WARNING);
-					alert.setTitle("Atenção");
-					alert.setHeaderText("Não lance valores sem uma atividade selecionada.");
-					alert.showAndWait();
+					mostrarAviso("Atenção", "Não lance valores sem uma atividade selecionada.");
 					Platform.runLater(() -> comboBoxProfissional.getSelectionModel().clearSelection());
 				}
+
 			}
 		});
 
@@ -406,13 +388,10 @@ public class DtlProjetoController {
 			identificacaoProjeto();
 			atualizarStatusBtnPrecificar();
 		} catch (SQLException ex) {
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Erro");
-			alert.setHeaderText("Ocorreu um erro ao salvar as etapas.");
-			alert.setContentText(ex.getMessage());
-			alert.showAndWait();
-		}
+		mostrarErro("Erro ao salvar etapas", ex.getMessage());
 	}
+
+}
 
 
 
@@ -532,100 +511,66 @@ public class DtlProjetoController {
 	}
 
 	private void adicionarLogicaExclusaoEtapa(Label labelEtapa, String etapa) {
+		if (projeto.getStatus().equals("INICIADO") || projeto.getStatus().equals("EXECUTADO")) return;
 		labelEtapa.setOnMouseClicked(event -> {
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Apagar etapa");
-			alert.setHeaderText("Deseja apagar a etapa selecionada do projeto?");
-			alert.setContentText("etapa selecionada: "+ etapa);
-
-			// Define os botões de confirmação e cancelamento
-			ButtonType buttonExcluir = new ButtonType("Excluir", ButtonBar.ButtonData.OK_DONE);
-			ButtonType buttonCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-			alert.getButtonTypes().setAll(buttonExcluir, buttonCancelar);
-
-			// Captura a resposta do usuário
-			alert.showAndWait().ifPresent(response -> {
-				if (response == buttonExcluir) {
-                    try {
-                        removerEtapa(projeto.getId(),etapa);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-					float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
-					if(ttProjeto==0){
-                        try {
-							projeto.setStatus("CADASTRADO");
-                            projetoService.statusProjeto(projeto);
-							atualizarStatusBtnPrecificar();
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    identificacaoProjeto();
-					exibirConfirmacaoExclusao();
-				}
-			});
+			confirmarAcao(
+					"Apagar etapa",
+					"Deseja apagar a etapa selecionada do projeto?",
+					"Etapa selecionada: " + etapa,
+					() -> {
+						try {
+							removerEtapa(projeto.getId(), etapa);
+							identificacaoProjeto();
+							exibirConfirmacaoExclusao();
+						} catch (SQLException e) {
+							throw new RuntimeException(e);
+						}
+					}
+			);
 		});
 	}
+
 
 	private void adicionarLogicaExclusaoAtividades(Label labelSubtotalAtividade, String atividade) {
+		if (projeto.getStatus().equals("INICIADO") || projeto.getStatus().equals("EXECUTADO")) return;
 		labelSubtotalAtividade.setOnMouseClicked(event -> {
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Apagar atividade");
-			alert.setHeaderText("Deseja apagar a atividade selecionada do projeto?");
-			alert.setContentText("atividade selecionada: "+ atividade);
-
-			// Define os botões de confirmação e cancelamento
-			ButtonType buttonExcluir = new ButtonType("Excluir", ButtonBar.ButtonData.OK_DONE);
-			ButtonType buttonCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-			alert.getButtonTypes().setAll(buttonExcluir, buttonCancelar);
-
-			// Captura a resposta do usuário
-			alert.showAndWait().ifPresent(response -> {
-				if (response == buttonExcluir) {
-                    try {
-                        removerAtividade(projeto.getId(), atividade);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    exibirConfirmacaoExclusao();
-				}
-			});
+			confirmarAcao(
+					"Apagar atividade",
+					"Deseja apagar a atividade selecionada do projeto?",
+					"Atividade selecionada: " + atividade,
+					() -> {
+						try {
+							removerAtividade(projeto.getId(), atividade);
+							exibirConfirmacaoExclusao();
+						} catch (SQLException e) {
+							throw new RuntimeException(e);
+						}
+					}
+			);
 		});
 	}
+
 
 	private void adicionarLogicaExclusaoProfissionais(Label labelProfissional, DetalhamentoDTO detalheFinal) {
 		labelProfissional.setOnMouseClicked(event -> {
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Informações do Profissional");
-			alert.setHeaderText("Detalhes do profissional");
-			alert.setContentText("Profissional: " + detalheFinal.getNomeProfissional() + "\nValor Hora: R$ "
-					+ String.format("%.2f", detalheFinal.getValorHoras()) + "\n\nDeseja excluir este profissional?");
-
-			// Define os botões de confirmação e cancelamento
-			ButtonType buttonExcluir = new ButtonType("Excluir", ButtonBar.ButtonData.OK_DONE);
-			ButtonType buttonCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-			alert.getButtonTypes().setAll(buttonExcluir, buttonCancelar);
-
-			// Captura a resposta do usuário
-			alert.showAndWait().ifPresent(response -> {
-				if (response == buttonExcluir) {
-					// Lógica para remover o profissional da lista
-                    try {
-                        removerProfissional(detalheFinal);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    // Exibe uma mensagem de confirmação. É preciso incluir verificação!!!!!
-					exibirConfirmacaoExclusao();
-				}
-			});
+			confirmarAcao(
+					"Informações do Profissional",
+					"Detalhes do profissional",
+					"Profissional: " + detalheFinal.getNomeProfissional() +
+							"\nValor Hora: R$ " + String.format("%.2f", detalheFinal.getValorHoras()) +
+							"\n\nDeseja excluir este profissional?",
+					() -> {
+						try {
+							removerProfissional(detalheFinal);
+							exibirConfirmacaoExclusao();
+						} catch (SQLException e) {
+							throw new RuntimeException(e);
+						}
+					}
+			);
 		});
 	}
+
 
 	private void removerProfissional(DetalhamentoDTO detalheFinal) throws SQLException {
 
@@ -639,7 +584,6 @@ public class DtlProjetoController {
 		this.projetoService.deletarRegistroDetalhamento(idProjeto, idEtapa, idAtividade, idProfissional, totalHoras, horas);
 
 		verificarStatusProjeto();
-
 		listaResultados();
 
 	}
@@ -660,14 +604,6 @@ public class DtlProjetoController {
 		verificarStatusProjeto();
 		listaResultados();
 
-	}
-
-	private void exibirConfirmacaoExclusao() {
-		Alert confirmacao = new Alert(Alert.AlertType.INFORMATION);
-		confirmacao.setTitle("Confirmação");
-		confirmacao.setHeaderText(null);
-		confirmacao.setContentText("Item excluído com sucesso.");
-		confirmacao.showAndWait();
 	}
 
 	private void verificarStatusProjeto() throws SQLException {
@@ -691,6 +627,48 @@ private void zerarProjeto(){
 	impostosProjeto.limparImpostos(projeto.getId());
 
 }
+
+
+	private void exibirConfirmacaoExclusao() {
+		Alert confirmacao = new Alert(Alert.AlertType.INFORMATION);
+		confirmacao.setTitle("Confirmação");
+		confirmacao.setHeaderText(null);
+		confirmacao.setContentText("Item excluído com sucesso.");
+		confirmacao.showAndWait();
+	}
+
+	private void confirmarAcao(String titulo, String cabecalho, String conteudo, Runnable acaoConfirmada) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle(titulo);
+		alert.setHeaderText(cabecalho);
+		alert.setContentText(conteudo);
+
+		ButtonType buttonExcluir = new ButtonType("Excluir", ButtonBar.ButtonData.OK_DONE);
+		ButtonType buttonCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+		alert.getButtonTypes().setAll(buttonExcluir, buttonCancelar);
+
+		alert.showAndWait().ifPresent(response -> {
+			if (response == buttonExcluir) {
+				acaoConfirmada.run();
+			}
+		});
+	}
+
+	private void mostrarErro(String titulo, String mensagem) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle(titulo);
+		alert.setHeaderText(null);
+		alert.setContentText(mensagem);
+		alert.showAndWait();
+	}
+
+	private void mostrarAviso(String titulo, String mensagem) {
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle(titulo);
+		alert.setHeaderText(mensagem);
+		alert.setContentText(null);
+		alert.showAndWait();
+	}
 
 
 
