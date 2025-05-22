@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 public class ProjetoSQLite{
-    
+
     public void NovoProjeto(Projeto projeto) throws SQLException{
-    	
-    	
+
+
            Connection conn = SQLiteConnection.connect();
 	        try {
 		            PreparedStatement pstmt = conn.prepareStatement(
@@ -31,21 +31,23 @@ public class ProjetoSQLite{
 	            SQLiteConnection.closeConnection(conn);
 	        }
     }
-    
-  
+
+
   public void editarProjeto(Projeto projeto) throws SQLException {
         Connection conn = SQLiteConnection.connect();
         try {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "UPDATE projeto SET nome_projeto=?, id_cliente=?, tipo=?, status=?, precificacao=? WHERE ID=?");
+                    "UPDATE projeto SET nome_projeto=?, id_cliente=?, tipo=?, status=?, subtotal=?,  precificacao=? WHERE ID=?"
+            );
             System.out.println(projeto.getId());
             pstmt.setString(1, projeto.getNomeProjeto());
-		    pstmt.setInt(2, projeto.getIdCliente());
+            pstmt.setInt(2, projeto.getIdCliente());
             pstmt.setString(3, projeto.getTipo());
-		    pstmt.setString(4, projeto.getStatus());
+            pstmt.setString(4, projeto.getStatus());
             pstmt.setDouble(5, projeto.getPrecificacao());
-            pstmt.setInt(6, projeto.getId());
+            pstmt.setInt(9, projeto.getId());
             pstmt.executeUpdate();
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -97,7 +99,7 @@ public class ProjetoSQLite{
         return idProjeto;
     }
 
-    
+
     public void deletarProjeto(int projetoId) {
         Connection conn = SQLiteConnection.connect();
         try {
@@ -130,18 +132,18 @@ public class ProjetoSQLite{
         }
         return projetosIds;
     }
-    
-    
-    
+
+
+
     public List<Projeto> all() {
-        List<Projeto> result = new ArrayList<>();  
+        List<Projeto> result = new ArrayList<>();
         Connection conn = SQLiteConnection.connect();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             pstmt = conn.prepareStatement("SELECT id, cod_projeto, nome_projeto, id_cliente, tipo, status, precificacao FROM projeto");
             rs = pstmt.executeQuery();
-            
+
             while (rs.next()) {
                 Projeto p = new Projeto();
                 p.setId(rs.getInt("id"));
@@ -163,7 +165,7 @@ public class ProjetoSQLite{
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
-        }	
+        }
         return result;
     }
 
@@ -272,7 +274,7 @@ public class ProjetoSQLite{
         Connection conn = SQLiteConnection.connect();
         try {
             PreparedStatement pstmt = conn.prepareStatement(
-                    "SELECT c.nome AS nome_cliente, SUM(p.precificacao) AS total_precificacao " +
+                    "SELECT c.nome AS nome_cliente, SUM(p.total_com_desconto) AS total_projetos" +
                             "FROM projeto p " +
                             "JOIN cliente c ON p.id_cliente = c.id " +
                             "GROUP BY c.nome " +

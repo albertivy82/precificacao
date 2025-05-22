@@ -11,15 +11,12 @@ public class Projeto {
     private String codProjeto;
     private String nomeProjeto;
     private Integer idCliente;
-    //novo/reforma
-    private String tipo;
+    private String tipo;    // Novo ou Reforma
     private String status;
     private double precificacao;
 
-
-
     @Override
     public String toString() {
-        return (nomeProjeto + " - Projeto Nº " + codProjeto + " . Satus: " + status).toUpperCase();
+        return (nomeProjeto + " - Projeto Nº " + codProjeto + " . Status: " + status).toUpperCase();
     }
 }

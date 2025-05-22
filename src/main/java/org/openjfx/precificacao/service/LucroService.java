@@ -27,7 +27,9 @@ public class LucroService {
         this.lucro.deletarLucroPorProjeto(projetoId);
     }
 
-
+    public double buscarMargemLucro(int projetoId){
+        return this.lucro.margemLucroPorProjeto(projetoId);
+    }
 
 
 

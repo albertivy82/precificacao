@@ -29,11 +29,11 @@
             <Label fx:id="custosFixos" style="-fx-text-fill: white;" />
             <Label fx:id="totalDeLancamentosDeCF" style="-fx-text-fill: white;" />
             <Label fx:id="situacaoDeCustos" style="-fx-text-fill: white;" />
-            <Label fx:id="valorFinanceiroLabel" style="-fx-text-fill: white;" />
-            <Label fx:id="valorPercentualLabel" style="-fx-text-fill: white;" />
+            <Label fx:id="valorDistribuicaoCustoFixoLabel" style="-fx-text-fill: white;" />
+            <Label fx:id="percentualCustoFixoDistribuidoLabel" style="-fx-text-fill: white;" />
             <Slider fx:id="sliderCustosFixos" min="0" max="100" value="0" />
             <HBox alignment="CENTER" spacing="10">
-               <Button text="Lançar Custo" onAction="#btnLancarDesconto" styleClass="button-style" />
+               <Button text="Lançar Custo" onAction="#btnLancarDistribuicaoCustoFixo" styleClass="button-style" />
             </HBox>
             <!-- Alinhar o link "Ver dados do Projeto" à direita e estilizado como link -->
             <HBox alignment="BASELINE_RIGHT" spacing="10">
@@ -53,8 +53,8 @@
          <!-- Lucro Section -->
          <VBox spacing="10" style="-fx-padding: 10;">
             <Label fx:id="valorLucro" style="-fx-text-fill: white;" />
-            <Label fx:id="Porcentagem" style="-fx-text-fill: white;" />
-            <Slider fx:id="lucro" min="0" max="100" value="0" />
+            <Label fx:id="porcentagemLucro" style="-fx-text-fill: white;" />
+            <Slider fx:id="lucro" min="0" max="30" value="0" />
 
             <HBox alignment="CENTER" spacing="10">
                <Button text="Lucro esperado" onAction="#btnLancarLucro" styleClass="button-style" />
@@ -62,12 +62,12 @@
          </VBox>
 
          <VBox spacing="10" style="-fx-padding: 10;">
-            <Label  style="-fx-text-fill: white;" />
-            <Label  style="-fx-text-fill: white;" />
-            <Slider  min="0" max="100" value="0" />
+            <Label  fx:id="valorDesconto" style="-fx-text-fill: white;" />
+            <Label  fx:id="porcentagemDesconto" style="-fx-text-fill: white;" />
+            <Slider  fx:id="desconto" min="0" max="100" value="0" />
 
             <HBox alignment="CENTER" spacing="10">
-               <Button text="Aplicar desconto" onAction="#btnLancarLucro" styleClass="button-style" />
+               <Button text="Aplicar desconto" onAction="#btnLancarDesconto" styleClass="button-style" />
             </HBox>
          </VBox>
 
@@ -115,7 +115,7 @@
                      <Label text="Custos Fixos lançados" styleClass="label-text" />
                   </HBox>
                   <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="bordered-container" alignment="CENTER_RIGHT">
-                     <Label fx:id="lancamentoCF" text="R$ 0,00" styleClass="label-value" />
+                     <Label fx:id="valorTotalCustoFixoDistribuido" text="R$ 0,00" styleClass="label-value" />
                   </HBox>
 
                   <!-- Total de Custos Variáveis -->
@@ -134,21 +134,32 @@
                      <Label fx:id="lucroLabel" text="R$ 0,00" styleClass="label-value" />
                   </HBox>
 
-                  <!-- Total de Impostos -->
+
+                  <!-- Subtotal do Projeto -->
                   <HBox GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="bordered-container">
-                     <Label text="Total de Impostos" styleClass="label-text" />
+                     <Label text="Subtotal do projeto" styleClass="label-text" />
                   </HBox>
                   <HBox GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="valorSubtotalProjetoLabel" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
+
+                  <!-- Desonto Concedido -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="bordered-container">
+                     <Label text="Desconto concedido" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="5" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="descontoLabel" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
+
+                  <!-- Total de Impostos -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="6" styleClass="bordered-container">
+                     <Label text="Total de Impostos" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="6" styleClass="bordered-container" alignment="CENTER_RIGHT">
                      <Label fx:id="totalImpostosLabel" text="R$ 0,00" styleClass="label-value" />
                   </HBox>
 
-                  <!-- Preço Total do Projeto -->
-                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="bordered-container">
-                     <Label text="Preço Total do Projeto" styleClass="label-text" />
-                  </HBox>
-                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="5" styleClass="bordered-container" alignment="CENTER_RIGHT">
-                     <Label fx:id="precoTotalProjetoLabel" text="R$ 0,00" styleClass="label-value" />
-                  </HBox>
+
                </GridPane>
 
 

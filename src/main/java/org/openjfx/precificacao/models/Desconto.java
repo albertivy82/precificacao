@@ -6,17 +6,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Lucro {
+public class Desconto {
 
     private int id;
     private int idProjeto;
-    private double margemLucro;
-    private double lucro;
+    private double margemDesconto;
+    private double desconto;
 
 
 
     @Override
     public String toString() {
-        return ("Total de quota sobre as despesas R$" +  String.format("%.2f", lucro)).toUpperCase();
+        return ("Total de descontos do Projeto: R$" +  String.format("%.2f", desconto)).toUpperCase();
     }
 }

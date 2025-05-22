@@ -232,8 +232,6 @@ public class ProjetoController {
                         System.out.println(this.statusProjeto);
                             novoProjeto.setStatus(this.statusProjeto);
                     }
-                    novoProjeto.setPrecificacao(projetoEdicao.getPrecificacao());
-                    System.out.println("O QUE HÁ AQUI?"+novoProjeto.getPrecificacao());
                     projetosDB.editarProjeto(novoProjeto);
                 }
 
@@ -316,7 +314,7 @@ public class ProjetoController {
                     this.projetoEdicao = new Projeto();
                     this.projetoEdicao.setCodProjeto(projetoEscolhido.getCodProjeto());
                     this.projetoEdicao.setStatus(projetoEscolhido.getStatus());
-                    this.projetoEdicao.setPrecificacao(projetoEscolhido.getPrecificacao());
+                    this.projetoEdicao.setPrecificacao(projetoEdicao.getPrecificacao());
                     this.id = projetoEscolhido.getId();
                     nomeProjetolInput.setText(projetoEscolhido.getNomeProjeto());
                     Cliente clienteDoProjeto = new Cliente();

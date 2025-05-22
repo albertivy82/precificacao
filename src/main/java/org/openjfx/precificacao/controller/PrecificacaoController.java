@@ -1,5 +1,3 @@
-// PrecificacaoController reorganizado e renomeado conforme solicitado
-
 package org.openjfx.precificacao.controller;
 
 import javafx.event.ActionEvent;
@@ -28,51 +26,64 @@ public class PrecificacaoController {
 	private CustosFixosService custosFixosRaiz;
 	private ProjetoService projetoService;
 	private CustosService custosVariaveisService;
-	private LancamentoCF lancamentoDeDesconto;
+	private LancamentoCF lancamentoCustoFixo;
 	private LucroService lucroService;
+	private DescontoService descontoService;
 	private ImpostoService impostoService;
 	private BaseImpostosService baseImposto;
 	private double lucroEsperado = 0,
-					valorTotal = 0,
-					lucroSobreServicos = 0,
+			        descontoConcedido = 0,
+					valorSubTotal = 0,
+					lucroDoProjeto = 0,
 					custoFixoDoProjeto = 0,
 					impostosProjeto = 0,
 					totalServicos = 0,
-					custoVariavelDoProjeto = 0;
+					custoVariavelDoProjeto = 0,
+	                valorSubtotal1 = 0,
+					margemDeLucro = 0,
+					descontoMaximo = 0;
+
 
 	@FXML private Label nomeProjetoLabel,
 						clienteLabel,
 						StatusLabel,
 						custosFixos,
-						valorFinanceiroLabel,
-						valorPercentualLabel,
+			            valorDistribuicaoCustoFixoLabel,
+			            percentualCustoFixoDistribuidoLabel,
 						valorLucro,
+	                    valorDesconto,
 						lucroLabel,
-						Porcentagem,
+			            descontoLabel,
+			            porcentagemLucro,
+	                    porcentagemDesconto,
 						totalImpostosLabel,
 						totalProjetoLabel,
 						graficosPojeto,
 						totalCustosVariaveisLabel,
 						totalDeLancamentosDeCF,
 						situacaoDeCustos,
-						lancamentoCF,
-						precoTotalProjetoLabel;
-	@FXML private Slider sliderCustosFixos, lucro;
+			            valorTotalCustoFixoDistribuido,
+			            valorSubtotalProjetoLabel;
+	@FXML private Slider sliderCustosFixos, lucro, desconto;
 	@FXML private CheckBox iss, simplesNacional;
 	@FXML protected VBox savedEtapasContainer;
 
 	// --- Inicialização ---
 	@FXML void initialize() throws SQLException {
-		lancamentoDeDesconto = new LancamentoCF();
-		lancamentoDeDesconto.setIdProjeto(projeto.getId());
+		lancamentoCustoFixo = new LancamentoCF();
+		lancamentoCustoFixo.setIdProjeto(projeto.getId());
 		projetoService = new ProjetoService();
 		custosVariaveisService = new CustosService();
 		lucroService = new LucroService();
+		descontoService = new DescontoService();
 		impostoService = new ImpostoService();
 		custosFixosRaiz = new CustosFixosService();
 		baseImposto = new BaseImpostosService();
 		sliderCustoFixo();
 		sliderLucro();
+		lucroProjeto();
+		descontoProjeto();
+		sliderDesconto();
 		identificacaoProjeto();
 		valorServicosProjeto();
 		custosVariaveisProjeto();
@@ -80,38 +91,65 @@ public class PrecificacaoController {
 		situacaoDeCustos();
 		custoFixoProjeto();
 		impostosProjeto();
-		lucroProjeto();
-		somaTotalProjeto();
-		precoTotalProjetoLabel();
+		somaSubtotalTotalProjeto();
+		precoSubTotalProjetoLabel();
 		listaResultados();
 		custosFixos();
 		irParaProjetos();
 	}
 
 	// --- Configuração sliders + listener ---
+
 	private void sliderCustoFixo() {
 		sliderCustosFixos.setBlockIncrement(5);
 		sliderCustosFixos.valueProperty().addListener((obs, oldVal, newVal) -> {
 			double total = custosFixosRaiz.totalCustosFixos();
 			double perc = newVal.doubleValue() / 100;
 			double val = total * perc;
-			lancamentoDeDesconto.setDesconto(val);
-			valorFinanceiroLabel.setText(String.format("Valor: R$ %.2f", val));
-			valorPercentualLabel.setText(String.format("Proporção: %.1f%%", perc*100));
+			lancamentoCustoFixo.setDesconto(val);
+			valorDistribuicaoCustoFixoLabel.setText(String.format("Valor: R$ %.2f", val));
+			percentualCustoFixoDistribuidoLabel.setText(String.format("Proporção: %.1f%%", perc*100));
 		});
 	}
 
 	private void sliderLucro() {
 		lucro.setBlockIncrement(5);
 		lucro.valueProperty().addListener((obs, oldVal, newVal) -> {
-			double margem = newVal.doubleValue() / 100;
-			double baseLucro = this.totalServicos + this.custoFixoDoProjeto + this.custoVariavelDoProjeto;
-			double val = baseLucro * margem;
+			margemDeLucro = newVal.doubleValue() / 100;
+			double baseLucro = calcularBaseLucroEDesconto();
+			double val = baseLucro * margemDeLucro;
 			valorLucro.setText(String.format("Valor: R$ %.2f", val));
-			Porcentagem.setText(String.format("Proporção: %.1f%%", margem*100));
+			porcentagemLucro.setText(String.format("Proporção: %.1f%%", margemDeLucro*100));
 			lucroEsperado = val;
 		});
 	}
+
+	private void sliderDesconto() {
+		// Sempre configura o listener, independente do estado
+		desconto.setBlockIncrement(5);
+		desconto.valueProperty().addListener((obs, oldVal, newVal) -> {
+			double margem = newVal.doubleValue() / 100;
+			double baseDesconto = calcularBaseLucroEDesconto() + this.lucroEsperado;
+			double desc = baseDesconto * margem;
+			valorDesconto.setText(String.format("Valor: R$ %.2f", desc));
+			porcentagemDesconto.setText(String.format("Proporção: %.1f%%", margem * 100));
+			descontoConcedido = desc;
+		});
+
+		System.out.println(lucroDoProjeto);
+		if (lucroDoProjeto <= 0) {
+			desconto.setDisable(true); // Desabilita slider
+			desconto.setMax(0);
+			porcentagemDesconto.setText("Lucro insuficiente");
+			valorDesconto.setText("Desconto indisponível");
+		} else {
+			desconto.setDisable(false);
+			margemDeLucro = lucroService.buscarMargemLucro(projeto.getId());
+			double limite = calcularDescontoMaximo();
+			desconto.setMax(limite);
+		}
+	}
+
 
 	private void irParaProjetos() {
 		graficosPojeto.setOnMouseClicked(e -> App.mudarTela("GraficosProjeto"));
@@ -124,6 +162,11 @@ public class PrecificacaoController {
 		clienteLabel.setText("Cliente: " + clienteService.nomeCliente(projeto.getIdCliente()));
 		StatusLabel.setText("Status: " + projeto.getStatus());
 	}
+
+	private double calcularBaseLucroEDesconto() {
+		return totalServicos + custoFixoDoProjeto + custoVariavelDoProjeto;
+	}
+
 
 	private void valorServicosProjeto() {
 		totalServicos = projetoService.totalDeServicosDoProjeto(projeto.getId());
@@ -147,7 +190,7 @@ public class PrecificacaoController {
 
 	private void custoFixoProjeto() {
 		custoFixoDoProjeto = custosFixosRaiz.lancamentoCFProjetos(projeto.getId());
-		lancamentoCF.setText(String.format("R$ %.2f", custoFixoDoProjeto));
+		valorTotalCustoFixoDistribuido.setText(String.format("R$ %.2f", custoFixoDoProjeto));
 	}
 
 	private void impostosProjeto() {
@@ -156,28 +199,38 @@ public class PrecificacaoController {
 	}
 
 	private void lucroProjeto() {
-		lucroSobreServicos = lucroService.buscarLucro(projeto.getId());
-		lucroLabel.setText(String.format("R$ %.2f", lucroSobreServicos));
+		lucroDoProjeto = lucroService.buscarLucro(projeto.getId());
+		margemDeLucro = lucroService.buscarMargemLucro(projeto.getId());
+		lucroLabel.setText(String.format("(%.2f%%)   R$ %.2f", margemDeLucro * 100, lucroDoProjeto));
 	}
+
+	private void descontoProjeto() {
+		descontoConcedido = descontoService.buscardesconto(projeto.getId());
+		double margemDesconto = descontoService.buscarMargemDesconto(projeto.getId());
+		System.out.println(descontoConcedido + "..." +  margemDesconto);
+		descontoLabel.setText(String.format("(%.2f%%)   R$ %.2f", margemDesconto * 100, descontoConcedido));
+	}
+
+
 
 	private void custosFixos() {
 		custosFixos.setText("Custos Fixos Atual: R$ " + String.format("%.2f", custosFixosRaiz.totalCustosFixos()));
 	}
 
-	private void somaTotalProjeto() throws SQLException {
-		valorTotal = totalServicos + custoVariavelDoProjeto + custoFixoDoProjeto + impostosProjeto + lucroSobreServicos;
+	private void somaSubtotalTotalProjeto() throws SQLException {
+		valorSubTotal = calcularBaseLucroEDesconto() + lucroDoProjeto;
 	}
 
-	private void precoTotalProjetoLabel() {
-		precoTotalProjetoLabel.setText(String.format("R$ %.2f", valorTotal));
+	private void precoSubTotalProjetoLabel() {
+		valorSubtotalProjetoLabel.setText(String.format("R$ %.2f", valorSubTotal));
 	}
 
 	// --- Ações usuário ---
 	@FXML private void btnDetalhamentoProjeto(ActionEvent e) { App.mudarTela("DetalhamentoProjeto"); }
 
-	@FXML private void btnLancarDesconto() throws SQLException {
-		custosFixosRaiz.lancarCusto(lancamentoDeDesconto);
-		saldoAtualDeCusto(); situacaoDeCustos(); custoFixoProjeto(); somaTotalProjeto(); precoTotalProjetoLabel();
+	@FXML private void btnLancarDistribuicaoCustoFixo() throws SQLException {
+		custosFixosRaiz.lancarCusto(lancamentoCustoFixo);
+		saldoAtualDeCusto(); situacaoDeCustos(); custoFixoProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel();
 	}
 
 	@FXML private void btnLancarImpostos() throws SQLException {
@@ -186,20 +239,43 @@ public class PrecificacaoController {
 		if (simplesNacional.isSelected()) impostos.setSimplesNac(baseImposto.buscarBaseImpostos().getSimplesNac() * totalServicos);
 		impostos.setIdProjeto(projeto.getId());
 		impostoService.lancarImpostos(impostos);
-		impostosProjeto(); somaTotalProjeto(); precoTotalProjetoLabel();
+		impostosProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel();
 	}
 
 	@FXML private void btnLancarLucro() throws SQLException {
 		Lucro novo = new Lucro();
 		novo.setIdProjeto(projeto.getId());
+		novo.setMargemLucro(margemDeLucro);
 		novo.setLucro(lucroEsperado);
 		lucroService.lancarLucro(novo);
-		lucroProjeto(); somaTotalProjeto(); precoTotalProjetoLabel();
+				lucroProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel();
+				descontoMaximo = calcularDescontoMaximo();
+				desconto.setMax(descontoMaximo);
+				String limiteDeLucro = String.format(" %.2f%%", descontoMaximo);
+				mostrarAviso("Limite de Lucro", "O desconto máximo permitido será de "+ limiteDeLucro);
 	}
+
+	@FXML private void btnLancarDesconto() throws SQLException {
+		Desconto novo = new Desconto();
+		novo.setIdProjeto(projeto.getId());
+		novo.setMargemDesconto(margemDeLucro);
+		novo.setDesconto(lucroEsperado);
+		descontoService.lancardesconto(novo);
+		lucroProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel();
+		//String descontoRaiz = String.format(" %.2f%%", preço raiz - preço com desconto);
+		//mostrarAviso("O seu lucro toal é de"+ descontoRaiz);
+	}
+
+	private double calcularDescontoMaximo() {
+		double p = margemDeLucro;
+		return (1 - (1 / (1 + p))) * 100; // resultado em porcentagem
+	}
+
+
 
 	@FXML private void btnPrecificarProjeto() throws SQLException {
 		projeto.setStatus("PRECIFICADO");
-		projeto.setPrecificacao(valorTotal);
+		projeto.setPrecificacao(valorSubtotal1);
 		projetoService.precificarProjeto(projeto);
 	}
 
@@ -207,8 +283,8 @@ public class PrecificacaoController {
 		PdfGenerator pdf = new PdfGenerator();
 		pdf.gerarPDF("/Orçamento_projeto_" + projeto.getId() + ".pdf",
 				projetoService.etapasSalvas(projeto.getId()),
-				totalProjetoLabel.getText(), totalCustosVariaveisLabel.getText(), lancamentoCF.getText(),
-				totalImpostosLabel.getText(), lucroLabel.getText(), precoTotalProjetoLabel.getText());
+				totalProjetoLabel.getText(), totalCustosVariaveisLabel.getText(), valorTotalCustoFixoDistribuido.getText(),
+				totalImpostosLabel.getText(), lucroLabel.getText(), valorSubtotalProjetoLabel.getText());
 	}
 
 	// --- Exibição Detalhamentos ---
@@ -241,5 +317,13 @@ public class PrecificacaoController {
 			}
 			savedEtapasContainer.getChildren().add(grid);
 		});
+	}
+
+	private void mostrarAviso(String titulo, String mensagem) {
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle(titulo);
+		alert.setHeaderText(mensagem);
+		alert.setContentText(null);
+		alert.showAndWait();
 	}
 }
