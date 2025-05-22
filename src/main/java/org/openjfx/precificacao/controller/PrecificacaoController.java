@@ -41,6 +41,7 @@ public class PrecificacaoController {
 					custoVariavelDoProjeto = 0,
 	                valorSubtotal1 = 0,
 					margemDeLucro = 0,
+			        margemDeDesconto = 0,
 					descontoMaximo = 0;
 
 
@@ -63,7 +64,9 @@ public class PrecificacaoController {
 						totalDeLancamentosDeCF,
 						situacaoDeCustos,
 			            valorTotalCustoFixoDistribuido,
-			            valorSubtotalProjetoLabel;
+			            valorSubtotalProjetoLabel,
+						precoComDescontoLabel,
+						precoFinalComImpostosLabel;
 	@FXML private Slider sliderCustosFixos, lucro, desconto;
 	@FXML private CheckBox iss, simplesNacional;
 	@FXML protected VBox savedEtapasContainer;
@@ -96,6 +99,9 @@ public class PrecificacaoController {
 		listaResultados();
 		custosFixos();
 		irParaProjetos();
+		bloquearControlesSeProjetoIniciadoOuFinalizado();
+		atualizarPrecosFinais();
+
 	}
 
 	// --- Configuração sliders + listener ---
@@ -128,15 +134,14 @@ public class PrecificacaoController {
 		// Sempre configura o listener, independente do estado
 		desconto.setBlockIncrement(5);
 		desconto.valueProperty().addListener((obs, oldVal, newVal) -> {
-			double margem = newVal.doubleValue() / 100;
+			margemDeDesconto = newVal.doubleValue() / 100;
 			double baseDesconto = calcularBaseLucroEDesconto() + this.lucroEsperado;
-			double desc = baseDesconto * margem;
+			double desc = baseDesconto * margemDeDesconto;
 			valorDesconto.setText(String.format("Valor: R$ %.2f", desc));
-			porcentagemDesconto.setText(String.format("Proporção: %.1f%%", margem * 100));
+			porcentagemDesconto.setText(String.format("Proporção: %.1f%%", margemDeDesconto * 100));
 			descontoConcedido = desc;
 		});
 
-		System.out.println(lucroDoProjeto);
 		if (lucroDoProjeto <= 0) {
 			desconto.setDisable(true); // Desabilita slider
 			desconto.setMax(0);
@@ -207,11 +212,15 @@ public class PrecificacaoController {
 	private void descontoProjeto() {
 		descontoConcedido = descontoService.buscardesconto(projeto.getId());
 		double margemDesconto = descontoService.buscarMargemDesconto(projeto.getId());
-		System.out.println(descontoConcedido + "..." +  margemDesconto);
 		descontoLabel.setText(String.format("(%.2f%%)   R$ %.2f", margemDesconto * 100, descontoConcedido));
 	}
 
-
+	private void atualizarPrecosFinais() {
+		double precoComDesconto = valorSubTotal - descontoConcedido;
+		double precoFinalComImpostos = precoComDesconto + impostosProjeto;
+		precoComDescontoLabel.setText(String.format("R$ %.2f", precoComDesconto));
+		precoFinalComImpostosLabel.setText(String.format("R$ %.2f", precoFinalComImpostos));
+	}
 
 	private void custosFixos() {
 		custosFixos.setText("Custos Fixos Atual: R$ " + String.format("%.2f", custosFixosRaiz.totalCustosFixos()));
@@ -229,8 +238,12 @@ public class PrecificacaoController {
 	@FXML private void btnDetalhamentoProjeto(ActionEvent e) { App.mudarTela("DetalhamentoProjeto"); }
 
 	@FXML private void btnLancarDistribuicaoCustoFixo() throws SQLException {
-		custosFixosRaiz.lancarCusto(lancamentoCustoFixo);
-		saldoAtualDeCusto(); situacaoDeCustos(); custoFixoProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel();
+		if (confirmarReset()) {
+			custosFixosRaiz.lancarCusto(lancamentoCustoFixo);
+			lucroService.deletarLucroDoProjeto(projeto.getId());
+			descontoService.deletardescontoDoProjeto(projeto.getId());
+			saldoAtualDeCusto(); situacaoDeCustos(); custoFixoProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel(); descontoProjeto();lucroProjeto(); atualizarPrecosFinais();
+		}
 	}
 
 	@FXML private void btnLancarImpostos() throws SQLException {
@@ -239,7 +252,7 @@ public class PrecificacaoController {
 		if (simplesNacional.isSelected()) impostos.setSimplesNac(baseImposto.buscarBaseImpostos().getSimplesNac() * totalServicos);
 		impostos.setIdProjeto(projeto.getId());
 		impostoService.lancarImpostos(impostos);
-		impostosProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel();
+		impostosProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel(); atualizarPrecosFinais();
 	}
 
 	@FXML private void btnLancarLucro() throws SQLException {
@@ -248,7 +261,7 @@ public class PrecificacaoController {
 		novo.setMargemLucro(margemDeLucro);
 		novo.setLucro(lucroEsperado);
 		lucroService.lancarLucro(novo);
-				lucroProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel();
+				lucroProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel(); atualizarPrecosFinais();
 				descontoMaximo = calcularDescontoMaximo();
 				desconto.setMax(descontoMaximo);
 				String limiteDeLucro = String.format(" %.2f%%", descontoMaximo);
@@ -258,10 +271,10 @@ public class PrecificacaoController {
 	@FXML private void btnLancarDesconto() throws SQLException {
 		Desconto novo = new Desconto();
 		novo.setIdProjeto(projeto.getId());
-		novo.setMargemDesconto(margemDeLucro);
-		novo.setDesconto(lucroEsperado);
+		novo.setMargemDesconto(margemDeDesconto);
+		novo.setDesconto(descontoConcedido);
 		descontoService.lancardesconto(novo);
-		lucroProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel();
+		lucroProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel(); descontoProjeto(); atualizarPrecosFinais();
 		//String descontoRaiz = String.format(" %.2f%%", preço raiz - preço com desconto);
 		//mostrarAviso("O seu lucro toal é de"+ descontoRaiz);
 	}
@@ -326,4 +339,44 @@ public class PrecificacaoController {
 		alert.setContentText(null);
 		alert.showAndWait();
 	}
+
+	private boolean confirmarReset() {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Confirmação necessária");
+		alert.setHeaderText("Alterar custos irá remover lucros e descontos.");
+		alert.setContentText("Deseja continuar?");
+
+		ButtonType okButton = new ButtonType("Sim", ButtonBar.ButtonData.YES);
+		ButtonType noButton = new ButtonType("Não", ButtonBar.ButtonData.NO);
+
+		alert.getButtonTypes().setAll(okButton, noButton);
+
+		return alert.showAndWait().orElse(noButton) == okButton;
+	}
+	private void bloquearControlesSeProjetoIniciadoOuFinalizado() {
+		if (projeto.getStatus().equalsIgnoreCase("INICIADO") ||
+				projeto.getStatus().equalsIgnoreCase("EXECUTADO")) {
+
+			// Bloquear sliders
+			sliderCustosFixos.setDisable(true);
+			lucro.setDisable(true);
+			desconto.setDisable(true);
+
+			// Bloquear botões
+			 //btnLancarDistribuicaoCustoFixo.setDisable(true);
+			 //btnLancarLucro.setDisable(true);
+			 //btnLancarDesconto.setDisable(true);
+			  //btnLancarImpostos.setDisable(true);
+			// btnPrecificarProjeto.setDisable(true);
+
+			//desabilitar checkboxes
+			iss.setDisable(true);
+			simplesNacional.setDisable(true);
+
+			mostrarAviso("Projeto bloqueado",
+					"Este projeto está com status " + projeto.getStatus() +
+							" e não pode mais ser editado.");
+		}
+	}
+
 }

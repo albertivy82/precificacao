@@ -151,12 +151,28 @@
                      <Label fx:id="descontoLabel" text="R$ 0,00" styleClass="label-value" />
                   </HBox>
 
-                  <!-- Total de Impostos -->
+                  <!-- Total com desconto -->
                   <HBox GridPane.columnIndex="0" GridPane.rowIndex="6" styleClass="bordered-container">
-                     <Label text="Total de Impostos" styleClass="label-text" />
+                     <Label text="Preço com desconto (Preço com lucro - desconto dado)" styleClass="label-text" />
                   </HBox>
                   <HBox GridPane.columnIndex="1" GridPane.rowIndex="6" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="precoComDescontoLabel" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
+
+                  <!-- Total de Impostos -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="7" styleClass="bordered-container">
+                     <Label text="Total de Impostos" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="7" styleClass="bordered-container" alignment="CENTER_RIGHT">
                      <Label fx:id="totalImpostosLabel" text="R$ 0,00" styleClass="label-value" />
+                  </HBox>
+
+                  <!-- Total com imposto -->
+                  <HBox GridPane.columnIndex="0" GridPane.rowIndex="8" styleClass="bordered-container">
+                     <Label text="Preço Final (com impostos)" styleClass="label-text" />
+                  </HBox>
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="8" styleClass="bordered-container" alignment="CENTER_RIGHT">
+                     <Label fx:id="precoFinalComImpostosLabel" text="R$ 0,00" styleClass="label-value" />
                   </HBox>
 
 

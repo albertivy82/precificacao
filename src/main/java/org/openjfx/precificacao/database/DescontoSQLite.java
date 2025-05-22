@@ -97,7 +97,7 @@ public class DescontoSQLite {
                 System.out.println(ex.getMessage());
             }
         }
-        System.out.println("detro do banco" + totalDesconto);
+
         return totalDesconto;
     }
 
@@ -125,7 +125,7 @@ public class DescontoSQLite {
                 System.out.println(ex.getMessage());
             }
         }
-        System.out.println("detro do banco" + margemDesconto);
+
         return margemDesconto;
     }
 
