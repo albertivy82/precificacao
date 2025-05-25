@@ -33,7 +33,7 @@
             <Label fx:id="percentualCustoFixoDistribuidoLabel" style="-fx-text-fill: white;" />
             <Slider fx:id="sliderCustosFixos" min="0" max="100" value="0" />
             <HBox alignment="CENTER" spacing="10">
-               <Button text="Lançar Custo" onAction="#btnLancarDistribuicaoCustoFixo" styleClass="button-style" />
+               <Button  fx:id="btnLancarDistribuicaoCustoFixo" text="Lançar Custo" onAction="#btnLancarDistribuicaoCustoFixo" styleClass="button-style" />
             </HBox>
             <!-- Alinhar o link "Ver dados do Projeto" à direita e estilizado como link -->
             <HBox alignment="BASELINE_RIGHT" spacing="10">
@@ -46,7 +46,7 @@
             <CheckBox fx:id="iss" text="ISS" style="-fx-text-fill: white;" />
             <CheckBox fx:id="simplesNacional" text="Simples Nacional" style="-fx-text-fill: white;" />
                <HBox alignment="CENTER" spacing="10">
-               <Button text="Lançar Impostos" onAction="#btnLancarImpostos" styleClass="button-style" />
+               <Button fx:id="btnLancarImpostos" text="Lançar Impostos" onAction="#btnLancarImpostos" styleClass="button-style" />
                </HBox>
          </VBox>
 
@@ -57,7 +57,7 @@
             <Slider fx:id="lucro" min="0" max="30" value="0" />
 
             <HBox alignment="CENTER" spacing="10">
-               <Button text="Lucro esperado" onAction="#btnLancarLucro" styleClass="button-style" />
+               <Button fx:id="btnLancarLucro" text="Lucro esperado" onAction="#btnLancarLucro" styleClass="button-style" />
             </HBox>
          </VBox>
 
@@ -67,7 +67,7 @@
             <Slider  fx:id="desconto" min="0" max="100" value="0" />
 
             <HBox alignment="CENTER" spacing="10">
-               <Button text="Aplicar desconto" onAction="#btnLancarDesconto" styleClass="button-style" />
+               <Button fx:id="btnLancarDesconto" text="Aplicar desconto" onAction="#btnLancarDesconto" styleClass="button-style" />
             </HBox>
          </VBox>
 
@@ -182,7 +182,7 @@
 
                <!-- Buttons at the bottom -->
                <VBox alignment="CENTER" spacing="10">
-                  <Button text="Precificar Projeto" onAction="#btnPrecificarProjeto" styleClass="button-style" />
+                  <Button text="Precificar Projeto" fx:id="btnPrecificarProjeto" onAction="#btnPrecificarProjeto" styleClass="button-style" />
                   <Button text="Voltar para Detalhamento" onAction="#btnDetalhamentoProjeto" styleClass="button-style" />
                   <Button text="Gerar Documento" styleClass="button-style " onAction="#btnGerarPdf"/>
                </VBox>

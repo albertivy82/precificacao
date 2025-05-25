@@ -42,7 +42,9 @@ public class PrecificacaoController {
 	                valorSubtotal1 = 0,
 					margemDeLucro = 0,
 			        margemDeDesconto = 0,
-					descontoMaximo = 0;
+					descontoMaximo = 0,
+			        precoComDesconto = 0,
+	                precoFinalComImpostos = 0;
 
 
 	@FXML private Label nomeProjetoLabel,
@@ -70,6 +72,9 @@ public class PrecificacaoController {
 	@FXML private Slider sliderCustosFixos, lucro, desconto;
 	@FXML private CheckBox iss, simplesNacional;
 	@FXML protected VBox savedEtapasContainer;
+
+
+
 
 	// --- Inicialização ---
 	@FXML void initialize() throws SQLException {
@@ -161,6 +166,8 @@ public class PrecificacaoController {
 	}
 
 	// --- Identificação + dados projeto ---
+
+
 	private void identificacaoProjeto() {
 		clienteService = new ClienteService();
 		nomeProjetoLabel.setText("Nome do Projeto: " + projeto.getNomeProjeto());
@@ -216,8 +223,8 @@ public class PrecificacaoController {
 	}
 
 	private void atualizarPrecosFinais() {
-		double precoComDesconto = valorSubTotal - descontoConcedido;
-		double precoFinalComImpostos = precoComDesconto + impostosProjeto;
+		precoComDesconto = valorSubTotal - descontoConcedido;
+		precoFinalComImpostos = precoComDesconto + impostosProjeto;
 		precoComDescontoLabel.setText(String.format("R$ %.2f", precoComDesconto));
 		precoFinalComImpostosLabel.setText(String.format("R$ %.2f", precoFinalComImpostos));
 	}
@@ -235,8 +242,11 @@ public class PrecificacaoController {
 	}
 
 	// --- Ações usuário ---
+
 	@FXML private void btnDetalhamentoProjeto(ActionEvent e) { App.mudarTela("DetalhamentoProjeto"); }
 
+
+	@FXML private Button btnLancarDistribuicaoCustoFixo;
 	@FXML private void btnLancarDistribuicaoCustoFixo() throws SQLException {
 		if (confirmarReset()) {
 			custosFixosRaiz.lancarCusto(lancamentoCustoFixo);
@@ -246,15 +256,17 @@ public class PrecificacaoController {
 		}
 	}
 
+
+	@FXML private Button btnLancarImpostos;
 	@FXML private void btnLancarImpostos() throws SQLException {
 		Impostos impostos = new Impostos();
-		if (iss.isSelected()) impostos.setIss(baseImposto.buscarBaseImpostos().getIss() * totalServicos);
-		if (simplesNacional.isSelected()) impostos.setSimplesNac(baseImposto.buscarBaseImpostos().getSimplesNac() * totalServicos);
+		if (iss.isSelected()) impostos.setIss(baseImposto.buscarBaseImpostos().getIss() * precoComDesconto);
+		if (simplesNacional.isSelected()) impostos.setSimplesNac(baseImposto.buscarBaseImpostos().getSimplesNac() * precoComDesconto);
 		impostos.setIdProjeto(projeto.getId());
 		impostoService.lancarImpostos(impostos);
 		impostosProjeto(); somaSubtotalTotalProjeto(); precoSubTotalProjetoLabel(); atualizarPrecosFinais();
 	}
-
+	@FXML private Button btnLancarLucro;
 	@FXML private void btnLancarLucro() throws SQLException {
 		Lucro novo = new Lucro();
 		novo.setIdProjeto(projeto.getId());
@@ -268,6 +280,7 @@ public class PrecificacaoController {
 				mostrarAviso("Limite de Lucro", "O desconto máximo permitido será de "+ limiteDeLucro);
 	}
 
+	@FXML private Button btnLancarDesconto;
 	@FXML private void btnLancarDesconto() throws SQLException {
 		Desconto novo = new Desconto();
 		novo.setIdProjeto(projeto.getId());
@@ -285,20 +298,32 @@ public class PrecificacaoController {
 	}
 
 
-
+	@FXML private Button btnPrecificarProjeto;
 	@FXML private void btnPrecificarProjeto() throws SQLException {
 		projeto.setStatus("PRECIFICADO");
 		projeto.setPrecificacao(valorSubtotal1);
 		projetoService.precificarProjeto(projeto);
 	}
 
+
 	@FXML private void btnGerarPdf() {
 		PdfGenerator pdf = new PdfGenerator();
 		pdf.gerarPDF("/Orçamento_projeto_" + projeto.getId() + ".pdf",
 				projetoService.etapasSalvas(projeto.getId()),
-				totalProjetoLabel.getText(), totalCustosVariaveisLabel.getText(), valorTotalCustoFixoDistribuido.getText(),
-				totalImpostosLabel.getText(), lucroLabel.getText(), valorSubtotalProjetoLabel.getText());
+				projeto.getNomeProjeto(),
+				clienteService.nomeCliente(projeto.getIdCliente()),
+				totalProjetoLabel.getText(),
+				valorTotalCustoFixoDistribuido.getText(),
+				totalCustosVariaveisLabel.getText(),
+				lucroLabel.getText(),
+				String.format("R$ %.2f", custoFixoDoProjeto + custoVariavelDoProjeto + lucroDoProjeto),
+				valorDesconto.getText(),
+				precoComDescontoLabel.getText(),
+				totalImpostosLabel.getText(),
+				precoFinalComImpostosLabel.getText());
 	}
+
+
 
 	// --- Exibição Detalhamentos ---
 	public void listaResultados() throws SQLException {
@@ -363,11 +388,11 @@ public class PrecificacaoController {
 			desconto.setDisable(true);
 
 			// Bloquear botões
-			 //btnLancarDistribuicaoCustoFixo.setDisable(true);
-			 //btnLancarLucro.setDisable(true);
-			 //btnLancarDesconto.setDisable(true);
-			  //btnLancarImpostos.setDisable(true);
-			// btnPrecificarProjeto.setDisable(true);
+			 btnLancarDistribuicaoCustoFixo.setDisable(true);
+			 btnLancarLucro.setDisable(true);
+			 btnLancarDesconto.setDisable(true);
+			 btnLancarImpostos.setDisable(true);
+			 btnPrecificarProjeto.setDisable(true);
 
 			//desabilitar checkboxes
 			iss.setDisable(true);

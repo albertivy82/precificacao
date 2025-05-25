@@ -14,113 +14,109 @@ import java.util.Map;
 
 public class PdfGenerator {
 
-    public void gerarPDF(String destino, Map<String, Map<String, List<DetalhamentoDTO>>> agrupados,
-                         String totalServicos, String totalCustosVariaveis, String custosFixosLancados,
-                         String totalImpostos, String quotaServicos, String precoTotalProjeto) {
+    public void gerarPDF(String destino,
+                         Map<String, Map<String, List<DetalhamentoDTO>>> agrupados,
+                         String nomeProjeto, String nomeCliente,
+                         String totalServicos, String custosFixos, String custosVariaveis, String lucro,
+                         String despesasComplementares, String desconto, String subtotalComDesconto,
+                         String impostos, String valorFinal) {
         try {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(destino));
-
             document.open();
 
-            // Adicionar a imagem do cabeçalho
+            // Logo
             Image logo = Image.getInstance(getClass().getResource("/images/sindomar_logo.png").toExternalForm());
-            logo.scaleToFit(250, 100);  // Ajuste o tamanho da imagem
-            logo.setAlignment(Element.ALIGN_CENTER);  // Centraliza a imagem
+            logo.scaleToFit(250, 100);
+            logo.setAlignment(Element.ALIGN_CENTER);
             document.add(logo);
-
-            // Espaço depois do logotipo
             document.add(new Paragraph(" "));
 
-            // Título do Documento
+            // Título
             Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-            Paragraph title = new Paragraph("Orçamento De Serviços", titleFont);
+            Paragraph title = new Paragraph("Orçamento de Serviços", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
-
-            // Espaço
             document.add(new Paragraph(" "));
 
-            // Criar uma tabela combinada para etapas, atividades e totais
-            PdfPTable table = new PdfPTable(2); // Duas colunas
+            // Dados do Projeto e Cliente
+            PdfPTable infoTable = new PdfPTable(2);
+            infoTable.setWidthPercentage(100);
+            infoTable.setSpacingAfter(10f);
+            addItemToTable(infoTable, "Projeto:", nomeProjeto, BaseColor.LIGHT_GRAY, BaseColor.BLACK);
+            addItemToTable(infoTable, "Cliente:", nomeCliente, BaseColor.LIGHT_GRAY, BaseColor.BLACK);
+            document.add(infoTable);
+
+            // Tabela de etapas e atividades
+            PdfPTable table = new PdfPTable(2);
             table.setWidthPercentage(100);
             table.setSpacingBefore(10f);
-            table.setSpacingAfter(10f);
 
-            // Adicionar etapas e atividades
             for (String etapa : agrupados.keySet()) {
-                // Adicionar título da Etapa com cor de fundo
-                Font etapaFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.BLACK);
-                PdfPCell etapaCell = new PdfPCell(new Phrase(etapa, etapaFont));
+                PdfPCell etapaCell = new PdfPCell(new Phrase(etapa, new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD)));
                 etapaCell.setColspan(2);
-                etapaCell.setBackgroundColor(BaseColor.LIGHT_GRAY);  // Cor de fundo para o título da etapa
+                etapaCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
                 etapaCell.setPadding(5);
                 table.addCell(etapaCell);
 
-                // Adicionar atividades e seus valores
                 Map<String, List<DetalhamentoDTO>> atividades = agrupados.get(etapa);
                 for (String atividade : atividades.keySet()) {
-                    PdfPCell atividadeCell = new PdfPCell(new Phrase(atividade));
-                    atividadeCell.setPadding(5);
-                    table.addCell(atividadeCell);
+                    PdfPCell atv = new PdfPCell(new Phrase(atividade));
+                    atv.setPadding(5);
+                    table.addCell(atv);
 
-                    float subtotalAtividade = atividades.get(atividade)
-                            .stream()
-                            .map(detalhamento -> detalhamento.getHoras() * detalhamento.getValorHoras())
+                    float subtotal = atividades.get(atividade).stream()
+                            .map(d -> d.getHoras() * d.getValorHoras())
                             .reduce(0f, Float::sum);
-                    PdfPCell valorCell = new PdfPCell(new Phrase(FormatadorMoeda.formatarValorComoMoeda(subtotalAtividade)));
-                    valorCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                    valorCell.setPadding(5);
-                    table.addCell(valorCell);
+                    PdfPCell valor = new PdfPCell(new Phrase(FormatadorMoeda.formatarValorComoMoeda(subtotal)));
+                    valor.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    valor.setPadding(5);
+                    table.addCell(valor);
                 }
             }
 
-            // Espaço antes dos valores totais (opcional)
-            document.add(new Paragraph(" "));
-
-            // Adicionar totais na mesma tabela
-            addItemToTable(table, "Valor Total de Serviços:", totalServicos, BaseColor.WHITE, BaseColor.BLACK);
-            addItemToTable(table, "Total de Custos Variáveis:", totalCustosVariaveis, BaseColor.WHITE, BaseColor.BLACK);
-            addItemToTable(table, "Custos Fixos lançados:", custosFixosLancados, BaseColor.WHITE, BaseColor.BLACK);
-            addItemToTable(table, "Total de Impostos:", totalImpostos, BaseColor.WHITE, BaseColor.BLACK);
-            addItemToTable(table, "Quota sobre serviços:", quotaServicos, BaseColor.WHITE, BaseColor.BLACK);
-            addItemToTable(table, "Preço Total do Projeto:", precoTotalProjeto, BaseColor.ORANGE, BaseColor.BLACK); // Linha com fundo colorido
-
-            // Adicionar a tabela combinada no documento
             document.add(table);
-
-            // Espaço para assinatura
-            document.add(new Paragraph(" "));
             document.add(new Paragraph(" "));
 
-            // Criar uma tabela para centralizar a linha de assinatura e o nome
-            PdfPTable assinaturaTable = new PdfPTable(1); // Uma coluna
-            assinaturaTable.setWidthPercentage(50); // Largura de 50% da página
+            // Totais finais
+            PdfPTable totais = new PdfPTable(2);
+            totais.setWidthPercentage(100);
+            totais.setSpacingBefore(10f);
+
+            addItemToTable(totais, "Valor Total de Serviços:", totalServicos, BaseColor.WHITE, BaseColor.BLACK);
+            addItemToTable(totais, "Despesas Complementares (Custos + Lucro):", despesasComplementares, BaseColor.WHITE, BaseColor.BLACK);
+            addItemToTable(totais, "Desconto Concedido:", desconto, BaseColor.WHITE, BaseColor.BLACK);
+            addItemToTable(totais, "Subtotal com Desconto:", subtotalComDesconto, BaseColor.LIGHT_GRAY, BaseColor.BLACK);
+            addItemToTable(totais, "Impostos:", impostos, BaseColor.WHITE, BaseColor.BLACK);
+            addItemToTable(totais, "VALOR FINAL DO PROJETO:", valorFinal, BaseColor.ORANGE, BaseColor.BLACK);
+
+            document.add(totais);
+            document.add(new Paragraph(" "));
+
+            // Assinatura
+            PdfPTable assinaturaTable = new PdfPTable(1);
+            assinaturaTable.setWidthPercentage(50);
             assinaturaTable.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-            // Linha de assinatura
-            PdfPCell linhaAssinatura = new PdfPCell(new Phrase("__________________________"));
-            linhaAssinatura.setBorder(Rectangle.NO_BORDER);
-            linhaAssinatura.setHorizontalAlignment(Element.ALIGN_CENTER);
-            assinaturaTable.addCell(linhaAssinatura);
+            PdfPCell linha = new PdfPCell(new Phrase("__________________________"));
+            linha.setBorder(Rectangle.NO_BORDER);
+            linha.setHorizontalAlignment(Element.ALIGN_CENTER);
+            assinaturaTable.addCell(linha);
 
-            // Nome da pessoa para assinatura
-            PdfPCell nomeAssinatura = new PdfPCell(new Phrase("Sindormar Cardoso"));
-            nomeAssinatura.setBorder(Rectangle.NO_BORDER);
-            nomeAssinatura.setHorizontalAlignment(Element.ALIGN_CENTER);
-            assinaturaTable.addCell(nomeAssinatura);
+            PdfPCell nome = new PdfPCell(new Phrase("Sindomar Cardoso"));
+            nome.setBorder(Rectangle.NO_BORDER);
+            nome.setHorizontalAlignment(Element.ALIGN_CENTER);
+            assinaturaTable.addCell(nome);
 
             document.add(assinaturaTable);
 
-            // Adicionar local e data
+            // Data
             LocalDate hoje = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            Paragraph data = new Paragraph("Belém-PA, " + hoje.format(formatter), new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL));
+            Paragraph data = new Paragraph("Belém-PA, " + hoje.format(formatter), new Font(Font.FontFamily.HELVETICA, 12));
             data.setAlignment(Element.ALIGN_CENTER);
             document.add(data);
 
-
-            // Fechar o documento
             document.close();
             System.out.println("PDF gerado com sucesso!");
         } catch (Exception e) {
@@ -128,15 +124,13 @@ public class PdfGenerator {
         }
     }
 
-
+    // ⚠️ Agora está dentro da classe corretamente!
     private void addItemToTable(PdfPTable table, String label, String value, BaseColor backgroundColor, BaseColor textColor) {
-        // Cria a célula do label com cor de fundo e texto personalizados
         PdfPCell cellLabel = new PdfPCell(new Phrase(label, new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, textColor)));
         cellLabel.setBackgroundColor(backgroundColor);
         cellLabel.setPadding(5);
         table.addCell(cellLabel);
 
-        // Cria a célula do valor com alinhamento à direita e cor de fundo
         PdfPCell cellValue = new PdfPCell(new Phrase(value, new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, textColor)));
         cellValue.setHorizontalAlignment(Element.ALIGN_RIGHT);
         cellValue.setBackgroundColor(backgroundColor);
@@ -144,4 +138,3 @@ public class PdfGenerator {
         table.addCell(cellValue);
     }
 }
-
