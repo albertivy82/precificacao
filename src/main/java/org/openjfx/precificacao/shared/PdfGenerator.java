@@ -84,7 +84,7 @@ public class PdfGenerator {
             totais.setSpacingBefore(10f);
 
             addItemToTable(totais, "Valor Total de Serviços:", totalServicos, BaseColor.WHITE, BaseColor.BLACK);
-            addItemToTable(totais, "Despesas Complementares (Custos + Lucro):", despesasComplementares, BaseColor.WHITE, BaseColor.BLACK);
+            addItemToTable(totais, "Despesas Complementares:", despesasComplementares, BaseColor.WHITE, BaseColor.BLACK);
             addItemToTable(totais, "Desconto Concedido:", desconto, BaseColor.WHITE, BaseColor.BLACK);
             addItemToTable(totais, "Subtotal com Desconto:", subtotalComDesconto, BaseColor.LIGHT_GRAY, BaseColor.BLACK);
             addItemToTable(totais, "Impostos:", impostos, BaseColor.WHITE, BaseColor.BLACK);

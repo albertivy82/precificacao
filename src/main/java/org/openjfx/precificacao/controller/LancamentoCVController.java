@@ -47,46 +47,6 @@ public class LancamentoCVController {
 	private ListView<LancamentoCV> LvLancamentos;
 
 
-
-	@FXML
-	private void btnVoltar(ActionEvent e) {
-		App.mudarTela("DetalhamentoProjeto");
-	}
-
-	@FXML
-	private void btnPrecificar(ActionEvent e) {
-		try {
-			App.mudarTela("Precificacao");
-		} catch (Exception ex) {
-			exibirErro(ex);
-		}
-	}
-
-	@FXML
-	private Button btnPrecificar;
-
-
-	private void atualizarStatusBtnPrecificar() {
-		float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
-		btnPrecificar.setDisable(ttProjeto <= 0);
-	}
-
-
-	private void exibirErro(Exception ex) {
-		// Criar uma caixa de alerta
-		Alert alert = new Alert(Alert.AlertType.ERROR);
-		alert.setTitle("Erro");
-		alert.setHeaderText("Erro ao carregar a tela: Precificacao");
-		alert.setContentText("Ocorreu um erro ao tentar carregar a tela.\nDetalhes do erro: " + ex.getMessage());
-
-		// Exibir o erro no console também para fins de depuração
-		ex.printStackTrace();
-
-		// Exibir a janela de alerta
-		alert.showAndWait();
-	}
-
-
 	@FXML
 	private VBox dynamicCustosContainer;
 
@@ -97,6 +57,7 @@ public class LancamentoCVController {
 		this.custosService = new CustosService();
 		//manter a identificação do projeto
 		identificacaoProjeto();
+		bloquearControlesSeProjetoIniciadoOuFinalizado();
 		// Exemplo de chamada do método adicionarCustos no initialize
 		this.listaDeCustos = this.custosService.listaCustos();
 
@@ -104,11 +65,35 @@ public class LancamentoCVController {
 		adicionarCustos(listaDeCustos);
 		updateList();
 		atualizarTotal();
-
 		atualizarStatusBtnLancamento();
 		atualizarStatusBtnPrecificar();
+	}
 
 
+
+	@FXML
+	private void btnVoltar(ActionEvent e) {
+		App.mudarTela("DetalhamentoProjeto");
+	}
+
+
+	@FXML
+	private Button btnPrecificar;
+
+	@FXML
+	private void btnPrecificar(ActionEvent e) {
+		try {
+			App.mudarTela("Precificacao");
+		} catch (Exception ex) {
+			exibirErro(ex);
+		}
+	}
+
+
+
+	private void atualizarStatusBtnPrecificar() {
+		float ttProjeto = projetoService.totalDeServicosDoProjeto(projeto.getId());
+			btnPrecificar.setDisable(ttProjeto <=0);
 	}
 
 	private void adicionarNovoCusto(CustosVariaveis item) {
@@ -215,7 +200,7 @@ public class LancamentoCVController {
 	}
 
 	@FXML
-	protected void btnCadatrarLancamento(ActionEvent e) throws SQLException {
+	protected void btnCadastrarLancamento(ActionEvent e) throws SQLException {
 
 			try {
 				this.custosService.cadastrarLancamento(this.lancamentos);
@@ -228,7 +213,7 @@ public class LancamentoCVController {
 			} catch (SQLException ex) {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle("Erro");
-				alert.setHeaderText("Ocorreu um erro ao salvar as etapas.");
+				alert.setHeaderText("Ocorreu um erro ao salvar os lançamentos de custos.");
 				alert.setContentText(ex.getMessage());
 				alert.showAndWait();
 			}
@@ -237,6 +222,15 @@ public class LancamentoCVController {
 
 	@FXML
 	private Button btnCadatrarLancamento;
+
+	private void bloquearControlesSeProjetoIniciadoOuFinalizado() {
+		if (projeto.getStatus().equalsIgnoreCase("INICIADO") ||
+				projeto.getStatus().equalsIgnoreCase("EXECUTADO")) {
+			// Bloquear botões
+			btnCadatrarLancamento.setDisable(true);
+			mostrarAviso("Projeto bloqueado", "Este projeto está com status " + projeto.getStatus() + " e não pode mais ser editado.");
+		}
+	}
 
 
 	private void atualizarStatusBtnLancamento() {
@@ -266,6 +260,30 @@ public class LancamentoCVController {
 		totalLabel.setText("Total R$" +String.format("%.2f",this.custosService.totalCVProjeto(projeto.getId())));
 		totalLabel.getStyleClass().add("label-subtotal-tt");
 	}
+
+
+	private void exibirErro(Exception ex) {
+		// Criar uma caixa de alerta
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Erro");
+		alert.setHeaderText("Erro ao carregar a tela de Precificação");
+		alert.setContentText("Não foi possível carregar a tela de Precificação.\nDetalhes do erro: " + ex.getMessage());
+
+		// Exibir o erro no console também para fins de depuração
+		ex.printStackTrace();
+
+		// Exibir a janela de alerta
+		alert.showAndWait();
+	}
+
+	private void mostrarAviso(String titulo, String mensagem) {
+		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle(titulo);
+		alert.setHeaderText(mensagem);
+		alert.setContentText(null);
+		alert.showAndWait();
+	}
+
 
 
 

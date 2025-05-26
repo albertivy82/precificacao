@@ -28,7 +28,7 @@
             </top>
            <left>
               <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-                 <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio"/>
+                 <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Início"/>
                  <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
                  <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
                  <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
@@ -73,7 +73,7 @@
                  </HBox>
 
                  <!-- Botão para Adicionar Nova Atividade -->
-                 <Button mnemonicParsing="false" onAction="#btnCadatrarEtapas" styleClass="button-style" text="Salvar Etapa"/>
+                 <Button mnemonicParsing="false" onAction="#btnCadastrarEtapas" styleClass="button-style" text="Salvar Etapa"/>
 
                  <!-- ScrollPane para Listar Etapas Salvas -->
 

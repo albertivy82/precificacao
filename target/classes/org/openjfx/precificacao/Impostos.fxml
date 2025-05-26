@@ -30,7 +30,7 @@
          </top>
          <left>
             <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-               <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio" />
+               <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="InÍcio" />
                <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
                <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
                <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />

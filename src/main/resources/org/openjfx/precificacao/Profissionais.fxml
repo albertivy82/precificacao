@@ -31,7 +31,7 @@
 
       <left>
       <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio"/>
+         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Início"/>
          <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
          <Button mnemonicParsing="false" styleClass="transparent-button" text="Profissionais" disable="true" />
          <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
@@ -59,7 +59,7 @@
                 <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
                   <children>
                      <Label styleClass="label-style" text="Profissão:" />
-                     <TextField fx:id="ProfissionalInput" promptText="Informe a profissião" styleClass="text-field-style" />
+                     <TextField fx:id="ProfissionalInput" promptText="Informe a profissão" styleClass="text-field-style" />
                   </children>
                </VBox>
                <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">

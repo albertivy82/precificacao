@@ -34,7 +34,7 @@
    </top>
    <left>
       <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio" />
+         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Início" />
          <Button disable="true" mnemonicParsing="false" styleClass="transparent-button" text="Clientes" />
          <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
          <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
@@ -87,7 +87,7 @@
                      <TextField fx:id="emailInput" prefHeight="32.0" prefWidth="368.0" promptText="Digite o e-mail" styleClass="text-field-style" />
                   </children>
                </VBox>
-       <!-- endereço - bairoo - e-mail -->
+       <!-- endereço - bairo - e-mail -->
                <VBox GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
                   <children>
                      <Label styleClass="label-style" text="Endereço:" />

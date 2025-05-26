@@ -23,7 +23,7 @@
    </top>
    <left>
       <VBox prefHeight="791.0" prefWidth="125.0" style="-fx-background-color: #444444;">
-         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Inicio"/>
+         <Button mnemonicParsing="false" onAction="#btnMain" styleClass="transparent-button" text="Início"/>
          <Button mnemonicParsing="false" onAction="#btnClientes" styleClass="transparent-button" text="Clientes" />
          <Button mnemonicParsing="false" onAction="#btnProfissionais" styleClass="transparent-button" text="Profissionais" />
          <Button mnemonicParsing="false" onAction="#btnProjeto" styleClass="transparent-button" text="Projetos" />
@@ -57,7 +57,7 @@
             </children>
 
          </GridPane>
-         <Label style="-fx-font-size: 16px; -fx-text-fill: #333;" text="ETAPAS CADSTRADAS" />
+         <Label style="-fx-font-size: 16px; -fx-text-fill: #333;" text="ETAPAS CADASTRADAS" />
          <ListView fx:id="LvEtapas" prefHeight="314.0" prefWidth="200.0" />
          <Button mnemonicParsing="false" onAction="#btnEditarEtapa" styleClass="button-style" text="Editar" />
          <Button mnemonicParsing="false" onAction="#btnDeletarEtapa" styleClass="button-style" text="Apagar" />

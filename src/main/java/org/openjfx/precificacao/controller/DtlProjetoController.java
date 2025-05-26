@@ -381,7 +381,7 @@ public class DtlProjetoController {
 	}
 
 	@FXML
-	protected void btnCadatrarEtapas(ActionEvent e) {
+	protected void btnCadastrarEtapas(ActionEvent e) {
 		try {
 			salvarEtapas();
 			listaResultados();

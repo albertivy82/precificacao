@@ -306,22 +306,33 @@ public class PrecificacaoController {
 	}
 
 
-	@FXML private void btnGerarPdf() {
-		PdfGenerator pdf = new PdfGenerator();
-		pdf.gerarPDF("/Orçamento_projeto_" + projeto.getId() + ".pdf",
-				projetoService.etapasSalvas(projeto.getId()),
-				projeto.getNomeProjeto(),
-				clienteService.nomeCliente(projeto.getIdCliente()),
-				totalProjetoLabel.getText(),
-				valorTotalCustoFixoDistribuido.getText(),
-				totalCustosVariaveisLabel.getText(),
-				lucroLabel.getText(),
-				String.format("R$ %.2f", custoFixoDoProjeto + custoVariavelDoProjeto + lucroDoProjeto),
-				valorDesconto.getText(),
-				precoComDescontoLabel.getText(),
-				totalImpostosLabel.getText(),
-				precoFinalComImpostosLabel.getText());
+	@FXML
+	private void btnGerarPdf() {
+		try {
+			PdfGenerator pdf = new PdfGenerator();
+			pdf.gerarPDF("/Orçamento_projeto_" + projeto.getId() + ".pdf",
+					projetoService.etapasSalvas(projeto.getId()),
+					projeto.getNomeProjeto(),
+					clienteService.nomeCliente(projeto.getIdCliente()),
+					totalProjetoLabel.getText(),
+					valorTotalCustoFixoDistribuido.getText(),
+					totalCustosVariaveisLabel.getText(),
+					lucroLabel.getText(),
+					"Despesas Complementares Aqui",
+					valorDesconto.getText(),
+					precoComDescontoLabel.getText(),
+					totalImpostosLabel.getText(),
+					precoFinalComImpostosLabel.getText()
+			);
+
+			mostrarAlerta("PDF gerado com sucesso!", "O orçamento foi salvo com sucesso.");
+
+		} catch (Exception e) {
+			mostrarAlerta("Erro ao gerar PDF", "Ocorreu um erro ao tentar gerar o PDF.");
+			e.printStackTrace();
+		}
 	}
+
 
 
 
@@ -359,6 +370,14 @@ public class PrecificacaoController {
 
 	private void mostrarAviso(String titulo, String mensagem) {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle(titulo);
+		alert.setHeaderText(mensagem);
+		alert.setContentText(null);
+		alert.showAndWait();
+	}
+
+	private void mostrarAlerta(String titulo, String mensagem) {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle(titulo);
 		alert.setHeaderText(mensagem);
 		alert.setContentText(null);
